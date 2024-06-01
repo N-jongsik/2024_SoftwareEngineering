@@ -11,8 +11,13 @@ import org.springframework.ui.Model;
 public class ApiController {
     private final BoardService boardService;
 
-    @GetMapping({"/", "/post.html"})
-    public String home(Model model) {
-        return "post"; // login.html view template 반환
+    @GetMapping({"/", "/templates/post.html"})
+    public String post(Model model) {
+        return "post";
+    }
+
+    @GetMapping("/discussion.html") //discussion이 게시물 글쓰고 업로드하는 뷰
+    public String discussion(Model model) {
+        return "discussion"; // discussion.html view template 반환
     }
 }

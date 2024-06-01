@@ -16,7 +16,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardDTO createBoard(BoardDTO boardDTO, HttpServletRequest request) {
+    public BoardDTO createBoard(BoardDTO boardDTO) {
         Board board = new Board();
         board.setUser_id(boardDTO.getUser_id());
         board.setTitle(boardDTO.getTitle());

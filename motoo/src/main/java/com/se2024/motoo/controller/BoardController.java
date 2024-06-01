@@ -17,8 +17,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO, HttpServletRequest request) {
-        BoardDTO createdBoard = boardService.createBoard(boardDTO, request);
+    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO) {
+        BoardDTO createdBoard = boardService.createBoard(boardDTO);
         return ResponseEntity.ok(createdBoard);
     }
 
