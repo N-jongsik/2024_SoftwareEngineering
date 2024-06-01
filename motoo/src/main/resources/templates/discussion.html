@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Discussion Board</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <header>
@@ -30,22 +30,16 @@
 </header>
 
 <main>
-    <section class="stock-list">
-        <h2>Board</h2>
-        <div class="stock">
-            <h3><a href="#">AAPL</a></h3>
-            <p>Apple Inc.</p>
+    <section class="discussion">
+        <h2>Discussion Board</h2>
+        <div class="discussion-posts">
+            <!-- Discussion posts will be dynamically added here -->
         </div>
-        <div class="stock">
-            <h3><a href="#">GOOGL</a></h3>
-            <p>Alphabet Inc.</p>
-        </div>
-        <div class="stock">
-            <h3><a href="#">MSFT</a></h3>
-            <p>Microsoft Corporation</p>
-        </div>
+        <form class="new-post-form"  action="post.html">
+            <textarea name="postContent" id="postContent" placeholder="Write your post here..."></textarea>
+            <button type="submit">Post</button>
+        </form>
     </section>
-    <button class="disbut" onclick="location.href='discussion.html'">등록하기</button>
 </main>
 </body>
 </html>
