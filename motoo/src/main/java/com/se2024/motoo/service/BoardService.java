@@ -30,7 +30,7 @@ public class BoardService {
         return BoardDTO.fromEntity(board);
     }
 
-    public List<BoardDTO> getAllBoards() {
+    public List<BoardDTO> getAllBoards() { //업로드된 board를 가져옴
         return boardRepository.findAll().stream().map(BoardDTO::fromEntity).collect(Collectors.toList());
     }
 
