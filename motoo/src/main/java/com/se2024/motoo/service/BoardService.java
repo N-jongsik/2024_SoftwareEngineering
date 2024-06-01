@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ public class BoardService {
         board.setUser_id(boardDTO.getUser_id());
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
+        board.setCreate_at(LocalDateTime.now());
+        board.setModified_at(LocalDateTime.now());
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }
@@ -38,6 +41,7 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("Board not found"));
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
+        board.setModified_at(LocalDateTime.now());
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }
