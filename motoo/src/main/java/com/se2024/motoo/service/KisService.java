@@ -1,15 +1,22 @@
 package com.se2024.motoo.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se2024.motoo.dto.ResponseOutputDTO;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
+@Service
 public class KisService {
+
     @Value("${appkey}")
     private String appkey;
 
@@ -19,6 +26,14 @@ public class KisService {
     @Value("${access_token}")
     private String accessToken;
 
+    private final WebClient webClient;
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public KisService(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
+        this.webClient = webClientBuilder.baseUrl("https://openapi.koreainvestment.com:9443").build();
+        this.objectMapper = objectMapper;
+    }
 
     private HttpHeaders createVolumeRankHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -51,7 +66,42 @@ public class KisService {
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .bodyToMono(String.class)
-                .flatMap(response -> parseFVolumeRank(response));
+                .flatMap(this::parseFVolumeRank);
+    }
 
+    private Mono<List<ResponseOutputDTO>> parseFVolumeRank(String response) {
+        try {
+            List<ResponseOutputDTO> responseDataList = new ArrayList<>();
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode outputNode = rootNode.get("output");
+            if (outputNode != null) {
+                for (JsonNode node : outputNode) {
+                    ResponseOutputDTO responseData = new ResponseOutputDTO();
+                    responseData.setHtsKorIsnm(node.get("hts_kor_isnm").asText());
+                    responseData.setMkscShrnIscd(node.get("mksc_shrn_iscd").asText());
+                    responseData.setDataRank(node.get("data_rank").asText());
+                    responseData.setStckPrpr(node.get("stck_prpr").asText());
+                    responseData.setPrdyVrssSign(node.get("prdy_vrss_sign").asText());
+                    responseData.setPrdyVrss(node.get("prdy_vrss").asText());
+                    responseData.setPrdyCtrt(node.get("prdy_ctrt").asText());
+                    responseData.setAcmlVol(node.get("acml_vol").asText());
+                    responseData.setPrdyVol(node.get("prdy_vol").asText());
+                    responseData.setLstnStcn(node.get("lstn_stcn").asText());
+                    responseData.setAvrgVol(node.get("avrg_vol").asText());
+                    responseData.setNBefrClprVrssPrprRate(node.get("n_befr_clpr_vrss_prpr_rate").asText());
+                    responseData.setVolInrt(node.get("vol_inrt").asText());
+                    responseData.setVolTnrt(node.get("vol_tnrt").asText());
+                    responseData.setNdayVolTnrt(node.get("nday_vol_tnrt").asText());
+                    responseData.setAvrgTrPbmn(node.get("avrg_tr_pbmn").asText());
+                    responseData.setTrPbmnTnrt(node.get("tr_pbmn_tnrt").asText());
+                    responseData.setNdayTrPbmnTnrt(node.get("nday_tr_pbmn_tnrt").asText());
+                    responseData.setAcmlTrPbmn(node.get("acml_tr_pbmn").asText());
+                    responseDataList.add(responseData);
+                }
+            }
+            return Mono.just(responseDataList);
+        } catch (Exception e) {
+            return Mono.error(e);
+        }
     }
 }
