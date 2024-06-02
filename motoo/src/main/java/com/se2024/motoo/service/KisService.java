@@ -123,6 +123,7 @@ public class KisService {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/uapi/domestic-stock/v1/ranking/fluctuation")
+                        .queryParam("fid_rsfl_rate2", "") // 문서에 설명된 대로
                         .queryParam("fid_cond_mrkt_div_code", "J")
                         .queryParam("fid_cond_scr_div_code", "20170")
                         .queryParam("fid_input_iscd", "0000")
@@ -136,13 +137,13 @@ public class KisService {
                         .queryParam("fid_trgt_exls_cls_code", "0")
                         .queryParam("fid_div_cls_code", "0")
                         .queryParam("fid_rsfl_rate1", "")
-                        .queryParam("fid_rsfl_rate2", "")
                         .build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .bodyToMono(String.class)
                 .flatMap(this::parseFIncreaseRank);
     }
+
     private Mono<List<testDTO>> parseFIncreaseRank(String response) {
         try {
             List<testDTO> responseDataList = new ArrayList<>();
@@ -151,25 +152,30 @@ public class KisService {
             if (outputNode != null) {
                 for (JsonNode node : outputNode) {
                     testDTO responseData = new testDTO();
-                    responseData.setHtsKorIsnm(node.get("hts_kor_isnm").asText());
-                    responseData.setMkscShrnIscd(node.get("mksc_shrn_iscd").asText());
-                    responseData.setDataRank(node.get("data_rank").asText());
-                    responseData.setStckPrpr(node.get("stck_prpr").asText());
-                    responseData.setPrdyVrssSign(node.get("prdy_vrss_sign").asText());
-                    responseData.setPrdyVrss(node.get("prdy_vrss").asText());
-                    responseData.setPrdyCtrt(node.get("prdy_ctrt").asText());
-                    responseData.setAcmlVol(node.get("acml_vol").asText());
-//                    responseData.setPrdyVol(node.get("prdy_vol").asText());
-//                    responseData.setLstnStcn(node.get("lstn_stcn").asText());
-//                    responseData.setAvrgVol(node.get("avrg_vol").asText());
-//                    responseData.setNBefrClprVrssPrprRate(node.get("n_befr_clpr_vrss_prpr_rate").asText());
-//                    responseData.setVolInrt(node.get("vol_inrt").asText());
-//                    responseData.setVolTnrt(node.get("vol_tnrt").asText());
-//                    responseData.setNdayVolTnrt(node.get("nday_vol_tnrt").asText());
-//                    responseData.setAvrgTrPbmn(node.get("avrg_tr_pbmn").asText());
-//                    responseData.setTrPbmnTnrt(node.get("tr_pbmn_tnrt").asText());
-//                    responseData.setNdayTrPbmnTnrt(node.get("nday_tr_pbmn_tnrt").asText());
-//                    responseData.setAcmlTrPbmn(node.get("acml_tr_pbmn").asText());
+                    responseData.setHtsKorIsnm(getNodeText(node, "hts_kor_isnm"));
+                    responseData.setStckShrnIscd(getNodeText(node, "stck_shrn_iscd"));
+                    responseData.setDataRank(getNodeText(node, "data_rank"));
+                    responseData.setStckPrpr(getNodeText(node, "stck_prpr"));
+                    responseData.setPrdyVrssSign(getNodeText(node, "prdy_vrss_sign"));
+                    responseData.setPrdyVrss(getNodeText(node, "prdy_vrss"));
+                    responseData.setPrdyCtrt(getNodeText(node, "prdy_ctrt"));
+                    responseData.setAcmlVol(getNodeText(node, "acml_vol"));
+                    responseData.setStckHgpr(getNodeText(node, "stck_hgpr"));
+                    responseData.setHgprHour(getNodeText(node, "hgpr_hour"));
+                    responseData.setAcmlHgprDate(getNodeText(node, "acml_hgpr_date"));
+                    responseData.setStckLwpr(getNodeText(node, "stck_lwpr"));
+                    responseData.setLwprHour(getNodeText(node, "lwpr_hour"));
+                    responseData.setAcmlLwprDate(getNodeText(node, "acml_lwpr_date"));
+                    responseData.setLwprVrssPrprRate(getNodeText(node, "lwpr_vrss_prpr_rate"));
+                    responseData.setDsgtDateClprVrssPrprRate(getNodeText(node, "dsgt_date_clpr_vrss_prpr_rate"));
+                    responseData.setCnntAscnDynu(getNodeText(node, "cnnt_ascn_dynu"));
+                    responseData.setHgprVrssPrprRate(getNodeText(node, "hgpr_vrss_prpr_rate"));
+                    responseData.setCnntDownDynu(getNodeText(node, "cnnt_down_dynu"));
+                    responseData.setOprcVrssPrprSign(getNodeText(node, "oprc_vrss_prpr_sign"));
+                    responseData.setOprcVrssPrpr(getNodeText(node, "oprc_vrss_prpr"));
+                    responseData.setOprcVrssPrprRate(getNodeText(node, "oprc_vrss_prpr_rate"));
+                    responseData.setPrdRsfl(getNodeText(node, "prd_rsfl"));
+                    responseData.setPrdRsflRate(getNodeText(node, "prd_rsfl_rate"));
                     responseDataList.add(responseData);
                 }
             }
@@ -177,5 +183,10 @@ public class KisService {
         } catch (Exception e) {
             return Mono.error(e);
         }
+    }
+
+    private String getNodeText(JsonNode node, String fieldName) {
+        JsonNode fieldNode = node.get(fieldName);
+        return fieldNode != null ? fieldNode.asText() : "";
     }
 }
