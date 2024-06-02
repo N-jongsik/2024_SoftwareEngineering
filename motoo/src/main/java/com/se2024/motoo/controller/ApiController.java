@@ -44,5 +44,4 @@ public class ApiController {
             return "login";
         }//db에 있는 정보 입력해도 else문으로 감
     }
-
 }
