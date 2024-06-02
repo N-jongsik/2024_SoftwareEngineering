@@ -1,6 +1,7 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.dto.ResponseOutputDTO;
+import com.se2024.motoo.dto.testDTO;
 import com.se2024.motoo.service.KisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,5 +22,10 @@ public class KisController {
     @GetMapping("/volume-rank")
     public Mono<List<ResponseOutputDTO>> getVolumeRank() {
         return kisService.getVolumeRank();
+    }
+
+    @GetMapping("/increase-rank")
+    public Mono<List<testDTO>> getIncreaseRank() {
+        return kisService.getIncreaseRank();
     }
 }
