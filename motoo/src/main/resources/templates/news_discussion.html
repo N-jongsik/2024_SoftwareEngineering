@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
                 <li><a href="#">Market</a></li>
                 <li><a href="#">News</a></li>
                 <li><a href="post.html">Board</a></li>
-                <li><a href="#">Ranking</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
             </ul>
         </nav>
         <div class="search-bar">
@@ -29,17 +29,26 @@
             </ul>
         </nav>
     </header>
-
     <main>
-        <section class="market-indices">
-            <h2>KOSPI & KOSDAQ</h2>
-            <div class="chart-container">
-                <canvas id="kospiChart"></canvas>
-                <canvas id="kosdaqChart"></canvas>
-            </div>
+        <section class="news-form-section">
+            <h2>뉴스 등록</h2>
+            <form id="newsForm">
+                <label for="newsTitle">제목</label>
+                <input type="text" id="newsTitle" name="newsTitle" required>
+
+                <label for="newsImage">이미지 파일</label>
+                <input type="file" id="newsImage" name="newsImage" accept="image/*" required>
+
+
+                <label for="newsContent">내용</label>
+                <textarea id="newsContent" name="newsContent" rows="5" required></textarea>
+
+                <label for="newsDate">날짜</label>
+                <input type="date" id="newsDate" name="newsDate" required>
+                <button type="button" onclick="submitNews()">등록</button>
+            </form>
         </section>
     </main>
-
-    <script src="scripts.js"></script>
+    <script src="news_discussion.js"></script>
 </body>
 </html>
