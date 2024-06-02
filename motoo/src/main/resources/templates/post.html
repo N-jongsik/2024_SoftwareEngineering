@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,21 @@
             <p>Microsoft Corporation</p>
         </div>
     </section>
+    <div th:if="${not #lists.isEmpty(boards)}">
+        <table border="1" width="50%" height="200" bordercolor="black">
+            <tr>
+                <td>제목</td>
+            </tr>
+            <tr th:each="board : ${boards}">
+                <td>
+                    <a th:href="@{'/boardview.html/' + ${board.board_id}}"> <!-- 경로 고쳐야함 임시 -->
+                        <p th:text="${board.title}" style="color:black;"></p>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div th:unless="${not #lists.isEmpty(boards)}">게시물 없음</div>
     <button class="disbut" onclick="location.href='discussion.html'">등록하기</button>
 </main>
 </body>
