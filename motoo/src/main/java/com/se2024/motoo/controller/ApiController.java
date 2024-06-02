@@ -93,7 +93,9 @@ public class ApiController {
     public String logout(HttpSession session) {
         session.invalidate();
         System.out.println("사용자 로그아웃!!!!!!!!!!!");
-        return "redirect:/login";
+        return "redirect:/login?logout=true";
     }
+
+
 
 }
