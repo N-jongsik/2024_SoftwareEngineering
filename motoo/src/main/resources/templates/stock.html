@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,8 @@
         <nav>
             <ul>
                 <li><a href="#">Profile</a></li>
-                <li><a href="login.html">login</a></li>
+                <li><a th:href="@{/login}">login</a></li>
+                <li><a th:href="@{/logout}" id="logoutButton">logout</a></li>
             </ul>
         </nav>
     </header>
@@ -84,5 +85,17 @@
             </div>
         </section>
     </main>
+    <script>//로그아웃
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault(); // 기본 동작 막기
+
+            var logoutForm = document.createElement('form');
+            logoutForm.method = 'POST';
+            logoutForm.action = '/logout';
+
+            document.body.appendChild(logoutForm);
+            logoutForm.submit();
+        });
+    </script>
 </body>
 </html>

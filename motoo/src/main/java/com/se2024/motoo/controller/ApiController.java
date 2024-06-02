@@ -88,4 +88,12 @@ public class ApiController {
         }//db에 있는 정보 입력해도 else문으로 감
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        System.out.println("사용자 로그아웃!!!!!!!!!!!");
+        return "redirect:/login";
+    }
+
 }
