@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주식 사이트</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+    <div class="logo">StockSite</div>
+    <nav>
+        <ul>
+            <li><a href="stock.html">Home</a></li>
+            <li><a href="#">Market</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="post.html">Board</a></li>
+            <li><a href="#">Ranking</a></li>
+        </ul>
+    </nav>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Profile</a></li>
+            <li><a href="login.html">login</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section class="market-indices">
+        <h2>KOSPI & KOSDAQ</h2>
+        <div class="chart-container">
+            <canvas id="kospiChart"></canvas>
+            <canvas id="kosdaqChart"></canvas>
+        </div>
+    </section>
+    <script src="scripts.js"></script>
+
+    <section class="home-page">
+        <div class="popular-stocks">
+            <div class="popular-header">
+                <h2>인기 주식 종목</h2>
+                <a href="#" title="더보기">더보기</a>
+            </div>
+            <table class="stock-table">
+                <thead>
+                <tr>
+                    <th>종목명</th>
+                    <th>가격</th>
+                    <th>변동률</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>삼성전자</td>
+                    <td>70,000</td>
+                    <td style="color:red">▲1.9</td>
+                </tr>
+                <tr>
+                    <td>SK하이닉스</td>
+                    <td>120,000</td>
+                    <td style="color:red">▲2.3</td>
+                </tr>
+                <tr>
+                    <td>네이버</td>
+                    <td>350,000</td>
+                    <td style="color:red">▲1.5</td>
+                </tr>
+                <tr>
+                    <td>카카오</td>
+                    <td>140,000</td>
+                    <td style="color:blue">▼0.9</td>
+                </tr>
+                <tr>
+                    <td>LG화학</td>
+                    <td>820,000</td>
+                    <td style="color:red">▲3.8</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

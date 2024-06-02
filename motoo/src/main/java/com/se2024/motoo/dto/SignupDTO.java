@@ -13,7 +13,7 @@ public class SignupDTO {
     private String userName;
     private String userEmail;
 
-    public static SignupDTO signupDTO(Member member){
+    public static SignupDTO toSignupDTO(Member member){
         SignupDTO signupDTO = new SignupDTO();
 
         signupDTO.setUserID(member.getUserID());
