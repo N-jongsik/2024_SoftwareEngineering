@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSite with KOSPI & KOSDAQ</title>
+    <link rel="stylesheet" href="../../../../../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">StockSite</div>
+        <nav>
+            <ul>
+                <li><a href="../../../../../stock.html">Home</a></li>
+                <li><a href="#">Market</a></li>
+                <li><a href="#">News</a></li>
+                <li><a href="post.html">Board</a></li>
+                <li><a href="#">Ranking</a></li>
+            </ul>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Profile</a></li>
+                <li><a href="../../../../../login.html">login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="market-indices">
+            <h2>KOSPI & KOSDAQ</h2>
+            <div class="chart-container">
+                <canvas id="kospiChart"></canvas>
+                <canvas id="kosdaqChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../../../../scripts.js"></script>
+</body>
+</html>
