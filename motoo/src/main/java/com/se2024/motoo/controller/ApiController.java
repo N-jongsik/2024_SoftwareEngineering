@@ -75,13 +75,15 @@ public class ApiController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session){
+    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session, Model model){
         SignupDTO loginResult =memberService.login(signupDTO);
 
         if(loginResult != null){
             session.setAttribute("loginID", loginResult.getUserID());
             return "stock";
         }else{
+            model.addAttribute("loginError", "회원 정보가 없습니다");
+            System.out.println("로그인 실패!!!!!!!!!!");
             return "login";
         }//db에 있는 정보 입력해도 else문으로 감
     }
