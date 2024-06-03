@@ -17,7 +17,6 @@ import java.util.List;
 
 @Service
 public class KisService {
-
     @Value("${appkey}")
     private String appkey;
 
