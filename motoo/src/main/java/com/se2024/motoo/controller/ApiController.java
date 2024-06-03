@@ -66,7 +66,7 @@ public class ApiController {
         System.out.println("signupDTO = " + signupDTO);
         memberService.save(signupDTO);
 
-        return "login";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
