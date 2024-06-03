@@ -80,7 +80,7 @@ public class ApiController {
 
         if(loginResult != null){
             session.setAttribute("loginID", loginResult.getUserID());
-            return "stock";
+            return "redirect:/stock";
         }else{
             model.addAttribute("loginError", "회원 정보가 없습니다");
             System.out.println("로그인 실패!!!!!!!!!!");
@@ -94,6 +94,21 @@ public class ApiController {
         session.invalidate();
         System.out.println("사용자 로그아웃!!!!!!!!!!!");
         return "redirect:/login?logout=true";
+    }
+
+    @GetMapping("/stock")
+    public String stockPage(){
+        return "stock";
+    }
+
+    @GetMapping("/news")
+    public String newsPage() {
+        return "news";
+    }
+
+    @GetMapping("/ranking")
+    public String rankingPage() {
+        return "ranking";
     }
 
 
