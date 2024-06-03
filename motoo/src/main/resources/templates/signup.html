@@ -12,7 +12,7 @@
         <nav>
             <ul>
                 <li><a th:href="@{/stock}">Home</a></li>
-                <li><a th:href="#">Market</a></li>
+                <li><a th:href="@{/#}">Market</a></li>
                 <li><a th:href="@{/news}">News</a></li>
                 <li><a th:href="@{/post}">Board</a></li>
                 <li><a th:href="@{/ranking}">Ranking</a></li>
@@ -32,7 +32,7 @@
         <section class="signup-page">
             <div class="signup-form">
                 <h2>회원가입</h2>
-                <form action="signup" method="post">
+                <form action="#" method="post">
                     <div class="form-group">
                         <label for="userid">아이디</label>
                         <input type="text" id="userid" name="userID" required>

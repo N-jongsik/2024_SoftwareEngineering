@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "user")
 public class Member {
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //자동으로 값 1씩 증가해주며, pk 속성을 가짐
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) //자동으로 값 1씩 증가해주며, pk 속성을 가짐
     @Id // primary key
     private String userID;
 
