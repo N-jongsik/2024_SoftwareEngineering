@@ -39,6 +39,10 @@
             내용
         </div>
         <button class="disbut" onclick="location.href='/post.html'">목록으로</button>
+        <a th:href="@{'/discussion.html/' + ${board.board_id}}">
+            <button class="disbut" type="button">수정</button>
+        </a>
+
     </section>
 </main>
 </body>

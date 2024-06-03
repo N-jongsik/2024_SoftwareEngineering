@@ -16,7 +16,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping("api/board")
+    @PostMapping("api/board") //게시물 업로드
     public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
         //String userId = (String)session.getAttribute("loginID");
         String userId = boardDTO.getTitle(); //임시로,,
@@ -27,6 +27,12 @@ public class BoardController {
         //}else{
            // return new RedirectView("/login.html");
         //}
+    }
+
+    @PostMapping("api/board/{board_id}") //게시물 수정
+    public RedirectView updateBoard(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
+        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
+        return new RedirectView("/post.html");
     }
 
     @GetMapping("/{id}")
@@ -41,11 +47,7 @@ public class BoardController {
         return ResponseEntity.ok(boards);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardDTO boardDTO) {
-        BoardDTO updatedBoard = boardService.updateBoard(id, boardDTO);
-        return ResponseEntity.ok(updatedBoard);
-    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBoard(@PathVariable Long id) {

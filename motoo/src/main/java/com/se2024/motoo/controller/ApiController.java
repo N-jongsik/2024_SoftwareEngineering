@@ -1,7 +1,9 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Board;
+import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
+import com.se2024.motoo.repository.MemberRepository;
 import com.se2024.motoo.service.BoardService;
 import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.service.MemberService;
@@ -18,12 +20,14 @@ import java.util.List;
 import java.util.Optional;
 import jakarta.servlet.http.HttpSession;
 
-
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 @Controller
 @RequiredArgsConstructor
 public class ApiController {
     private final BoardService boardService;
+    private final MemberRepository memberRepository;
 
     @GetMapping({"/", "/post.html"})
     public String post(Model model) {
@@ -41,16 +45,27 @@ public class ApiController {
         return "discussion"; // discussion.html view template 반환
     }
 
-    @GetMapping("/boardview.html/{board_id}") //discussion이 게시물 글쓰고 업로드하는 뷰
+    @GetMapping("/discussion.html/{board_id}") //게시물 수정
+    public String discussion_modify(Model model, @PathVariable("board_id")Long board_id) {
+        try{
+            BoardDTO board = boardService.getBoardById(board_id);
+            model.addAttribute("board", board);
+            return "discussion";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
+        }
+    }
+
+    @GetMapping("/boardview.html/{board_id}") //게시물 확인
     public String BoardView(Model model, @PathVariable("board_id")Long board_id) {
         try{
             BoardDTO board = boardService.getBoardById(board_id);
-            System.out.println("\n\n\n"+board.getTitle()+"\n\n\n");
             model.addAttribute("board", board);
             return "boardview";
         }
         catch(Exception e){
-            System.out.println("\n\n\nline123\n\n\n");
             e.printStackTrace();
             return "Error";
         }
