@@ -86,16 +86,23 @@
         </section>
     </main>
     <script>//로그아웃
-        document.getElementById('logoutButton').addEventListener('click', function(event) {
-            event.preventDefault(); // 기본 동작 막기
+        // 로그아웃
+document.getElementById('logoutButton').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 동작 막기
 
-            var logoutForm = document.createElement('form');
-            logoutForm.method = 'POST';
-            logoutForm.action = '/logout';
+    // 로그아웃을 위한 GET 요청 보내기
+    fetch('/logout', {
+        method: 'GET'
+    })
+    .then(response => {
+        // 로그아웃이 성공하면 로그인 페이지로 리다이렉트
+        window.location.href = '/login?logout=true';
+    })
+    .catch(error => {
+        console.error('로그아웃 실패:', error);
+    });
+});
 
-            document.body.appendChild(logoutForm);
-            logoutForm.submit();
-        });
     </script>
 </body>
 </html>
