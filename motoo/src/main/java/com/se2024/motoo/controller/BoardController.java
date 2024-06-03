@@ -8,18 +8,25 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.view.RedirectView;
 @RestController
-@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping
-    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO) {
-        BoardDTO createdBoard = boardService.createBoard(boardDTO);
-        return ResponseEntity.ok(createdBoard);
+    @PostMapping("api/board")
+    public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
+        //String userId = (String)session.getAttribute("loginID");
+        String userId = boardDTO.getTitle(); //임시로,,
+        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO);
+            return new RedirectView("/post.html");
+        //}else{
+           // return new RedirectView("/login.html");
+        //}
     }
 
     @GetMapping("/{id}")
@@ -28,7 +35,7 @@ public class BoardController {
         return ResponseEntity.ok(boardDTO);
     }
 
-    @GetMapping
+    @GetMapping("/{id}/tmp")
     public ResponseEntity<List<BoardDTO>> getAllBoards() {
         List<BoardDTO> boards = boardService.getAllBoards();
         return ResponseEntity.ok(boards);

@@ -42,13 +42,16 @@ public class ApiController {
     }
 
     @GetMapping("/boardview.html/{board_id}") //discussion이 게시물 글쓰고 업로드하는 뷰
-    public String BoardView(Model model, @PathVariable Long board_id) {
+    public String BoardView(Model model, @PathVariable("board_id")Long board_id) {
         try{
             BoardDTO board = boardService.getBoardById(board_id);
+            System.out.println("\n\n\n"+board.getTitle()+"\n\n\n");
             model.addAttribute("board", board);
             return "boardview";
         }
         catch(Exception e){
+            System.out.println("\n\n\nline123\n\n\n");
+            e.printStackTrace();
             return "Error";
         }
     }
