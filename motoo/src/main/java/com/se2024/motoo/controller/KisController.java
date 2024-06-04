@@ -2,10 +2,10 @@ package com.se2024.motoo.controller;
 
 import com.se2024.motoo.dto.ResponseOutputDTO;
 import com.se2024.motoo.dto.testDTO;
+import com.se2024.motoo.dto.tickerDTO;
 import com.se2024.motoo.service.KisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -27,5 +27,20 @@ public class KisController {
     @GetMapping("/increase-rank")
     public Mono<List<testDTO>> getIncreaseRank() {
         return kisService.getIncreaseRank();
+    }
+
+    @GetMapping("/decrease-rank")
+    public Mono<List<testDTO>> getDecreaseRank() {
+        return kisService.getDecreaseRank();
+    }
+
+    @GetMapping("/price")
+    public Mono<List<tickerDTO>> getPrice(@RequestParam String ticker) {
+        return kisService.getPirce(ticker);
+    }
+
+    @GetMapping("/stock")
+    public Mono<List<tickerDTO>> getS(@RequestParam String ticker) {
+        return kisService.getPirce(ticker);
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './components/Home';
@@ -9,26 +9,37 @@ import Post from './components/Post';
 import News from './components/News';
 import NewsForm from './components/NewsForm';
 import DiscussionBoard from './components/DiscussionForm';
+import Ticker from './components/Ticker';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+  const [homeData, setHomeData] = useState('');
+
+  useEffect(() => {
+    axios.get('/')
+        .then(response => setHomeData(response.data))
+        .catch(error => console.log(error));
+  }, []);
+
   return (
-    <Router>
-      <div className="App">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/post" element={<Post />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/newsform" element={<NewsForm />} />
-          <Route path="/discussionform" element={<DiscussionBoard />} />
-          {/* 다른 페이지 라우트 추가 */}
-        </Routes>
-      </div>
-    </Router>
+      <Router>
+        <div className="App">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home data={homeData} />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/post" element={<Post />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/newsform" element={<NewsForm />} />
+            <Route path="/discussionform" element={<DiscussionBoard />} />
+            <Route path="/ticker" element={<Ticker />} />
+            {/* 다른 페이지 라우트 추가 */}
+          </Routes>
+        </div>
+      </Router>
   );
 }
 

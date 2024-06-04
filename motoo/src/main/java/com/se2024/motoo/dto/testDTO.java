@@ -1,5 +1,6 @@
 package com.se2024.motoo.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,51 +12,75 @@ import lombok.ToString;
 @ToString
 public class testDTO {
     // HTS 한글 종목명
+    @JsonProperty("hts_kor_isnm")
     private String htsKorIsnm;
-    // 주식 단축 종목코드
+
+    @JsonProperty("stck_shrn_iscd")
     private String stckShrnIscd;
-    // 데이터 순위
+
+    @JsonProperty("data_rank")
     private String dataRank;
-    // 주식 현재가
+
+    @JsonProperty("stck_prpr")
     private String stckPrpr;
-    // 전일 대비 부호
+
+    @JsonProperty("prdy_vrss_sign")
     private String prdyVrssSign;
-    // 전일 대비
+
+    @JsonProperty("prdy_vrss")
     private String prdyVrss;
-    // 전일 대비율
+
+    @JsonProperty("prdy_ctrt")
     private String prdyCtrt;
-    // 누적 거래량
+
+    @JsonProperty("acml_vol")
     private String acmlVol;
-    // 주식 최고가
+
+    @JsonProperty("stck_hgpr")
     private String stckHgpr;
-    // 최고가 시간
+
+    @JsonProperty("hgpr_hour")
     private String hgprHour;
-    // 누적 최고가 일자
+
+    @JsonProperty("acml_hgpr_date")
     private String acmlHgprDate;
-    // 주식 최저가
+
+    @JsonProperty("stck_lwpr")
     private String stckLwpr;
-    // 최저가 시간
+
+    @JsonProperty("lwpr_hour")
     private String lwprHour;
-    // 누적 최저가 일자
+
+    @JsonProperty("acml_lwpr_date")
     private String acmlLwprDate;
-    // 최저가 대비 현재가 비율
+
+    @JsonProperty("lwpr_vrss_prpr_rate")
     private String lwprVrssPrprRate;
-    // 지정 일자 종가 대비 현재가 비율
+
+    @JsonProperty("dsgt_date_clpr_vrss_prpr_rate")
     private String dsgtDateClprVrssPrprRate;
-    // 연속 상승 일수
+
+    @JsonProperty("cnnt_ascn_dynu")
     private String cnntAscnDynu;
-    // 최고가 대비 현재가 비율
+
+    @JsonProperty("hgpr_vrss_prpr_rate")
     private String hgprVrssPrprRate;
-    // 연속 하락 일수
+
+    @JsonProperty("cnnt_down_dynu")
     private String cnntDownDynu;
-    // 시가 대비 현재가 부호
+
+    @JsonProperty("oprc_vrss_prpr_sign")
     private String oprcVrssPrprSign;
-    // 시가 대비 현재가
+
+    @JsonProperty("oprc_vrss_prpr")
     private String oprcVrssPrpr;
-    // 시가 대비 현재가 비율
+
+    @JsonProperty("oprc_vrss_prpr_rate")
     private String oprcVrssPrprRate;
-    // 기간 등락
+
+    @JsonProperty("prd_rsfl")
     private String prdRsfl;
-    // 기간 등락 비율
+
+    @JsonProperty("prd_rsfl_rate")
     private String prdRsflRate;
 }
