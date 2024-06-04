@@ -36,7 +36,7 @@ public class ApiController {
 
     @GetMapping("/noticeList.html") //공지글 list view
     public String noticeList(Model model) {
-        List<BoardDTO>boardlist = boardService.getAllBoards(); //!!서비스에서 공지글만 받아오는 로직 만들기!!
+        List<BoardDTO>boardlist = boardService.getAllNotices(); //!!서비스에서 공지글만 받아오는 로직 만들기!!
 
         model.addAttribute("boards", boardlist);
         return "noticeList";

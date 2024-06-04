@@ -22,7 +22,7 @@ public class BoardController { //게시판과 공지사항 controller
         String userId = boardDTO.getTitle(); //임시로,,
         //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
             boardDTO.setUser_id(userId);
-            boardService.createBoard(boardDTO);
+            boardService.createBoard(boardDTO, true);
             return new RedirectView("/post.html");
         //}else{
            // return new RedirectView("/login.html");
@@ -35,7 +35,7 @@ public class BoardController { //게시판과 공지사항 controller
         String userId = boardDTO.getTitle(); //임시로,,
         //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
         boardDTO.setUser_id(userId);
-        boardService.createBoard(boardDTO);
+        boardService.createBoard(boardDTO, false);
         return new RedirectView("/noticeList.html");
         //}else{
         // return new RedirectView("/login.html");
