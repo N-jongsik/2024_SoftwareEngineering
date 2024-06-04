@@ -17,17 +17,19 @@ public class BoardDTO {
     private LocalDateTime modified_at;
     private String title;
     private String content;
+    private Boolean isBoard;
 
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content) {
+    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard) {
         this.board_id = board_id;
         this.user_id = user_id;
         this.create_at = create_at;
         this.modified_at = modified_at;
         this.title = title;
         this.content = content;
+        this.isBoard = isBoard;
     }
 
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
@@ -38,7 +40,8 @@ public class BoardDTO {
                 board.getCreate_at(),
                 board.getModified_at(),
                 board.getTitle(),
-                board.getContent()
+                board.getContent(),
+                board.getIsBoard()
         );
     }
 }

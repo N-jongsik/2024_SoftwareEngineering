@@ -34,6 +34,14 @@ public class ApiController {
         return "post";
     }
 
+    @GetMapping("/noticeList.html") //공지글 list view
+    public String noticeList(Model model) {
+        List<BoardDTO>boardlist = boardService.getAllBoards(); //!!서비스에서 공지글만 받아오는 로직 만들기!!
+
+        model.addAttribute("boards", boardlist);
+        return "noticeList";
+    }
+
     @GetMapping("/discussion.html") //discussion이 게시물 글쓰고 업로드하는 뷰
     public String discussion(Model model) {
         //토큰에서 사용자 아이디 추출해야 함.
@@ -42,12 +50,31 @@ public class ApiController {
         return "discussion"; // discussion.html view template 반환
     }
 
+    @GetMapping("/notice.html") //공지글 글쓰고 업로드하는 뷰
+    public String notice(Model model) {
+        model.addAttribute("board", new Board());
+        return "notice";
+    }
+
     @GetMapping("/discussion.html/{board_id}") //게시물 수정
     public String discussion_modify(Model model, @PathVariable("board_id")Long board_id) {
         try{
             BoardDTO board = boardService.getBoardById(board_id);
             model.addAttribute("board", board);
             return "discussion";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
+        }
+    }
+
+    @GetMapping("/notice.html/{board_id}") //게시물 수정
+    public String notice_modify(Model model, @PathVariable("board_id")Long board_id) {
+        try{
+            BoardDTO board = boardService.getBoardById(board_id);
+            model.addAttribute("board", board);
+            return "notice";
         }
         catch(Exception e){
             e.printStackTrace();
@@ -68,11 +95,36 @@ public class ApiController {
         }
     }
 
-    @PostMapping("/boardview.html/{board_id}/delete") //게시물 확인
+    @GetMapping("/noticeview.html/{board_id}") //공지글 확인
+    public String noticeView(Model model, @PathVariable("board_id")Long board_id) {
+        try{
+            BoardDTO board = boardService.getBoardById(board_id);
+            model.addAttribute("board", board);
+            return "noticeview";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
+        }
+    }
+
+    @PostMapping("/boardview.html/{board_id}/delete") //게시물 삭제
     public RedirectView BoardDelete(Model model, @PathVariable("board_id")Long board_id) {
         try{
             boardService.deleteBoard(board_id);
             return new RedirectView("/post.html");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return new RedirectView("error");
+        }
+    }
+
+    @PostMapping("/noticeview.html/{board_id}/delete") //공지글 삭제
+    public RedirectView noticeDelete(Model model, @PathVariable("board_id")Long board_id) {
+        try{
+            boardService.deleteBoard(board_id);
+            return new RedirectView("/noticeList.html");
         }
         catch(Exception e){
             e.printStackTrace();

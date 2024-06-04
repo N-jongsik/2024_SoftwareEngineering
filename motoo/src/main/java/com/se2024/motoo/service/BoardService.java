@@ -24,6 +24,7 @@ public class BoardService {
         board.setContent(boardDTO.getContent());
         board.setCreate_at(LocalDateTime.now());
         board.setModified_at(LocalDateTime.now());
+        board.setIsBoard(true);
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }

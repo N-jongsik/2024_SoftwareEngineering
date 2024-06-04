@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
-public class BoardController {
+public class BoardController { //게시판과 공지사항 controller
 
     private final BoardService boardService;
 
@@ -29,10 +29,29 @@ public class BoardController {
         //}
     }
 
+    @PostMapping("api/notice") //공지글 업로드
+    public RedirectView createNotice(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
+        //String userId = (String)session.getAttribute("loginID");
+        String userId = boardDTO.getTitle(); //임시로,,
+        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
+        boardDTO.setUser_id(userId);
+        boardService.createBoard(boardDTO);
+        return new RedirectView("/noticeList.html");
+        //}else{
+        // return new RedirectView("/login.html");
+        //}
+    }
+
     @PostMapping("api/board/{board_id}") //게시물 수정
     public RedirectView updateBoard(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
         BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
         return new RedirectView("/post.html");
+    }
+
+    @PostMapping("api/notice/{board_id}") //공지글 수정
+    public RedirectView updateNotice(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
+        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
+        return new RedirectView("/noticeList.html");
     }
 
     @GetMapping("/{id}")
@@ -46,7 +65,6 @@ public class BoardController {
         List<BoardDTO> boards = boardService.getAllBoards();
         return ResponseEntity.ok(boards);
     }
-
 
 
     @DeleteMapping("/{id}")
