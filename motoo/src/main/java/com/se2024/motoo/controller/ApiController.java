@@ -10,11 +10,8 @@ import com.se2024.motoo.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequiredArgsConstructor
 public class ApiController {
@@ -68,6 +65,18 @@ public class ApiController {
         catch(Exception e){
             e.printStackTrace();
             return "Error";
+        }
+    }
+
+    @PostMapping("/boardview.html/{board_id}/delete") //게시물 확인
+    public RedirectView BoardDelete(Model model, @PathVariable("board_id")Long board_id) {
+        try{
+            boardService.deleteBoard(board_id);
+            return new RedirectView("/post.html");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return new RedirectView("error");
         }
     }
 
