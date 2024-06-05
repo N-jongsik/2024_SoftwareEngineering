@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yaml.snakeyaml.events.Event;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-
-public class UserStock {
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //자동으로 값 1씩 증가해주며, pk 속성을 가짐
-    @Id // primary key
-    private String userID;
+public class UserStock{
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Member userID;
 
     @Column(length = 100)
     private String pwd;
@@ -23,6 +24,4 @@ public class UserStock {
 
     @Column(length = 100)
     private Integer stck_prpr;
-
-
 }

@@ -27,8 +27,8 @@ public class StockService {
     public StockInfoResponse getStockInfo(String itemName) {
         // 호출된 시점의 어제 날짜 구하기
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
+//        String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String yesterdayStr = "20240604";
         String apiUrl = "https://apis.data.go.kr/1160100/service/GetKrxListedInfoService/getItemInfo";
         String serviceKey = "WkiWHxfMQMxWZ2BFbkUi62BgCOv%2BCMoPtKMQnU%2F8hViLc0Dl%2BmeP1koWyExqCDNi0JldIRpknndrATfh8%2B2mOQ%3D%3D";
         String apiResponse = callExternalApi(apiUrl, serviceKey, yesterdayStr, itemName);
