@@ -43,6 +43,13 @@
                     <textarea >[[${board.title}]]</textarea>
                     <input type="text" name="title" required>
                 </div>
+                <div class="stock-type">
+                    <label>타입 선택</label>
+                    <select name="board_type" required>
+                        <option value="긴급공지">긴급공지</option>
+                        <option value="일반공지">일반공지</option>
+                    </select>
+                </div>
                 <div class="content">
                     <label >내용 입력 </label>
                     <textarea >[[${board.content}]]</textarea>
@@ -56,6 +63,13 @@
                 <div class="title">
                     <label >제목을 입력 </label>
                     <input type="text" name="title" required>
+                </div>
+                <div class="stock-type">
+                    <label>타입 선택</label>
+                    <select name="board_type" required>
+                        <option value="긴급공지">긴급공지</option>
+                        <option value="일반공지">일반공지</option>
+                    </select>
                 </div>
                 <div class="content">
                     <label >내용 입력 </label>

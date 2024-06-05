@@ -43,4 +43,8 @@ public class Board {
 
     @Column
     private String board_type;
+    @Column
+    private Integer viewCount;
+    @Column
+    private Integer likeCount;
 }

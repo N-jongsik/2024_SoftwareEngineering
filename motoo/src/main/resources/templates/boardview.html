@@ -38,6 +38,9 @@
         <div th:text="${board.content}">
             내용
         </div>
+        <div th:text="${board.viewCount}">
+            조회수
+        </div>
         <button class="disbut" onclick="location.href='/post.html'">목록으로</button>
         <a th:href="@{'/discussion.html/' + ${board.board_id}}">
             <button class="disbut" type="button">수정</button>

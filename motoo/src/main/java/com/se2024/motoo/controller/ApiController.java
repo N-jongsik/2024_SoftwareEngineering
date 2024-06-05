@@ -90,6 +90,7 @@ public class ApiController {
     public String BoardView(Model model, @PathVariable("board_id")Long board_id) {
         try{
             BoardDTO board = boardService.getBoardById(board_id);
+            boardService.updateViewcount(board_id);
             model.addAttribute("board", board);
             return "boardview";
         }
@@ -103,6 +104,7 @@ public class ApiController {
     public String noticeView(Model model, @PathVariable("board_id")Long board_id) {
         try{
             BoardDTO board = boardService.getBoardById(board_id);
+            boardService.updateViewcount(board_id);
             model.addAttribute("board", board);
             return "noticeview";
         }

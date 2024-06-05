@@ -19,11 +19,13 @@ public class BoardDTO {
     private String content;
     private Boolean isBoard;
     private String board_type;
+    private Integer viewCount;
+    private Integer likeCount;
 
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type) {
+    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
         this.board_id = board_id;
         this.user_id = user_id;
         this.create_at = create_at;
@@ -32,6 +34,8 @@ public class BoardDTO {
         this.content = content;
         this.isBoard = isBoard;
         this.board_type = board_type;
+        this.viewCount= viewCount;
+        this.likeCount= likeCount;
     }
 
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
@@ -44,7 +48,9 @@ public class BoardDTO {
                 board.getTitle(),
                 board.getContent(),
                 board.getIsBoard(),
-                board.getBoard_type()
+                board.getBoard_type(),
+                board.getViewCount(),
+                board.getLikeCount()
         );
     }
 }
