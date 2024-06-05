@@ -18,28 +18,28 @@ public class BoardController { //게시판과 공지사항 controller
 
     @PostMapping("api/board") //게시물 업로드
     public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
-        //String userId = (String)session.getAttribute("loginID");
-        String userId = boardDTO.getTitle(); //임시로,,
-        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
+        String userId = (String)session.getAttribute("loginID");
+        //String userId = boardDTO.getTitle(); //임시로,,
+        if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
             boardDTO.setUser_id(userId);
             boardService.createBoard(boardDTO, true);
             return new RedirectView("/post.html");
-        //}else{
-           // return new RedirectView("/login.html");
-        //}
+        }else{
+            return new RedirectView("/login");
+        }
     }
 
     @PostMapping("api/notice") //공지글 업로드
     public RedirectView createNotice(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
-        //String userId = (String)session.getAttribute("loginID");
-        String userId = boardDTO.getTitle(); //임시로,,
-        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
-        boardDTO.setUser_id(userId);
-        boardService.createBoard(boardDTO, false);
-        return new RedirectView("/noticeList.html");
-        //}else{
-        // return new RedirectView("/login.html");
-        //}
+        String userId = (String)session.getAttribute("loginID");
+        //String userId = boardDTO.getTitle(); //임시로,,
+        if(userId != null){ //관리자 id일 때에만 notice <<<<<<<<<<<<<<<<<<<<<<<<<관리자 id 확인으로 수정하기
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, false);
+            return new RedirectView("/noticeList.html");
+        }else{ //로그인이 안되어있다면 이 contoller로 넘어오면 안되는데
+         return new RedirectView("/login");
+        }
     }
 
     @PostMapping("api/board/{board_id}") //게시물 수정

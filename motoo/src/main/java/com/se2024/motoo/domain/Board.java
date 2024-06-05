@@ -40,4 +40,7 @@ public class Board {
 
     @Column
     private Boolean isBoard;
+
+    @Column
+    private String board_type;
 }

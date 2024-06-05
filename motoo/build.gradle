@@ -12,7 +12,7 @@ java {
 }
 
 compileJava {
-	options.compilerArgs += '-parameters'
+    options.compilerArgs += '-parameters'
 }
 
 configurations {
@@ -33,9 +33,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     // JAXB API
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
-    // JAXB 구현체
-    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    // JAXB Runtime (구현에 대한 종속성)
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+    // Activation Framework (JAXB를 위해 필요합니다)
+    implementation 'javax.activation:activation:1.1.1'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
@@ -47,10 +49,10 @@ dependencies {
 
 }
 tasks.withType(JavaExec) {
-	jvmArgs += [
-			'--add-modules', 'java.xml.bind',
-			'--add-exports', 'java.xml.bind/com.sun.xml.internal.bind.v2.runtime=ALL-UNNAMED'
-	]
+    jvmArgs += [
+            '--add-modules', 'java.xml.bind',
+            '--add-exports', 'java.xml.bind/com.sun.xml.internal.bind.v2.runtime=ALL-UNNAMED'
+    ]
 }
 
 

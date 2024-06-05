@@ -43,11 +43,15 @@ public class ApiController {
     }
 
     @GetMapping("/discussion.html") //discussion이 게시물 글쓰고 업로드하는 뷰
-    public String discussion(Model model) {
-        //토큰에서 사용자 아이디 추출해야 함.
-        //@RequestHeader
-        model.addAttribute("board", new Board());
-        return "discussion"; // discussion.html view template 반환
+    public String discussion(Model model, HttpSession session) {
+        String userId = (String)session.getAttribute("loginID");
+        if(userId != null) { //로그인 안되어있을 경우엔 로그인화면으로
+            model.addAttribute("board", new Board());
+            return "discussion"; // discussion.html view template 반환
+        }
+        else{
+            return "login";
+        }
     }
 
     @GetMapping("/notice.html") //공지글 글쓰고 업로드하는 뷰

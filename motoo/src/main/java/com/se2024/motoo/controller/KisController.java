@@ -39,7 +39,7 @@ public class KisController {
         return kisService.getPirce(ticker);
     }
 
-    @GetMapping("/stock")
+    @GetMapping("/kisstock")
     public Mono<List<tickerDTO>> getS(@RequestParam String ticker) {
         return kisService.getPirce(ticker);
     }
