@@ -1,7 +1,6 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Board;
-import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.repository.MemberRepository;
@@ -15,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequiredArgsConstructor
@@ -170,7 +168,7 @@ public class ApiController {
             model.addAttribute("loginError", "회원 정보가 없습니다");
             System.out.println("로그인 실패!!!!!!!!!!");
             return "login";
-        }//db에 있는 정보 입력해도 else문으로 감
+        }
     }
 
     // 로그아웃
@@ -180,9 +178,10 @@ public class ApiController {
         System.out.println("사용자 로그아웃!!!!!!!!!!!");
         return "redirect:/login?logout=true";
     }
-
+    
+    //아이디 중복확인
     @PostMapping("/checkDuplicate")
-    @ResponseBody // JSON 응답을 반환하도록 설정
+    @ResponseBody
     public SignupResponseDTO checkDuplicate(@RequestBody SignupDTO signupDTO) {
         return memberService.duplicationCheck(signupDTO);
     }
