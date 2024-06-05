@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class MotooApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("javax.xml.accessExternalDTD", "all");
 		SpringApplication.run(MotooApplication.class, args);
 	}
 

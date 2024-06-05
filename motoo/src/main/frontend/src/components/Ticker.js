@@ -9,7 +9,9 @@ function TickerForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const result = await axios.get(`/api/price?ticker=${ticker}`);
+            const result = await axios.get(`/api/price`, {
+                params: { ticker }
+            });
             setResponse(result.data[0]);
             setError(null);
         } catch (error) {
