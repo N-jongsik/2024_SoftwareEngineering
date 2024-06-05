@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.boot.CommandLineRunner;
@@ -145,7 +145,7 @@ public class ApiController {
         System.out.println("signupDTO = " + signupDTO);
         memberService.save(signupDTO);
 
-        return "login";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
@@ -154,15 +154,42 @@ public class ApiController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session){
+    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session, Model model){
         SignupDTO loginResult =memberService.login(signupDTO);
 
         if(loginResult != null){
             session.setAttribute("loginID", loginResult.getUserID());
-            return "stock";
+            return "redirect:/stock";
         }else{
+            model.addAttribute("loginError", "회원 정보가 없습니다");
+            System.out.println("로그인 실패!!!!!!!!!!");
             return "login";
         }//db에 있는 정보 입력해도 else문으로 감
     }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        System.out.println("사용자 로그아웃!!!!!!!!!!!");
+        return "redirect:/login?logout=true";
+    }
+
+    @GetMapping("/stock")
+    public String stockPage(){
+        return "stock";
+    }
+
+    @GetMapping("/news")
+    public String newsPage() {
+        return "news";
+    }
+
+    @GetMapping("/ranking")
+    public String rankingPage() {
+        return "ranking";
+    }
+
+
 
 }

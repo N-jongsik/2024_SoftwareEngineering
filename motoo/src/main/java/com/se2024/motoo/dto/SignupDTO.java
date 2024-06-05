@@ -8,12 +8,13 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class SignupDTO {
+    private Long id;
     private String userID;
     private String pwd;
     private String userName;
     private String userEmail;
 
-    public static SignupDTO toSignupDTO(Member member){
+    public static SignupDTO toSignupDTO(Member member) {
         SignupDTO signupDTO = new SignupDTO();
 
         signupDTO.setUserID(member.getUserID());
@@ -22,5 +23,13 @@ public class SignupDTO {
         signupDTO.setUserName(member.getUserName());
 
         return signupDTO;
+    }
+
+    public SignupDTO(Long id, String userID, String pwd, String userName, String userEmail) {
+        this.id = id;
+        this.userID = userID;
+        this.pwd = pwd;
+        this.userName = userName;
+        this.userEmail = userEmail;
     }
 }
