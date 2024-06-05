@@ -3,6 +3,7 @@ package com.se2024.motoo.service;
 import com.nimbusds.jose.shaded.gson.annotations.Since;
 import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.SignupDTO;
+import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,20 @@ public class MemberService {
         }else{//db에 회원정보 없을 때
             return null;
         }
+    }
+
+    public SignupResponseDTO duplicationCheck(SignupDTO signupDTO) {
+        SignupResponseDTO response = new SignupResponseDTO();
+
+        Optional<Member> byUserID = memberRepository.findByUserID(signupDTO.getUserID());
+        if (byUserID.isPresent()) {
+            response.setAvailable(false);
+            response.setMessage("중복된 아이디입니다.");
+        } else {
+            response.setAvailable(true);
+            response.setMessage("사용 가능한 아이디입니다.");
+        }
+
+        return response;
     }
 }
