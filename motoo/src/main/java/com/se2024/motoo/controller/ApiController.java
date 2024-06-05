@@ -1,8 +1,8 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Board;
-import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
+import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.repository.MemberRepository;
 import com.se2024.motoo.service.BoardService;
 import com.se2024.motoo.dto.SignupDTO;
@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequiredArgsConstructor
@@ -171,11 +170,16 @@ public class ApiController {
     }
 
     @PostMapping("/signup")
-    public String join(@ModelAttribute SignupDTO signupDTO){
+    public String join(@ModelAttribute SignupDTO signupDTO, Model model){
+        SignupResponseDTO response = memberService.duplicationCheck(signupDTO);
+        if (!response.isAvailable()) {
+            model.addAttribute("errorMessage", "중복된 아이디입니다.");
+            return "signup";
+        }
+        // 중복된 아이디가 없을 경우 회원가입 진행
         System.out.println("UserController.signup");
         System.out.println("signupDTO = " + signupDTO);
         memberService.save(signupDTO);
-
         return "redirect:/login";
     }
 
@@ -190,12 +194,12 @@ public class ApiController {
 
         if(loginResult != null){
             session.setAttribute("loginID", loginResult.getUserID());
-            return "redirect:/stock";
+            return "redirect:/user/stock";
         }else{
             model.addAttribute("loginError", "회원 정보가 없습니다");
             System.out.println("로그인 실패!!!!!!!!!!");
             return "login";
-        }//db에 있는 정보 입력해도 else문으로 감
+        }
     }
 
     // 로그아웃
@@ -205,8 +209,15 @@ public class ApiController {
         System.out.println("사용자 로그아웃!!!!!!!!!!!");
         return "redirect:/login?logout=true";
     }
+    
+    //아이디 중복확인
+    @PostMapping("/checkDuplicate")
+    @ResponseBody
+    public SignupResponseDTO checkDuplicate(@RequestBody SignupDTO signupDTO) {
+        return memberService.duplicationCheck(signupDTO);
+    }
 
-    @GetMapping("/stock")
+    @GetMapping("/user/stock")
     public String stockPage(){
         return "stock";
     }
@@ -220,7 +231,5 @@ public class ApiController {
     public String rankingPage() {
         return "ranking";
     }
-
-
 
 }
