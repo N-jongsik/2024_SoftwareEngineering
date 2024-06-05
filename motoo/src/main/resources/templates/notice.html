@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Board</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div class="logo">StockSite</div>
+    <nav>
+        <ul>
+            <li><a href="stock.html">Home</a></li>
+            <li><a href="#">Market</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="post.html">Board</a></li>
+            <li><a href="ranking.html">Ranking</a></li>
+            <li><a href="noticeList.html">Notice</a></li>
+        </ul>
+    </nav>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Profile</a></li>
+            <li><a href="login.html">login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="discussion">
+        <h2>Discussion Board</h2>
+        <div class="discussion-posts">
+            <!-- Discussion posts will be dynamically added here -->
+        </div>
+        <th:block th:if="${board.board_id != null}"> <!--DTO 새로 만들지 고민-->
+            <form th:action="@{'/api/notice/'+ ${board.board_id}}"method="post" enctype="multipart/form-data">
+                <div class="title">
+                    <label >제목을 입력 </label>
+                    <textarea >[[${board.title}]]</textarea>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="content">
+                    <label >내용 입력 </label>
+                    <textarea >[[${board.content}]]</textarea>
+                    <input type="text"  name="content" required>
+                </div>
+                <button type="submit">등록하기</button>
+            </form>
+        </th:block>
+        <th:block th:unless="${board.board_id != null}">
+            <form action="/api/notice" method="post" enctype="multipart/form-data">
+                <div class="title">
+                    <label >제목을 입력 </label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="content">
+                    <label >내용 입력 </label>
+                    <input type="text"  name="content" required>
+                </div>
+                <button type="submit">등록하기</button>
+            </form>
+        </th:block>
+    </section>
+</main>
+</body>
+</html>

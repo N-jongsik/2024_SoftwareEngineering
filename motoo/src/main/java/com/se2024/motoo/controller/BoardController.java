@@ -8,18 +8,50 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.view.RedirectView;
 @RestController
-@RequestMapping("/api/boards")
 @RequiredArgsConstructor
-public class BoardController {
+public class BoardController { //게시판과 공지사항 controller
 
     private final BoardService boardService;
 
-    @PostMapping
-    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO) {
-        BoardDTO createdBoard = boardService.createBoard(boardDTO);
-        return ResponseEntity.ok(createdBoard);
+    @PostMapping("api/board") //게시물 업로드
+    public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
+        //String userId = (String)session.getAttribute("loginID");
+        String userId = boardDTO.getTitle(); //임시로,,
+        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, true);
+            return new RedirectView("/post.html");
+        //}else{
+           // return new RedirectView("/login.html");
+        //}
+    }
+
+    @PostMapping("api/notice") //공지글 업로드
+    public RedirectView createNotice(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
+        //String userId = (String)session.getAttribute("loginID");
+        String userId = boardDTO.getTitle(); //임시로,,
+        //if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
+        boardDTO.setUser_id(userId);
+        boardService.createBoard(boardDTO, false);
+        return new RedirectView("/noticeList.html");
+        //}else{
+        // return new RedirectView("/login.html");
+        //}
+    }
+
+    @PostMapping("api/board/{board_id}") //게시물 수정
+    public RedirectView updateBoard(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
+        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
+        return new RedirectView("/post.html");
+    }
+
+    @PostMapping("api/notice/{board_id}") //공지글 수정
+    public RedirectView updateNotice(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
+        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
+        return new RedirectView("/noticeList.html");
     }
 
     @GetMapping("/{id}")
@@ -28,17 +60,12 @@ public class BoardController {
         return ResponseEntity.ok(boardDTO);
     }
 
-    @GetMapping
+    @GetMapping("/{id}/tmp")
     public ResponseEntity<List<BoardDTO>> getAllBoards() {
         List<BoardDTO> boards = boardService.getAllBoards();
         return ResponseEntity.ok(boards);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardDTO boardDTO) {
-        BoardDTO updatedBoard = boardService.updateBoard(id, boardDTO);
-        return ResponseEntity.ok(updatedBoard);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBoard(@PathVariable Long id) {
