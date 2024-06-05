@@ -9,23 +9,27 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 public class BoardDTO {
     private Long board_id;
-    private Long user_id;
+    private String user_id;
     private LocalDateTime create_at;
     private LocalDateTime modified_at;
     private String title;
     private String content;
+    private Boolean isBoard;
 
-    // 엔티티를 DTO로 변환하는 생성자 또는 메서드를 추가할 수 있습니다.
-    public BoardDTO(Long board_id, Long user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content) {
+    public BoardDTO(){
+        super();
+    }
+    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard) {
         this.board_id = board_id;
         this.user_id = user_id;
         this.create_at = create_at;
         this.modified_at = modified_at;
         this.title = title;
         this.content = content;
+        this.isBoard = isBoard;
     }
 
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
@@ -36,7 +40,8 @@ public class BoardDTO {
                 board.getCreate_at(),
                 board.getModified_at(),
                 board.getTitle(),
-                board.getContent()
+                board.getContent(),
+                board.getIsBoard()
         );
     }
 }
