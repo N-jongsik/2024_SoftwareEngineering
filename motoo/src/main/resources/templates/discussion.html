@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,10 +35,34 @@
             <div class="discussion-posts">
                 <!-- Discussion posts will be dynamically added here -->
             </div>
-            <form class="new-post-form"  action="post.html">
-                <textarea name="postContent" id="postContent" placeholder="Write your post here..."></textarea>
-                <button type="submit">Post</button>
+            <th:block th:if="${board.board_id != null}">
+                <form th:action="@{'/api/board/'+ ${board.board_id}}"method="post" enctype="multipart/form-data">
+                    <div class="title">
+                        <label >제목을 입력 </label>
+                        <textarea >[[${board.title}]]</textarea>
+                        <input type="text" name="title" required>
+                    </div>
+                    <div class="content">
+                        <label >내용 입력 </label>
+                        <textarea >[[${board.content}]]</textarea>
+                        <input type="text"  name="content" required>
+                    </div>
+                    <button type="submit">등록하기</button>
+                </form>
+            </th:block>
+            <th:block th:unless="${board.board_id != null}">
+            <form action="/api/board" method="post" enctype="multipart/form-data">
+                <div class="title">
+                    <label >제목을 입력 </label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="content">
+                    <label >내용 입력 </label>
+                    <input type="text"  name="content" required>
+                </div>
+                <button type="submit">등록하기</button>
             </form>
+            </th:block>
         </section>
     </main>
 </body>

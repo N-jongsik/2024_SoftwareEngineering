@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>Admin Page</h1>
+<table>
+    <thead>
+    <tr>
+        <th>UserID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.userID}">UserID</td>
+        <td th:text="${user.userName}">Username</td>
+        <td th:text="${user.userEmail}">Email</td>
+        <td>
+            <button th:attr="data-userid=${user.id}" onclick="deleteUser(this)">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    function deleteUser(button) {
+        var userID = button.getAttribute("data-userid");
+
+        fetch('/admin/users/' + userID, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('User deleted successfully');
+                location.reload();
+            } else {
+                alert('Error deleting user: ' + data.message);
+            }
+        });
+    }
+</script>
+</body>
+</html>

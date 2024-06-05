@@ -22,7 +22,7 @@ public class Board {
     private Long board_id;
 
     @Column
-    private Long user_id;
+    private String user_id;
 
     @Column
     @CreatedDate
@@ -37,4 +37,7 @@ public class Board {
 
     @Column
     private String content;
+
+    @Column
+    private Boolean isBoard;
 }

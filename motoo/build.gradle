@@ -1,51 +1,50 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.5'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.se2024'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
+}
+
+compileJava {
+	options.compilerArgs += '-parameters'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	// JAXB API
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
-	// JAXB 구현체
-	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-  
-  // 종식이가 수정할 부분
-	implementation("io.jsonwebtoken:jjwt:0.9.1")
-	implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
-	implementation("com.sun.xml.bind:jaxb-core:4.0.1")
-	implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // JAXB API
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+    // JAXB 구현체
+    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.security:spring-security-test")
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 tasks.withType(JavaExec) {
 	jvmArgs += [
@@ -54,6 +53,8 @@ tasks.withType(JavaExec) {
 	]
 }
 
+
+
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
