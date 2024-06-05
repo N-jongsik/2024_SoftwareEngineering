@@ -12,7 +12,7 @@ java {
 }
 
 compileJava {
-	options.compilerArgs += '-parameters'
+    options.compilerArgs += '-parameters'
 }
 
 configurations {
@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
@@ -43,10 +44,10 @@ dependencies {
 
 }
 tasks.withType(JavaExec) {
-	jvmArgs += [
-			'--add-modules', 'java.xml.bind',
-			'--add-exports', 'java.xml.bind/com.sun.xml.internal.bind.v2.runtime=ALL-UNNAMED'
-	]
+    jvmArgs += [
+            '--add-modules', 'java.xml.bind',
+            '--add-exports', 'java.xml.bind/com.sun.xml.internal.bind.v2.runtime=ALL-UNNAMED'
+    ]
 }
 
 

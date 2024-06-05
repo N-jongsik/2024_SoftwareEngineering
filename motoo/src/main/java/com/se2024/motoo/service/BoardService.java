@@ -24,6 +24,9 @@ public class BoardService {
         board.setContent(boardDTO.getContent());
         board.setCreate_at(LocalDateTime.now());
         board.setModified_at(LocalDateTime.now());
+        board.setBoard_type(boardDTO.getBoard_type());
+        board.setViewCount(0);
+        board.setLikeCount(0);
         if(isboard){
             board.setIsBoard(true);
         }else{
@@ -57,6 +60,22 @@ public class BoardService {
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setModified_at(LocalDateTime.now());
+        board.setBoard_type(boardDTO.getBoard_type());
+        board = boardRepository.save(board);
+        return BoardDTO.fromEntity(board);
+    }
+    public BoardDTO updateViewcount(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("Board not found"));
+        Integer boardview = board.getViewCount()+1;
+        board.setViewCount(boardview);
+        board = boardRepository.save(board);
+        return BoardDTO.fromEntity(board);
+    }
+
+    public BoardDTO updateLikecount(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("Board not found"));
+        Integer boardlike = board.getLikeCount()+1;
+        board.setLikeCount(boardlike);
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }
