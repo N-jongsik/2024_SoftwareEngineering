@@ -1,46 +1,58 @@
 package com.se2024.motoo.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se2024.motoo.domain.Stock;
 import com.se2024.motoo.dto.StockDTO;
-import com.se2024.motoo.dto.tickerDTO;
 import com.se2024.motoo.repository.StockRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 import java.util.List;
 
 @Service
 public class StockService {
 
     @Autowired
-    private StockRepository repository;
+    private StockRepository stockRepository;
 
-    @Value("${service_key}")
-    private String serviceKey;
-    public void saveKOSPIInfo(StockDTO dto) {
-        Stock kospiInfo = new Stock();
-        kospiInfo.setKdrIsin(dto.getKdrIsin());
-        kospiInfo.setKorSecnNm(dto.getKorSecnNm());
-        kospiInfo.setListDt(dto.getListDt());
-        kospiInfo.setOvsListStkmkCd(dto.getOvsListStkmkCd());
-        repository.save(kospiInfo);
+    private final RestTemplate restTemplate;
+
+    public StockService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public StockDTO getKOSPIInfoFromAPI() {
-        RestTemplate restTemplate = new RestTemplate();
-        String apiUrl = "http://api.seibro.or.kr/openapi/service/StockSvc/getKDRSecnInfo?serviceKey=WkiWHxfMQMxWZ2BFbkUi62BgCOv+CMoPtKMQnU/8hViLc0Dl+meP1koWyExqCDNi0JldIRpknndrATfh8+2mOQ==&caltotMartTpcd=11";  // API URL을 여기에 입력하세요
-        StockDTO response = restTemplate.getForObject(apiUrl, StockDTO.class);
-        return response;
+    public void getKOSPIInfoFromAPI() {
+        String url = "http://api.seibro.or.kr/openapi/service/StockSvc/getKDRSecnInfo?serviceKey=WkiWHxfMQMxWZ2BFbkUi62BgCOv+CMoPtKMQnU/8hViLc0Dl+meP1koWyExqCDNi0JldIRpknndrATfh8+2mOQ==&caltotMartTpcd=11";
+        String response = restTemplate.getForObject(url, String.class);
+
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(StockDTO.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            StockDTO stockDTO = (StockDTO) unmarshaller.unmarshal(new StringReader(response));
+
+            if (stockDTO.getBody() != null && stockDTO.getBody().getItemContainer() != null) {
+                List<StockDTO.Item> items = stockDTO.getBody().getItemContainer().getItems();
+                if (items != null) {
+                    for (StockDTO.Item item : items) {
+                        Stock stock = new Stock();
+                        stock.setKdrIsin(item.getKdrIsin());
+                        stock.setKorSecnNm(item.getKorSecnNm());
+                        stock.setListDt(item.getListDt());
+                        stock.setOvsListStkmkCd(item.getOvsListStkmkCd());
+                        stockRepository.save(stock);
+                    }
+                } else {
+                    System.out.println("Items list is null");
+                }
+            } else {
+                System.out.println("Body or ItemContainer is null");
+            }
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 }

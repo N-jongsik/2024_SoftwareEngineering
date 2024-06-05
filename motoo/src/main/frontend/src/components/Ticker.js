@@ -34,7 +34,7 @@ function TickerForm() {
             {error && <div>Error: {error.message}</div>}
             {response && (
                 <div>
-                    <h2>Ticker Information</h2>
+                    <h2>{response.rprs_mrkt_kor_name}</h2>
                     <p>Stock Price: {response.stck_prpr}</p>
                     <p>Daily Variation: {response.prdy_vrss}</p>
                 </div>
