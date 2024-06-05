@@ -9,6 +9,8 @@ import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -100,6 +102,28 @@ public class ApiController {
         }
     }
 
+    @PostMapping("/boardview.html/{board_id}/increment-viewcount")
+    public ResponseEntity<?> incrementViewCount(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateViewcount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/api/board/{board_id}/like") // 게시물 따봉 눌렀을 때
+    public ResponseEntity<?> updateLike(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateLikecount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/noticeview.html/{board_id}") //공지글 확인
     public String noticeView(Model model, @PathVariable("board_id")Long board_id) {
         try{
@@ -113,6 +137,7 @@ public class ApiController {
             return "Error";
         }
     }
+
 
     @PostMapping("/boardview.html/{board_id}/delete") //게시물 삭제
     public RedirectView BoardDelete(Model model, @PathVariable("board_id")Long board_id) {
