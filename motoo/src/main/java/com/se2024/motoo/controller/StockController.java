@@ -19,7 +19,7 @@ public class StockController {
     }
 
     @GetMapping("/getStockInfo")
-    public StockInfoResponse getStockInfo(@RequestParam("itemName") String itemName) {
+    public StockInfoResponse getStockInfo(@RequestParam("item_name") String itemName) {
         return stockService.getStockInfo(itemName);
     }
 }
