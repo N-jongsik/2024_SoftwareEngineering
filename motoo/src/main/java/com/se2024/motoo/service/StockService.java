@@ -1,58 +1,74 @@
 package com.se2024.motoo.service;
 
-import com.se2024.motoo.domain.Stock;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se2024.motoo.dto.StockDTO;
-import com.se2024.motoo.repository.StockRepository;
+import com.se2024.motoo.dto.StockInfoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StockService {
 
-    @Autowired
-    private StockRepository stockRepository;
-
     private final RestTemplate restTemplate;
 
+    @Autowired
     public StockService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public void getKOSPIInfoFromAPI() {
-        String url = "http://api.seibro.or.kr/openapi/service/StockSvc/getKDRSecnInfo?serviceKey=WkiWHxfMQMxWZ2BFbkUi62BgCOv+CMoPtKMQnU/8hViLc0Dl+meP1koWyExqCDNi0JldIRpknndrATfh8+2mOQ==&caltotMartTpcd=11";
-        String response = restTemplate.getForObject(url, String.class);
+    public StockInfoResponse getStockInfo(String itemName) {
+        // 호출된 시점의 어제 날짜 구하기
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
+        String apiUrl = "https://apis.data.go.kr/1160100/service/GetKrxListedInfoService/getItemInfo";
+        String serviceKey = "WkiWHxfMQMxWZ2BFbkUi62BgCOv%2BCMoPtKMQnU%2F8hViLc0Dl%2BmeP1koWyExqCDNi0JldIRpknndrATfh8%2B2mOQ%3D%3D";
+        String apiResponse = callExternalApi(apiUrl, serviceKey, yesterdayStr, itemName);
+
+        return parseJsonResponse(apiResponse);
+    }
+
+    private String callExternalApi(String apiUrl, String serviceKey, String date, String itemName) {
+        return restTemplate.getForObject(
+                apiUrl + "?serviceKey=" + serviceKey + "&resultType=json&beginBasDt=" + date + "&likeItmsNm=" + itemName,
+                String.class
+        );
+    }
+
+    private StockInfoResponse parseJsonResponse(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(StockDTO.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            StockDTO stockDTO = (StockDTO) unmarshaller.unmarshal(new StringReader(response));
-
-            if (stockDTO.getBody() != null && stockDTO.getBody().getItemContainer() != null) {
-                List<StockDTO.Item> items = stockDTO.getBody().getItemContainer().getItems();
-                if (items != null) {
-                    for (StockDTO.Item item : items) {
-                        Stock stock = new Stock();
-                        stock.setKdrIsin(item.getKdrIsin());
-                        stock.setKorSecnNm(item.getKorSecnNm());
-                        stock.setListDt(item.getListDt());
-                        stock.setOvsListStkmkCd(item.getOvsListStkmkCd());
-                        stockRepository.save(stock);
-                    }
-                } else {
-                    System.out.println("Items list is null");
+            // JSON 문자열을 StockInfoResponse 객체로 변환
+            JsonNode rootNode = objectMapper.readTree(json);
+            JsonNode itemNode = rootNode.path("response").path("body").path("items").path("item");
+            List<StockDTO> stockItems = new ArrayList<>();
+            if (itemNode.isArray()) {
+                for (JsonNode node : itemNode) {
+                    StockDTO stockItem = new StockDTO();
+                    stockItem.setBasDt(node.path("basDt").asText());
+                    stockItem.setSrtnCd(node.path("srtnCd").asText());
+                    stockItem.setIsinCd(node.path("isinCd").asText());
+                    stockItem.setMrktCtg(node.path("mrktCtg").asText());
+                    stockItem.setItmsNm(node.path("itmsNm").asText());
+                    stockItem.setCrno(node.path("crno").asText());
+                    stockItem.setCorpNm(node.path("corpNm").asText());
+                    stockItems.add(stockItem);
                 }
-            } else {
-                System.out.println("Body or ItemContainer is null");
             }
-        } catch (JAXBException e) {
+            StockInfoResponse response = new StockInfoResponse();
+            response.setItems(stockItems);
+            return response;
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return null;
         }
     }
 }
