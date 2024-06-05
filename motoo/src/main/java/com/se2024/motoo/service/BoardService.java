@@ -17,13 +17,18 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardDTO createBoard(BoardDTO boardDTO) {
+    public BoardDTO createBoard(BoardDTO boardDTO, boolean isboard) {
         Board board = new Board();
         board.setUser_id(boardDTO.getUser_id());
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setCreate_at(LocalDateTime.now());
         board.setModified_at(LocalDateTime.now());
+        if(isboard){
+            board.setIsBoard(true);
+        }else{
+            board.setIsBoard(false);
+        }
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }
@@ -34,7 +39,17 @@ public class BoardService {
     }
 
     public List<BoardDTO> getAllBoards() { //업로드된 board를 가져옴
-        return boardRepository.findAll().stream().map(BoardDTO::fromEntity).collect(Collectors.toList());
+        return boardRepository.findAll().stream()
+                .map(BoardDTO::fromEntity)
+                .filter(boardDTO -> boardDTO.getIsBoard())
+                .collect(Collectors.toList());
+    }
+
+    public List<BoardDTO> getAllNotices() { //업로드된 board를 가져옴
+        return boardRepository.findAll().stream()
+                .map(BoardDTO::fromEntity)
+                .filter(boardDTO -> !boardDTO.getIsBoard())
+                .collect(Collectors.toList());
     }
 
     public BoardDTO updateBoard(Long id, BoardDTO boardDTO) {
