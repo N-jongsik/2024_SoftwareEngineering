@@ -72,6 +72,14 @@ public class BoardService {
         return BoardDTO.fromEntity(board);
     }
 
+    public BoardDTO updateLikecount(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException("Board not found"));
+        Integer boardlike = board.getLikeCount()+1;
+        board.setLikeCount(boardlike);
+        board = boardRepository.save(board);
+        return BoardDTO.fromEntity(board);
+    }
+
     public void deleteBoard(Long id) {
         boardRepository.deleteById(id);
     }

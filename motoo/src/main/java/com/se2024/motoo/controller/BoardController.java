@@ -48,6 +48,12 @@ public class BoardController { //게시판과 공지사항 controller
         return new RedirectView("/post.html");
     }
 
+    @PostMapping("api/board/{board_id}/like") //게시물 따봉 눌렀을 때
+    public RedirectView updateLike(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
+        boardService.updateLikecount(board_id);
+        return new RedirectView("/boardview.html/{board_id}");
+    }
+
     @PostMapping("api/notice/{board_id}") //공지글 수정
     public RedirectView updateNotice(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
         BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
