@@ -39,6 +39,7 @@ function SignupPage() {
       setErrorMessage(''); // 에러 메시지 초기화
     } catch (error) {
       setErrorMessage('회원가입에 실패했습니다.'); // 예외 발생 시 메시지 설정
+
     }
   };
 
@@ -72,6 +73,7 @@ function SignupPage() {
           </div>
         </section>
       </main>
+
   );
 }
 
