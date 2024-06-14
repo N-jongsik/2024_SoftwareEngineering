@@ -17,7 +17,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardDTO createBoard(BoardDTO boardDTO, boolean isboard) {
+    public BoardDTO createBoard(BoardDTO boardDTO, Integer isboard) {
         Board board = new Board();
         board.setUser_id(boardDTO.getUser_id());
         board.setTitle(boardDTO.getTitle());
@@ -27,11 +27,7 @@ public class BoardService {
         board.setBoard_type(boardDTO.getBoard_type());
         board.setViewCount(0);
         board.setLikeCount(0);
-        if(isboard){
-            board.setIsBoard(true);
-        }else{
-            board.setIsBoard(false);
-        }
+        board.setIsBoard(isboard);
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }
@@ -44,14 +40,20 @@ public class BoardService {
     public List<BoardDTO> getAllBoards() { //업로드된 board를 가져옴
         return boardRepository.findAll().stream()
                 .map(BoardDTO::fromEntity)
-                .filter(boardDTO -> boardDTO.getIsBoard())
+                .filter(boardDTO -> boardDTO.getIsBoard() != null && boardDTO.getIsBoard() == 0)
                 .collect(Collectors.toList());
     }
 
     public List<BoardDTO> getAllNotices() { //업로드된 board를 가져옴
         return boardRepository.findAll().stream()
                 .map(BoardDTO::fromEntity)
-                .filter(boardDTO -> !boardDTO.getIsBoard())
+                .filter(boardDTO -> boardDTO.getIsBoard() != null && boardDTO.getIsBoard() == 1)
+                .collect(Collectors.toList());
+    }
+    public List<BoardDTO> getAllQnAs() { //업로드된 board를 가져옴
+        return boardRepository.findAll().stream()
+                .map(BoardDTO::fromEntity)
+                .filter(boardDTO -> boardDTO.getIsBoard() != null && boardDTO.getIsBoard() == 2)
                 .collect(Collectors.toList());
     }
 
