@@ -27,7 +27,7 @@ function BuySellStock() {
     };
 
     return (
-        <div>
+        <div className="buy-sell-stock-container">
             <h1>{transactionType === 'buy' ? 'Buy Stock' : 'Sell Stock'}</h1>
             <form onSubmit={handleSubmit}>
                 <label>
@@ -69,9 +69,9 @@ function BuySellStock() {
                 </label>
                 <button type="submit">{transactionType === 'buy' ? 'Buy' : 'Sell'}</button>
             </form>
-            {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+            {error && <div className="error">Error: {error}</div>}
             {response && (
-                <div style={{ color: 'green' }}>
+                <div className="success">
                     {transactionType === 'buy' ? 'Purchase' : 'Sale'} successful: {response.message}
                 </div>
             )}

@@ -21,7 +21,7 @@ function StockInfoForm() {
     };
 
     return (
-        <div>
+        <div className="stock-info-form-container">
             <form onSubmit={handleSubmit}>
                 <label>
                     종목명:
@@ -33,11 +33,11 @@ function StockInfoForm() {
                 </label>
                 <button type="submit">Submit</button>
             </form>
-            {error && <div>Error: {error.message}</div>}
+            {error && <div className="error">Error: {error.message}</div>}
             {response && (
-                <div>
+                <div className="response">
                     {response.map((item, index) => (
-                        <div key={index}>
+                        <div key={index} className="response-item">
                             <h2>{item.itmsNm}</h2>
                             <p>{item.srtnCd.substring(1)} | {item.mrktCtg} | {item.data_rank} {item.corpNm}</p>
                         </div>
