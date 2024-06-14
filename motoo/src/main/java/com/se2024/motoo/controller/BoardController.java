@@ -13,9 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 public class BoardController { //게시판과 공지사항 controller
-
     private final BoardService boardService;
-
     @PostMapping("api/board") //게시물 업로드
     public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
         String userId = (String)session.getAttribute("loginID");
@@ -58,6 +56,7 @@ public class BoardController { //게시판과 공지사항 controller
     public RedirectView updateNotice(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
         BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
         return new RedirectView("/noticeList.html");
+
     }
 
     @GetMapping("/{id}")

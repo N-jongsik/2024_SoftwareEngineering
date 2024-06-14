@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +24,32 @@ public class StockService {
     }
 
     public StockInfoResponse getStockInfo(String itemName) {
-        // 호출된 시점의 어제 날짜 구하기
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-//        String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String yesterdayStr = "20240604";
-        String apiUrl = "https://apis.data.go.kr/1160100/service/GetKrxListedInfoService/getItemInfo";
-        String serviceKey = "WkiWHxfMQMxWZ2BFbkUi62BgCOv%2BCMoPtKMQnU%2F8hViLc0Dl%2BmeP1koWyExqCDNi0JldIRpknndrATfh8%2B2mOQ%3D%3D";
-        String apiResponse = callExternalApi(apiUrl, serviceKey, yesterdayStr, itemName);
+        String apiUrl = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo";
+        String serviceKey = "WkiWHxfMQMxWZ2BFbkUi62BgCOv+CMoPtKMQnU/8hViLc0Dl+meP1koWyExqCDNi0JldIRpknndrATfh8+2mOQ==";
+
+        String apiResponse = callExternalApi(apiUrl, serviceKey, itemName);
 
         return parseJsonResponse(apiResponse);
     }
 
-    private String callExternalApi(String apiUrl, String serviceKey, String date, String itemName) {
-        return restTemplate.getForObject(
-                apiUrl + "?serviceKey=" + serviceKey + "&resultType=json&beginBasDt=" + date + "&likeItmsNm=" + itemName,
-                String.class
-        );
+    private String callExternalApi(String apiUrl, String serviceKey, String itemName) {
+        try {
+            return restTemplate.getForObject(
+                    apiUrl + "?serviceKey=" + serviceKey + "&resultType=json" + "&likeBasDt=20240613" + "&likeItmsNm=" + itemName,
+                    String.class
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // 오류 발생 시 null 반환
+        }
     }
 
     private StockInfoResponse parseJsonResponse(String json) {
+        if (json == null || json.startsWith("<")) {
+            System.err.println("API 응답이 예상한 JSON 형식이 아닙니다.");
+            return null;
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // JSON 문자열을 StockInfoResponse 객체로 변환
