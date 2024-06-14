@@ -145,17 +145,22 @@ public class ApiController {
     }
 
     @PostMapping("/signup")
+    @ResponseBody
     public String join(@ModelAttribute SignupDTO signupDTO, Model model){
-        SignupResponseDTO response = memberService.duplicationCheck(signupDTO);
-        if (!response.isAvailable()) {
-            model.addAttribute("errorMessage", "중복된 아이디입니다.");
-            return "signup";
+        try {
+            SignupResponseDTO response = memberService.duplicationCheck(signupDTO);
+            if (!response.isAvailable()) {
+                model.addAttribute("errorMessage", "중복된 아이디입니다.");
+                return "중복된 아이디입니다.";
+            }
+            // 중복된 아이디가 없을 경우 회원가입 진행
+            System.out.println("UserController.signup");
+            System.out.println("signupDTO = " + signupDTO);
+            memberService.save(signupDTO);
+            return "회원가입이 정상적으로 처리되었습니다.";
+        }catch (Error error){
+            return "회원가입이 비정상적으로 처리되었습니다.";
         }
-        // 중복된 아이디가 없을 경우 회원가입 진행
-        System.out.println("UserController.signup");
-        System.out.println("signupDTO = " + signupDTO);
-        memberService.save(signupDTO);
-        return "redirect:/login";
     }
 
     @GetMapping("/login")
