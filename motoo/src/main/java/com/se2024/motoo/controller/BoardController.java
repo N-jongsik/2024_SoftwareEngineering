@@ -1,9 +1,11 @@
 package com.se2024.motoo.controller;
 
-import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
+import com.se2024.motoo.dto.CommentDTO;
 import com.se2024.motoo.service.BoardService;
+import com.se2024.motoo.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,67 +18,154 @@ import org.springframework.web.servlet.view.RedirectView;
 public class BoardController { //게시판과 공지사항 controller
 
     private final BoardService boardService;
-
-    @PostMapping("api/board") //게시물 업로드
-    public RedirectView createBoard(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
-        Member userId = (Member) session.getAttribute("loginID");
-        //String userId = boardDTO.getTitle(); //임시로,,
-        if(userId != null){ //로그인 안되어있을 경우엔 로그인화면으로
-            boardDTO.setUserID(userId);
-            boardService.createBoard(boardDTO, true);
-            return new RedirectView("/post.html");
-        }else{
-            return new RedirectView("/login");
+    private final CommentService commentService;
+    @PostMapping("/api/board") //게시물 업로드
+    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO){//}, HttpSession session) {
+        //유저 id 가져오는거 수정
+        //String userId = (String) session.getAttribute("loginID");
+        String userId = boardDTO.getTitle();
+        if (userId != null) {
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, 0);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
     }
 
-    @PostMapping("api/notice") //공지글 업로드
-    public RedirectView createNotice(@ModelAttribute("board") BoardDTO boardDTO, HttpSession session) {
-        Member userId = (Member)session.getAttribute("loginID");
-        //String userId = boardDTO.getTitle(); //임시로,,
-        if(userId != null){ //관리자 id일 때에만 notice <<<<<<<<<<<<<<<<<<<<<<<<<관리자 id 확인으로 수정하기
-            boardDTO.setUserID(userId);
-            boardService.createBoard(boardDTO, false);
-            return new RedirectView("/noticeList.html");
-        }else{ //로그인이 안되어있다면 이 contoller로 넘어오면 안되는데
-         return new RedirectView("/login");
+    @PostMapping("/api/notice") //공지글 업로드
+    public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+        //유저 id 가져오는거 수정
+        //String userId = (String) session.getAttribute("loginID");
+        String userId = boardDTO.getTitle();
+        if (userId != null) {
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, 1);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+    }
+    @PostMapping("/api/qna") //문의사항 업로드
+    public ResponseEntity<?> createQnA(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+        //유저 id 가져오는거 수정
+        //String userId = (String) session.getAttribute("loginID");
+        String userId = boardDTO.getTitle();
+        if (userId != null) {
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, 2);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
     }
 
-    @PostMapping("api/board/{board_id}") //게시물 수정
-    public RedirectView updateBoard(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
-        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
-        return new RedirectView("/post.html");
+    @PostMapping("/api/board/{board_id}") //게시물 수정
+    public ResponseEntity<?> updateBoard(@RequestBody BoardDTO boardDTO, @PathVariable("board_id") Long board_id) {
+        BoardDTO existingBoard = boardService.getBoardById(board_id);
+        if (existingBoard != null) {
+            // 기존 조회수와 공감 수 유지
+            boardDTO.setViewCount(existingBoard.getViewCount());
+            boardDTO.setLikeCount(existingBoard.getLikeCount());
+            boardService.updateBoard(board_id, boardDTO);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
+        }
     }
 
-    @PostMapping("api/board/{board_id}/like") //게시물 따봉 눌렀을 때
-    public RedirectView updateLike(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
-        boardService.updateLikecount(board_id);
-        return new RedirectView("/boardview.html/{board_id}");
+    @PostMapping("/api/qna/{board_id}") //문의사항 수정
+    public ResponseEntity<?> updateQnA(@RequestBody BoardDTO boardDTO, @PathVariable("board_id") Long board_id) {
+        boardService.updateBoard(board_id, boardDTO);
+        return ResponseEntity.ok().build();
     }
-
-    @PostMapping("api/notice/{board_id}") //공지글 수정
-    public RedirectView updateNotice(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
-        BoardDTO updatedBoard = boardService.updateBoard(board_id, boardDTO);
-        return new RedirectView("/noticeList.html");
+    @PostMapping("/api/notice/{board_id}") //공지글 수정
+    public ResponseEntity<?> updateNotice(@RequestBody BoardDTO boardDTO, @PathVariable("board_id") Long board_id) {
+        boardService.updateBoard(board_id, boardDTO);
+        return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<BoardDTO> getBoardById(@PathVariable Long id) {
-        BoardDTO boardDTO = boardService.getBoardById(id);
+    @GetMapping("/api/board/{board_id}") // 게시물 조회
+    public ResponseEntity<?> getBoard(@PathVariable("board_id") Long board_id) {
+        BoardDTO boardDTO = boardService.getBoardById(board_id);
+        return ResponseEntity.ok(boardDTO);
+    }
+    @GetMapping("/api/notice/{board_id}") // 공지글 조회
+    public ResponseEntity<?> getNotice(@PathVariable("board_id") Long board_id) {
+        BoardDTO boardDTO = boardService.getBoardById(board_id);
+        boardService.updateViewcount(board_id);
         return ResponseEntity.ok(boardDTO);
     }
 
-    @GetMapping("/{id}/tmp")
-    public ResponseEntity<List<BoardDTO>> getAllBoards() {
-        List<BoardDTO> boards = boardService.getAllBoards();
-        return ResponseEntity.ok(boards);
+
+    @PostMapping("/api/notice/{board_id}/delete")
+    public ResponseEntity<?> deleteNotice(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/api/boards/{board_id}/delete")
+    public ResponseEntity<?> deleteBoard(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/api/qna/{board_id}/delete")
+    public ResponseEntity<?> deleteQnA(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
+    @PostMapping("/api/boards/{board_id}/increment-viewcount")
+    public ResponseEntity<?> incrementViewCount(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateViewcount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long id) {
-        boardService.deleteBoard(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/api/boards/{board_id}/like")
+    public ResponseEntity<?> updateLike(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateLikecount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/api/boards/{boardId}/comments")
+    public ResponseEntity<?> createComment(@PathVariable("boardId") Long boardId, @RequestBody CommentDTO commentDTO) {
+        commentDTO.setBoardId(boardId);
+        CommentDTO createdComment = commentService.createComment(commentDTO);
+        return ResponseEntity.ok(createdComment);
+    }
+
+    @GetMapping("/api/boards/{boardId}/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsByBoardId(@PathVariable("boardId") Long boardId) {
+        List<CommentDTO> comments = commentService.getCommentsByBoardId(boardId);
+        return ResponseEntity.ok(comments);
+    }
+
+    @DeleteMapping("/api/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok().build();
     }
 }

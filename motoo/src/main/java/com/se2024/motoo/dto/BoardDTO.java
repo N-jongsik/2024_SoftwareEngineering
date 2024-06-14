@@ -1,7 +1,6 @@
 package com.se2024.motoo.dto;
 
 import com.se2024.motoo.domain.Board;
-import com.se2024.motoo.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,14 +11,13 @@ import java.time.LocalDateTime;
 @Setter
 //@NoArgsConstructor
 public class BoardDTO {
-    private Long board_id;
-    private Member userID;
-    // private String user_id;
+    private Long id;
+    private String user_id;
     private LocalDateTime create_at;
     private LocalDateTime modified_at;
     private String title;
     private String content;
-    private Boolean isBoard;
+    private Integer isBoard; //0:board, 1:notice, 2:QnA
     private String board_type;
     private Integer viewCount;
     private Integer likeCount;
@@ -27,9 +25,9 @@ public class BoardDTO {
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
-        this.board_id = board_id;
-        this.userID = userID;
+    public BoardDTO(Long id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Integer isBoard, String board_type, Integer viewCount, Integer likeCount) {
+        this.id = id;
+        this.user_id = user_id;
         this.create_at = create_at;
         this.modified_at = modified_at;
         this.title = title;
@@ -43,8 +41,8 @@ public class BoardDTO {
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
     public static BoardDTO fromEntity(Board board) {
         return new BoardDTO(
-                board.getBoard_id(),
-                board.getUserID(),
+                board.getId(),
+                board.getUser_id(),
                 board.getCreate_at(),
                 board.getModified_at(),
                 board.getTitle(),

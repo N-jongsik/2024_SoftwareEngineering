@@ -9,11 +9,14 @@ import Post from './components/Post';
 import News from './components/News';
 import NewsForm from './components/NewsForm';
 import DiscussionBoard from './components/DiscussionForm';
+import DiscussionView from './components/DiscussionView';
+import NoticeFrom from './components/NoticeForm';
+import NoticeView from './components/NoticeView';
+import NoticeList from './components/NoticeList';
+import QnAFrom from './components/QnAForm';
+import QnAView from './components/QnAView';
+import QnAList from './components/QnAList';
 import Ticker from './components/Ticker';
-import Trade from './components/BuySellStock'
-import StockInfo from './components/StockInfo'
-import Market from "./components/Market";
-
 import './App.css';
 import axios from 'axios';
 
@@ -39,11 +42,17 @@ function App() {
             <Route path="/news" element={<News />} />
             <Route path="/newsform" element={<NewsForm />} />
             <Route path="/discussionform" element={<DiscussionBoard />} />
+            <Route path="/discussionform/:boardId" element={<DiscussionBoard />} />
+            <Route path="/boards/:boardId" element={<DiscussionView />} />
+            <Route path="/noticelist" element={<NoticeList />} />
+            <Route path="/noticeform" element={<NoticeFrom />} />
+            <Route path="/noticeform/:boardId" element={<NoticeFrom />} />
+            <Route path="/notice/:boardId" element={<NoticeView />} />
+            <Route path="/QnAlist" element={<QnAList />} />
+            <Route path="/qnaform" element={<QnAFrom />} />
+            <Route path="/qnaform/:boardId" element={<QnAFrom />} />
+            <Route path="/qna/:boardId" element={<QnAView />} />
             <Route path="/ticker" element={<Ticker />} />
-            <Route path="/trading" element={<Trade />} />
-            <Route path="/stock" element={<StockInfo />} />
-            <Route path="/market" element={<Market />} />
-
             {/* 다른 페이지 라우트 추가 */}
           </Routes>
         </div>
