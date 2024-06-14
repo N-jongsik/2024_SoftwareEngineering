@@ -3,7 +3,9 @@ package com.se2024.motoo.service;
 import com.se2024.motoo.domain.Board;
 import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.repository.BoardRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,7 @@ public class BoardService {
 
     public BoardDTO createBoard(BoardDTO boardDTO, Integer isboard) {
         Board board = new Board();
-        board.setUser_id(boardDTO.getUser_id());
+        board.setUserID(boardDTO.getUserID());
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setCreate_at(LocalDateTime.now());

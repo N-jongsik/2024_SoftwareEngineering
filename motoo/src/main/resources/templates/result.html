@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quiz Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .result-message {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .user-id {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .try-again {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>퀴즈 정답 확인</h1>
+<div th:if="${isCorrect}" class="result-message correct">
+    <p>정답입니다!</p>
+    <p class="user-id" th:text="${quiz.userID}"></p>
+</div>
+<div th:if="${!isCorrect}" class="result-message incorrect">
+    <p>오답입니다!</p>
+    <p class="user-id" th:text="${quiz.userID}"></p>
+</div>
+<a th:href="@{/quiz/random}" class="try-again">다른 문제 도전!</a>
+<p><button><a th:href="@{/user/stock}">메인 화면</a></button></p>
+</body>
+</html>
