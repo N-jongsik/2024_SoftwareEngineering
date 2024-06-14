@@ -6,7 +6,7 @@ function TickerForm() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => { //주식 검색 엔터 누르면 api
         event.preventDefault();
         try {
             const result = await axios.get(`/api/price`, {

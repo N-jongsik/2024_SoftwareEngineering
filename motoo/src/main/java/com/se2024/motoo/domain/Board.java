@@ -19,7 +19,7 @@ public class Board {
     @Id
     @Column(name="id", nullable=false )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long board_id;
+    private Long id;
 
 //    @JoinColumn(name="user")
 //    @Column
@@ -43,7 +43,7 @@ public class Board {
     private String content;
 
     @Column
-    private Boolean isBoard;
+    private Integer isBoard;
 
     @Column
     private String board_type;

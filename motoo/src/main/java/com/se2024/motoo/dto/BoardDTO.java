@@ -12,14 +12,13 @@ import java.time.LocalDateTime;
 @Setter
 //@NoArgsConstructor
 public class BoardDTO {
-    private Long board_id;
+    private Long id;
     private Member userID;
-    // private String user_id;
     private LocalDateTime create_at;
     private LocalDateTime modified_at;
     private String title;
     private String content;
-    private Boolean isBoard;
+    private Integer isBoard; //0:board, 1:notice, 2:QnA
     private String board_type;
     private Integer viewCount;
     private Integer likeCount;
@@ -27,8 +26,8 @@ public class BoardDTO {
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
-        this.board_id = board_id;
+    public BoardDTO(Long id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Integer isBoard, String board_type, Integer viewCount, Integer likeCount) {
+        this.id = id;
         this.userID = userID;
         this.create_at = create_at;
         this.modified_at = modified_at;
@@ -43,7 +42,7 @@ public class BoardDTO {
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
     public static BoardDTO fromEntity(Board board) {
         return new BoardDTO(
-                board.getBoard_id(),
+                board.getId(),
                 board.getUserID(),
                 board.getCreate_at(),
                 board.getModified_at(),
