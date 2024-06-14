@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시물 상세보기</title>
     <link rel="stylesheet" href="/styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const boardId = [[${board.board_id}]];
+            fetch(`/boardview.html/${boardId}/increment-viewcount`, {
+                method: 'POST'
+            });
+
+            document.getElementById('like-button').addEventListener('click', function(event) {
+                event.preventDefault();
+                fetch(`/api/board/${boardId}/like`, {
+                    method: 'POST'
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload(); // Refresh the page to show the updated like count
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <header>

@@ -32,6 +32,8 @@ public class Member {
     @NotNull(message = "이메일을 입력해주세요")
     private String userEmail;
 
+
+
     @Builder
     public static Member tomember(SignupDTO signupDTO){
         Member member = new Member();

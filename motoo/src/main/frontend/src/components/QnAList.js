@@ -10,7 +10,7 @@ function Post() {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/boards'); // 서버의 정확한 주소
+        const response = await axios.get('http://localhost:8080/api/qna'); // 서버의 정확한 주소
         setBoards(response.data);
         setLoading(false);
       } catch (error) {
@@ -33,11 +33,11 @@ function Post() {
   return (
     <main>
       <section className="stock-list">
-        <h2>Board</h2>
+        <h2>QnA List</h2>
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
-              <h3><Link to={`/boards/${board.id}`}>{board.title}</Link></h3>
+              <h3><Link to={`/qna/${board.id}`}>{board.title}</Link></h3>
               <p>{board.content}</p>
             </div>
           ))
@@ -45,7 +45,7 @@ function Post() {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={() => window.location.href = '/discussionform'}>등록하기</button>
+      <button className="disbut" onClick={() => window.location.href = '/qnaform'}>등록하기</button>
     </main>
   );
 }
