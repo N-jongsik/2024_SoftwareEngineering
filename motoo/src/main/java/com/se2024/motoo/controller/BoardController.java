@@ -1,7 +1,9 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.dto.BoardDTO;
+import com.se2024.motoo.dto.CommentDTO;
 import com.se2024.motoo.service.BoardService;
+import com.se2024.motoo.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class BoardController { //게시판과 공지사항 controller
 
     private final BoardService boardService;
-
+    private final CommentService commentService;
     @PostMapping("/api/board") //게시물 업로드
     public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO){//}, HttpSession session) {
         //유저 id 가져오는거 수정
@@ -146,5 +148,24 @@ public class BoardController { //게시판과 공지사항 controller
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/api/boards/{boardId}/comments")
+    public ResponseEntity<?> createComment(@PathVariable("boardId") Long boardId, @RequestBody CommentDTO commentDTO) {
+        commentDTO.setBoardId(boardId);
+        CommentDTO createdComment = commentService.createComment(commentDTO);
+        return ResponseEntity.ok(createdComment);
+    }
+
+    @GetMapping("/api/boards/{boardId}/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsByBoardId(@PathVariable("boardId") Long boardId) {
+        List<CommentDTO> comments = commentService.getCommentsByBoardId(boardId);
+        return ResponseEntity.ok(comments);
+    }
+
+    @DeleteMapping("/api/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok().build();
     }
 }

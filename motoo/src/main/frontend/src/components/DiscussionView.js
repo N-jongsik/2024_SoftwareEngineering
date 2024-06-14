@@ -7,6 +7,8 @@ function BoardDetail() {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
 
   useEffect(() => {
@@ -21,7 +23,17 @@ function BoardDetail() {
       }
     };
 
+    const fetchComments = async () => {
+          try {
+            const response = await axios.get(`http://localhost:8080/api/boards/${boardId}/comments`);
+            setComments(response.data);
+          } catch (error) {
+            console.error('Error fetching comments', error);
+          }
+        };
+
     fetchBoard();
+    fetchComments();
   }, [boardId]);
 
   const handleDelete = async () => {
@@ -47,6 +59,19 @@ function BoardDetail() {
         console.error('Error updating like count', error);
       }
     };
+
+const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, { content: newComment, userId: 'guest' }); // using 'guest' as a placeholder
+    setNewComment('');
+    const response = await axios.get(`http://localhost:8080/api/boards/${boardId}/comments`);
+    setComments(response.data);
+  } catch (error) {
+    console.error('Error adding comment', error);
+  }
+};
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -68,6 +93,27 @@ function BoardDetail() {
           <button onClick={handleDelete}>삭제</button>
           <button onClick={handleEdit}>수정</button>
           <button onClick={handleLike}>공감</button>
+          <div>
+                      <h3>Comments</h3>
+                      <ul>
+                        {comments.map(comment => (
+                          <li key={comment.id}>
+                            <p>{comment.content}</p>
+                            <p>작성자: {comment.userId}</p>
+                            <p>작성일: {new Date(comment.createAt).toLocaleDateString()}</p>
+                          </li>
+                        ))}
+                      </ul>
+                      <form onSubmit={handleCommentSubmit}>
+                        <textarea
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder="Add a comment"
+                          required
+                        />
+                        <button type="submit">댓글 등록</button>
+                      </form>
+                    </div>
         </div>
       ) : (
         <p>No board data</p>

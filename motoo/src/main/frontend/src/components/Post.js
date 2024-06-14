@@ -37,7 +37,7 @@ function Post() {
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
-              <h3><Link to={`/boards/${board.board_id}`}>{board.title}</Link></h3>
+              <h3><Link to={`/boards/${board.id}`}>{board.title}</Link></h3>
               <p>{board.content}</p>
             </div>
           ))
