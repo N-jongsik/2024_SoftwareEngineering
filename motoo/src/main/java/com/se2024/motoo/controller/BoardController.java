@@ -24,7 +24,7 @@ public class BoardController { //게시판과 공지사항 controller
         String userId = boardDTO.getTitle();
         if (userId != null) {
             boardDTO.setUser_id(userId);
-            boardService.createBoard(boardDTO, true);
+            boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
@@ -32,11 +32,26 @@ public class BoardController { //게시판과 공지사항 controller
     }
 
     @PostMapping("/api/notice") //공지글 업로드
-    public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO, HttpSession session) {
-        String userId = (String) session.getAttribute("loginID");
+    public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+        //유저 id 가져오는거 수정
+        //String userId = (String) session.getAttribute("loginID");
+        String userId = boardDTO.getTitle();
         if (userId != null) {
             boardDTO.setUser_id(userId);
-            boardService.createBoard(boardDTO, false);
+            boardService.createBoard(boardDTO, 1);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+    }
+    @PostMapping("/api/qna") //문의사항 업로드
+    public ResponseEntity<?> createQnA(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+        //유저 id 가져오는거 수정
+        //String userId = (String) session.getAttribute("loginID");
+        String userId = boardDTO.getTitle();
+        if (userId != null) {
+            boardDTO.setUser_id(userId);
+            boardService.createBoard(boardDTO, 2);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
@@ -56,22 +71,80 @@ public class BoardController { //게시판과 공지사항 controller
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Board not found");
         }
     }
-    @GetMapping("/api/board/{board_id}") // 게시물 조회
-    public ResponseEntity<?> getBoard(@PathVariable("board_id") Long board_id) {
-        BoardDTO boardDTO = boardService.getBoardById(board_id);
-        return ResponseEntity.ok(boardDTO);
+
+    @PostMapping("/api/qna/{board_id}") //문의사항 수정
+    public ResponseEntity<?> updateQnA(@RequestBody BoardDTO boardDTO, @PathVariable("board_id") Long board_id) {
+        boardService.updateBoard(board_id, boardDTO);
+        return ResponseEntity.ok().build();
     }
-/*
-    @PostMapping("api/board/{board_id}/like") //게시물 따봉 눌렀을 때
-    public RedirectView updateLike(@ModelAttribute("board") BoardDTO boardDTO, @PathVariable("board_id")Long board_id) {
-        boardService.updateLikecount(board_id);
-        return new RedirectView("/boardview.html/{board_id}");
-    }
-*/
     @PostMapping("/api/notice/{board_id}") //공지글 수정
     public ResponseEntity<?> updateNotice(@RequestBody BoardDTO boardDTO, @PathVariable("board_id") Long board_id) {
         boardService.updateBoard(board_id, boardDTO);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/api/board/{board_id}") // 게시물 조회
+    public ResponseEntity<?> getBoard(@PathVariable("board_id") Long board_id) {
+        BoardDTO boardDTO = boardService.getBoardById(board_id);
+        return ResponseEntity.ok(boardDTO);
+    }
+    @GetMapping("/api/notice/{board_id}") // 공지글 조회
+    public ResponseEntity<?> getNotice(@PathVariable("board_id") Long board_id) {
+        BoardDTO boardDTO = boardService.getBoardById(board_id);
+        boardService.updateViewcount(board_id);
+        return ResponseEntity.ok(boardDTO);
+    }
 
+
+    @PostMapping("/api/notice/{board_id}/delete")
+    public ResponseEntity<?> deleteNotice(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/api/boards/{board_id}/delete")
+    public ResponseEntity<?> deleteBoard(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/api/qna/{board_id}/delete")
+    public ResponseEntity<?> deleteQnA(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.deleteBoard(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/api/boards/{board_id}/increment-viewcount")
+    public ResponseEntity<?> incrementViewCount(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateViewcount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/api/boards/{board_id}/like")
+    public ResponseEntity<?> updateLike(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateLikecount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

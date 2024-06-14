@@ -17,7 +17,7 @@ public class BoardDTO {
     private LocalDateTime modified_at;
     private String title;
     private String content;
-    private Boolean isBoard;
+    private Integer isBoard; //0:board, 1:notice, 2:QnA
     private String board_type;
     private Integer viewCount;
     private Integer likeCount;
@@ -25,7 +25,7 @@ public class BoardDTO {
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
+    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Integer isBoard, String board_type, Integer viewCount, Integer likeCount) {
         this.board_id = board_id;
         this.user_id = user_id;
         this.create_at = create_at;

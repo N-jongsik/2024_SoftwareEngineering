@@ -41,11 +41,17 @@ public class ApiController {
         }
     }
 
-    @GetMapping("/api/notices")
+    @GetMapping("/api/notice")
     public ResponseEntity<List<BoardDTO>> getAllNotices(){
         List<BoardDTO> boardlist = boardService.getAllNotices();
         return ResponseEntity.ok(boardlist);
     }
+    @GetMapping("/api/qna")
+    public ResponseEntity<List<BoardDTO>> getAllQnAs(){
+        List<BoardDTO> boardlist = boardService.getAllQnAs();
+        return ResponseEntity.ok(boardlist);
+    }
+
     @GetMapping("/api/boards/{board_id}")
     public ResponseEntity<BoardDTO> getBoardById(@PathVariable("board_id") Long board_id) {
         try {
@@ -57,27 +63,17 @@ public class ApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PostMapping("/api/boards/{board_id}/increment-viewcount")
-    public ResponseEntity<?> incrementViewCount(@PathVariable("board_id") Long board_id) {
+    @GetMapping("/api/qna/{board_id}")
+    public ResponseEntity<BoardDTO> getQnAById(@PathVariable("board_id") Long board_id) {
         try {
-            boardService.updateViewcount(board_id);
-            return ResponseEntity.ok().build();
+            BoardDTO board = boardService.getBoardById(board_id);
+            return ResponseEntity.ok(board);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PostMapping("/api/boards/{board_id}/like")
-    public ResponseEntity<?> updateLike(@PathVariable("board_id") Long board_id) {
-        try {
-            boardService.updateLikecount(board_id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     @GetMapping("/api/boards/{board_id}/like")
     public ResponseEntity<BoardDTO> getAfterLike(@PathVariable("board_id") Long board_id) {
         try {
@@ -89,16 +85,7 @@ public class ApiController {
         }
     }
 
-    @PostMapping("/api/boards/{board_id}/delete")
-    public ResponseEntity<?> deleteBoard(@PathVariable("board_id") Long board_id) {
-        try {
-            boardService.deleteBoard(board_id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
 
 
     private final MemberService memberService;
