@@ -1,6 +1,7 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Board;
+import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.repository.MemberRepository;
@@ -9,12 +10,15 @@ import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,117 +29,77 @@ public class ApiController {
     private final BoardService boardService;
     private final MemberRepository memberRepository;
 
-    @GetMapping({"/", "/post.html"})
-    public String post(Model model) {
-        List<BoardDTO>boardlist = boardService.getAllBoards();
-        //System.out.println("\n\n\n"+boardlist.get(0).getTitle()+"\n\n\n");
-        model.addAttribute("boards", boardlist);
-        return "post";
-    }
-
-    @GetMapping("/noticeList.html") //공지글 list view
-    public String noticeList(Model model) {
-        List<BoardDTO>boardlist = boardService.getAllNotices(); //!!서비스에서 공지글만 받아오는 로직 만들기!!
-
-        model.addAttribute("boards", boardlist);
-        return "noticeList";
-    }
-
-    @GetMapping("/discussion.html") //discussion이 게시물 글쓰고 업로드하는 뷰
-    public String discussion(Model model, HttpSession session) {
-        String userId = (String)session.getAttribute("loginID");
-        if(userId != null) { //로그인 안되어있을 경우엔 로그인화면으로
-            model.addAttribute("board", new Board());
-            return "discussion"; // discussion.html view template 반환
-        }
-        else{
-            return "login";
-        }
-    }
-
-    @GetMapping("/notice.html") //공지글 글쓰고 업로드하는 뷰
-    public String notice(Model model) {
-        model.addAttribute("board", new Board());
-        return "notice";
-    }
-
-    @GetMapping("/discussion.html/{board_id}") //게시물 수정
-    public String discussion_modify(Model model, @PathVariable("board_id")Long board_id) {
-        try{
-            BoardDTO board = boardService.getBoardById(board_id);
-            model.addAttribute("board", board);
-            return "discussion";
-        }
-        catch(Exception e){
+    @GetMapping("/api/boards")
+    public ResponseEntity<List<BoardDTO>> getAllBoards(){
+        try {
+            List<BoardDTO> boardList = boardService.getAllBoards();
+            return ResponseEntity.ok(boardList);
+        } catch (Exception e) {
+            // 로그에 에러 메시지 출력
             e.printStackTrace();
-            return "Error";
+            return ResponseEntity.status(500).body(null);
         }
     }
 
-    @GetMapping("/notice.html/{board_id}") //게시물 수정
-    public String notice_modify(Model model, @PathVariable("board_id")Long board_id) {
-        try{
-            BoardDTO board = boardService.getBoardById(board_id);
-            model.addAttribute("board", board);
-            return "notice";
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return "Error";
-        }
+    @GetMapping("/api/notices")
+    public ResponseEntity<List<BoardDTO>> getAllNotices(){
+        List<BoardDTO> boardlist = boardService.getAllNotices();
+        return ResponseEntity.ok(boardlist);
     }
-
-    @GetMapping("/boardview.html/{board_id}") //게시물 확인
-    public String BoardView(Model model, @PathVariable("board_id")Long board_id) {
-        try{
+    @GetMapping("/api/boards/{board_id}")
+    public ResponseEntity<BoardDTO> getBoardById(@PathVariable("board_id") Long board_id) {
+        try {
             BoardDTO board = boardService.getBoardById(board_id);
             boardService.updateViewcount(board_id);
-            model.addAttribute("board", board);
-            return "boardview";
-        }
-        catch(Exception e){
+            return ResponseEntity.ok(board);
+        } catch (Exception e) {
             e.printStackTrace();
-            return "Error";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    @GetMapping("/noticeview.html/{board_id}") //공지글 확인
-    public String noticeView(Model model, @PathVariable("board_id")Long board_id) {
-        try{
-            BoardDTO board = boardService.getBoardById(board_id);
+    @PostMapping("/api/boards/{board_id}/increment-viewcount")
+    public ResponseEntity<?> incrementViewCount(@PathVariable("board_id") Long board_id) {
+        try {
             boardService.updateViewcount(board_id);
-            model.addAttribute("board", board);
-            return "noticeview";
-        }
-        catch(Exception e){
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             e.printStackTrace();
-            return "Error";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PostMapping("/boardview.html/{board_id}/delete") //게시물 삭제
-    public RedirectView BoardDelete(Model model, @PathVariable("board_id")Long board_id) {
-        try{
-            boardService.deleteBoard(board_id);
-            return new RedirectView("/post.html");
-        }
-        catch(Exception e){
+    @PostMapping("/api/boards/{board_id}/like")
+    public ResponseEntity<?> updateLike(@PathVariable("board_id") Long board_id) {
+        try {
+            boardService.updateLikecount(board_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             e.printStackTrace();
-            return new RedirectView("error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/api/boards/{board_id}/like")
+    public ResponseEntity<BoardDTO> getAfterLike(@PathVariable("board_id") Long board_id) {
+        try {
+            BoardDTO board = boardService.getBoardById(board_id);
+            return ResponseEntity.ok(board);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PostMapping("/noticeview.html/{board_id}/delete") //공지글 삭제
-    public RedirectView noticeDelete(Model model, @PathVariable("board_id")Long board_id) {
-        try{
+    @PostMapping("/api/boards/{board_id}/delete")
+    public ResponseEntity<?> deleteBoard(@PathVariable("board_id") Long board_id) {
+        try {
             boardService.deleteBoard(board_id);
-            return new RedirectView("/noticeList.html");
-        }
-        catch(Exception e){
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             e.printStackTrace();
-            return new RedirectView("error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     private final MemberService memberService;
 
@@ -205,6 +169,18 @@ public class ApiController {
     @GetMapping("/ranking")
     public String rankingPage() {
         return "ranking";
+    }
+
+    @GetMapping("/api/profile")
+    @ResponseBody
+    public String getUserProfile(Model model, HttpSession session) {
+        String loginID = (String) session.getAttribute("loginID");
+        Optional<Member> mem = memberRepository.findByUserID(loginID);
+        if (loginID != null) {
+            model.addAttribute("user", mem);
+            return "Profile";
+        }
+        return "Login";
     }
 
 }

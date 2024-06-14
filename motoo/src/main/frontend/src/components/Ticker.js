@@ -6,7 +6,7 @@ function TickerForm() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => { //주식 검색 엔터 누르면 api
         event.preventDefault();
         try {
             const result = await axios.get(`/api/price`, {
@@ -21,21 +21,22 @@ function TickerForm() {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
+        <div className="ticker-form-container">
+            <form onSubmit={handleSubmit} className="ticker-form">
+                <label className="ticker-label">
                     Ticker:
                     <input
                         type="text"
                         value={ticker}
                         onChange={(e) => setTicker(e.target.value)}
+                        className="ticker-input"
                     />
                 </label>
-                <button type="submit">Submit</button>
+                <button type="submit" className="submit-button">Submit</button>
             </form>
-            {error && <div>Error: {error.message}</div>}
+            {error && <div className="error-message">Error: {error.message}</div>}
             {response && (
-                <div>
+                <div className="response-container">
                     <h2>{response.rprs_mrkt_kor_name}</h2>
                     <p>Stock Price: {response.stck_prpr}</p>
                     <p>Daily Variation: {response.prdy_vrss}</p>

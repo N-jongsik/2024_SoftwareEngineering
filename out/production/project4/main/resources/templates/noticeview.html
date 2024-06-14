@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 상세보기</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+    <div class="logo">StockSite</div>
+    <nav>
+        <ul>
+            <li><a href="stock.html">Home</a></li>
+            <li><a href="#">Market</a></li>
+            <li><a href="news.html">News</a></li>
+            <li><a href="post.html">Board</a></li>
+            <li><a href="#">Ranking</a></li>
+        </ul>
+    </nav>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Profile</a></li>
+            <li><a href="login.html">login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="board-view">
+        <h2 th:text="${board.title}">제목</h2>
+        <p><strong>작성자:</strong> <span th:text="${board.user_id}">작성자</span></p>
+        <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.create_at, 'yyyy-MM-dd HH:mm')}">작성일</span></p>
+        <p><strong>수정일:</strong> <span th:text="${#temporals.format(board.modified_at, 'yyyy-MM-dd HH:mm')}">수정일</span></p>
+        <div th:text="${board.content}">
+            내용
+        </div>
+        <button class="disbut" onclick="location.href='/noticeList.html'">목록으로</button>
+        <a th:href="@{'/notice.html/' + ${board.board_id}}">
+            <button class="disbut" type="button">수정</button>
+        </a>
+        <form th:action="@{'/noticeview.html/' + ${board.board_id} + '/delete'}" method="post">
+            <button type="submit">게시물 삭제</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

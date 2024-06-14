@@ -58,7 +58,7 @@ function Market() {
                         <td>{item.stck_shrn_iscd}</td> {/* 종목코드  volume-rank에서는 mksc_shrn_iscd*/}
                         <td>{item.acml_vol}</td> {/* 거래량 */}
                         <td>{item.stck_prpr}</td> {/* 현재가 */}
-                        <td>{item.prdy_ctrt} | <p>{item.prdy_vrss}</p></td> > {/* 현재가 +면 빨간색 -면 파란색 가능한가?*/}
+                        <td>{item.prdy_ctrt} | <p>{item.prdy_vrss}</p></td>  {/* 현재가 +면 빨간색 -면 파란색 가능한가?*/}
                     </tr>
                 ))}
                 </tbody>
