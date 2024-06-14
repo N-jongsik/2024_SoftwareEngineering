@@ -42,7 +42,7 @@ public class QuizController {
 
     @GetMapping("/random")
     public String getRandomQuiz(Model model) {
-        int randomId = random.nextInt(10); // 0부터 9까지의 랜덤한 정수 생성
+        int randomId = random.nextInt(10)+1; // 1부터 10까지의 랜덤한 정수 생성
         return "redirect:/quiz?id=" + randomId; // 랜덤으로 문제 보여줌
     }
 }

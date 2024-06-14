@@ -1,6 +1,7 @@
 package com.se2024.motoo.dto;
 
 import com.se2024.motoo.domain.Board;
+import com.se2024.motoo.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 //@NoArgsConstructor
 public class BoardDTO {
     private Long board_id;
-    private String user_id;
+    private Member userID;
+    // private String user_id;
     private LocalDateTime create_at;
     private LocalDateTime modified_at;
     private String title;
@@ -25,9 +27,9 @@ public class BoardDTO {
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long board_id, String user_id, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
+    public BoardDTO(Long board_id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Boolean isBoard, String board_type, Integer viewCount, Integer likeCount) {
         this.board_id = board_id;
-        this.user_id = user_id;
+        this.userID = userID;
         this.create_at = create_at;
         this.modified_at = modified_at;
         this.title = title;
@@ -42,7 +44,7 @@ public class BoardDTO {
     public static BoardDTO fromEntity(Board board) {
         return new BoardDTO(
                 board.getBoard_id(),
-                board.getUser_id(),
+                board.getUserID(),
                 board.getCreate_at(),
                 board.getModified_at(),
                 board.getTitle(),

@@ -1,55 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
         }
 
         table {
-            width: 100%;
+            width: 80%;
+            margin: 20px auto;
             border-collapse: collapse;
-        }
-
-        table, th, td {
-            border: 1px solid black;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
 
         th, td {
-            padding: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
         }
 
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        td {
+            color: #666;
+        }
+
         button {
-            padding: 5px 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
 <body>
-<h1>Admin Page</h1>
-<table>
-    <thead>
-    <tr>
-        <th>UserID</th>
-        <th>UserName</th>
-        <th>Email</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.userID}">UserID</td>
-        <td th:text="${user.userName}">Username</td>
-        <td th:text="${user.userEmail}">Email</td>
-        <td>
-            <button th:attr="data-userid=${user.id}" onclick="deleteUser(this)">Delete</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <h1>Motoo 관리자 페이지</h1>
+
+    <!-- Success and Error Messages -->
+    <div th:if="${param.success}">
+        <div class="alert">
+            해당 회원이 성공적으로 삭제되었습니다!
+        </div>
+    </div>
+    <div th:if="${param.error}">
+        <div class="alert">
+            Error deleting user: <span th:text="${param.error}"></span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>회원 아이디</th>
+            <th>회원 이름</th>
+            <th>회원 이메일</th>
+            <th>회원 삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over users and display them -->
+        <tr th:each="user : ${users}">
+            <td th:text="${user.userID}">UserID</td>
+            <td th:text="${user.userName}">Username</td>
+            <td th:text="${user.userEmail}">Email</td>
+            <td>
+                <button th:attr="data-userid=${user.id}" onclick="deleteUser(this)">삭제</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <script>
     function deleteUser(button) {
@@ -61,10 +116,11 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('User deleted successfully');
-                location.reload();
+                // Redirect with success message
+                window.location.href = '/admin?success=true';
             } else {
-                alert('Error deleting user: ' + data.message);
+                // Redirect with error message
+                window.location.href = '/admin?error=' + encodeURIComponent(data.message);
             }
         });
     }

@@ -16,7 +16,7 @@ public class Member {
     @Column(name = "_id", unique = true, nullable = false)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 100, name="user_id")
+    @Column(unique = true, nullable = false, length = 100, name="userid")
     @NotNull(message = "아이디를 입력해주세요")
     private String userID;
 

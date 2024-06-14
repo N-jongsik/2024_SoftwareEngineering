@@ -21,9 +21,12 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long board_id;
 
-    @JoinColumn(name="user")
-    @Column
-    private String user_id;
+//    @JoinColumn(name="user")
+//    @Column
+//    private String user_id;
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private Member userID;
 
     @Column
     @CreatedDate
