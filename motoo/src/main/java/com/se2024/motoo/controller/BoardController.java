@@ -17,7 +17,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 public class BoardController { //게시판과 공지사항 controller
-
     private final BoardService boardService;
 
     private final CommentService commentService;
