@@ -11,6 +11,10 @@ function StockInfoForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!itemName.trim()) {
+            setError('Stock name is required.');
+            return;
+        }
         try {
             const result = await axios.get(`/api/getStockInfo`, {
                 params: { item_name: itemName }
@@ -18,7 +22,7 @@ function StockInfoForm() {
             setResponse(result.data.items);
             setError(null);
         } catch (error) {
-            setError(error);
+            setError(error.message);
             setResponse(null);
         }
     };
@@ -46,11 +50,14 @@ function StockInfoForm() {
                 </label>
                 <button type="submit" className="submit-button">Submit</button>
             </form>
-            {error && <div className="error-message">Error: {error.message}</div>}
-            {response && (
+            {error && <div className="error-message">Error: {error}</div>}
+            {response && response.length === 0 && (
+                <div className="error-message">No items found.</div>
+            )}
+            {response && response.length > 0 && (
                 <div className="stock-info-list">
-                    {response.map((item, index) => (
-                        <div key={index} className="stock-card" onClick={() => handleItemSelect(item)}>
+                    {response.map((item) => (
+                        <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelect(item)}>
                             <h2 className="stock-name">{item.itmsNm}</h2>
                             <p className="stock-details">
                                 <span className="stock-code">{item.srtnCd}</span> |

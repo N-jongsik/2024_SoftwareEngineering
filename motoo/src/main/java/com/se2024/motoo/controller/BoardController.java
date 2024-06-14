@@ -26,7 +26,7 @@ public class BoardController { //게시판과 공지사항 controller
                 //String userId = (String) session.getAttribute("loginID");
         Member userId = (Member) session.getAttribute("loginID");
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {
@@ -39,7 +39,7 @@ public class BoardController { //게시판과 공지사항 controller
         //유저 id 가져오는거 수정
         Member userId = (Member)session.getAttribute("loginID");
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 1);
             return ResponseEntity.ok().build();
         } else {
@@ -53,7 +53,7 @@ public class BoardController { //게시판과 공지사항 controller
         Member userId = (Member)session.getAttribute("loginID");
 
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 2);
             return ResponseEntity.ok().build();
         } else {
