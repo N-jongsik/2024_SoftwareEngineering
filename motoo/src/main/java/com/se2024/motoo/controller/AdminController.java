@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
-
     // 사용자 삭제
     @DeleteMapping("/users/{id}")
     public ResponseEntity<AdminResponseDTO> deleteUser(@PathVariable("id") Long id) {
