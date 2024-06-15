@@ -5,16 +5,18 @@ import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.service.MemberService;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpSession;
-
 
 import java.util.*;
 
 @RestController
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -48,13 +50,14 @@ public class MemberController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Map<String, String> login(@RequestBody SignupDTO loginDTO) {
+    public Map<String, String> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
         Map<String, String> response = new HashMap<>();
         try {
             Optional<Member> memberOpt = memberService.findByUserID(loginDTO.getUserID());
             if (memberOpt.isPresent()) {
                 Member member = memberOpt.get();
                 if (member.getPwd() != null && member.getPwd().equals(loginDTO.getPwd())) {
+                    session.setAttribute("user", member);
                     response.put("status", "success");
                     response.put("message", "로그인 성공");
                 } else {
@@ -73,6 +76,31 @@ public class MemberController {
         return response;
     }
 
+    @GetMapping("/me")
+    @ResponseBody
+    public Map<String, Object> me(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Member user = (Member) session.getAttribute("user");
+        if (ObjectUtils.isEmpty(user)) {
+            response.put("status", "error");
+            response.put("message", "로그인되지 않은 사용자입니다.");
+        } else {
+            response.put("status", "success");
+            response.put("user", new SignupDTO(user.getId(),user.getUserName(), user.getPwd(), user.getUserID(), user.getUserEmail()));
+        }
+        return response;
+    }
+
+    @GetMapping("/logout")
+    @ResponseBody
+    public Map<String, String> logout(HttpSession session) {
+        Map<String, String> response = new HashMap<>();
+        session.removeAttribute("user");
+        response.put("status", "success");
+        response.put("message", "로그아웃 성공");
+        return response;
+    }
+
     @PostMapping("/checkDuplicate")
     @ResponseBody
     public SignupResponseDTO checkDuplicate(@RequestBody SignupDTO signupDTO) {
@@ -80,15 +108,15 @@ public class MemberController {
         return memberService.duplicationCheck(signupDTO);
     }
 
-    @GetMapping("/api/profile")
-    public ResponseEntity<SignupDTO> getProfile(HttpSession session) {
-        Member loggedInMember = (Member) session.getAttribute("loginID");
-        if (loggedInMember != null) {
-            SignupDTO memberDTO = SignupDTO.toSignupDTO(loggedInMember);
-            return ResponseEntity.ok(memberDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
+//    @GetMapping("/api/profile")
+//    public ResponseEntity<SignupDTO> getProfile(HttpSession session) {
+//        Member loggedInMember = (Member) session.getAttribute("loginID");
+//        if (loggedInMember != null) {
+//            SignupDTO memberDTO = SignupDTO.toSignupDTO(loggedInMember);
+//            return ResponseEntity.ok(memberDTO);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//    }
 
 }
