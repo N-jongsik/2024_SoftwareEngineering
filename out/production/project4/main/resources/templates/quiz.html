@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>매일 푸는 금융퀴즈</h1>
+<div class="quiz-container" th:if="${quiz != null}">
+    <form th:action="@{/quiz/submitQuiz}" method="post">
+        <input type="hidden" name="id" th:value="${quiz.id}" />
+        <p th:text="${quiz.question}"></p>
+        <input type="radio" name="userAnswer" value="true" id="true" />
+        <label for="true">O</label><br>
+        <input type="radio" name="userAnswer" value="false" id="false" />
+        <label for="false">X</label><br>
+        <button type="submit">정답 확인</button>
+    </form>
+</div>
+<div th:if="${quiz == null}">
+    <p>Quiz not found</p>
+</div>
+</body>
+</html>
