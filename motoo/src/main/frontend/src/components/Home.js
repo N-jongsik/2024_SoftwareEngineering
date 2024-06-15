@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import Chart from 'chart.js/auto';
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './MarketIndexes.css'; // 스타일 파일 추가
 
@@ -14,6 +14,8 @@ function Home() {
   const [answered, setAnswered] = useState(false); // 정답 여부를 확인하여 True/False 버튼 숨기기 위한 상태
 
   const [indexes, setIndexes] = useState({ kospi: null, kosdaq: null, kospi200: null });
+  const location = useLocation();
+    const userID = location.state?.variable;
 
   useEffect(() => {
     fetchMarketIndexes();
@@ -161,6 +163,7 @@ function Home() {
           <div className="popular-stocks">
             <div className="popular-header">
               <h2>인기 주식 종목</h2>
+              {userID && <p>User ID: {userID}</p>}
               <a title="더보기"><Link to="/market">더보기</Link></a>
             </div>
             <table className="stock-table">
