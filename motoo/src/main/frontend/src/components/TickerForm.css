@@ -5,7 +5,9 @@
 }
 
 .ticker-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .ticker-price {
@@ -29,11 +31,15 @@
 }
 
 .price-change.up {
-    color: green;
+    color: red;
+}
+
+.price-change.flat {
+    color: gray;
 }
 
 .price-change.down {
-    color: red;
+    color: blue;
 }
 
 .ticker-details {

@@ -64,7 +64,7 @@ function App() {
             <Route path="/admin/memberlist" element={<MemberList />} />
             <Route path="/ticker" element={<Ticker />} />
             <Route path="/trading" element={<Trade />} />
-            <Route path="/stock" element={<StockInfo />} />
+            <Route path="/stockinfo" element={<StockInfo />} />
             <Route path="/market" element={<Market />} />
             {/* 다른 페이지 라우트 추가 */}
           </Routes>

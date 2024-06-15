@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import './TickerForm.css';
+import './TickerForm.css';  // 스타일 파일 추가
 
 function TickerForm() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [orderType, setOrderType] = useState('buy');
+    const [orderType, setOrderType] = useState('buy');  // 매수/매도 구분
     const [quantity, setQuantity] = useState(0);
-    const [price, setPrice] = useState(0);
     const location = useLocation();
 
     useEffect(() => {
@@ -25,7 +24,7 @@ function TickerForm() {
             const result = await axios.get(`/api/price`, {
                 params: { ticker: srtnCd }
             });
-            setResponse({ ...result.data[0], itmsNm: itemName });
+            setResponse({ ...result.data[0], itmsNm: itemName, srtnCd: srtnCd });
             setError(null);
         } catch (error) {
             setError(error);
@@ -59,10 +58,32 @@ function TickerForm() {
         return <p>Loading...</p>;
     }
 
+    const getPriceChangeClass = () => {
+        if (response.prdy_vrss_sign === '1' || response.prdy_vrss_sign === '2') {
+            return 'up';
+        } else if (response.prdy_vrss_sign === '3') {
+            return 'flat';
+        } else {
+            return 'down';
+        }
+    };
+
+    const getPriceChangeSymbol = () => {
+        if (response.prdy_vrss_sign === '1' || response.prdy_vrss_sign === '2') {
+            return '▲';
+        } else if (response.prdy_vrss_sign === '3') {
+            return '-';
+        } else {
+            return '▼';
+        }
+    };
+
     return (
         <div className="ticker-container">
+            <h1>{response.itmsNm}</h1>
             <div className="ticker-header">
-                <h1>{response.itmsNm}</h1>
+                <h2>{response.rprs_mrkt_kor_name}</h2>
+                <p> ㅡ </p>
                 <h2>{response.srtnCd}</h2>
             </div>
             <div className="ticker-price">
@@ -70,28 +91,46 @@ function TickerForm() {
                     <div className="current-price">
                         <span>{response.stck_prpr}</span>원
                     </div>
-                    <div className={`price-change ${response.prdy_vrss_sign === '1' ? 'up' : 'down'}`}>
-                        <span>{response.prdy_vrss_sign === '1' ? '▲' : '▼'} {response.prdy_vrss}</span>
-                        <span>{response.prdy_ctrt}%</span>
+                    <div className={`price-change ${getPriceChangeClass()}`}>
+                        <span>{getPriceChangeSymbol()} {response.prdy_vrss}</span>
+                        <span> | {response.prdy_ctrt}%</span>
                     </div>
                 </div>
             </div>
             <div className="ticker-details">
                 <div className="detail-row">
-                    <span>종목 상태 코드:</span>
-                    <span>{response.iscd_stat_cls_code}</span>
+                    <div className="detail-column">
+                        <span>PER:</span>
+                        <span>{response.per}</span>
+                    </div>
+                    <div className="detail-column">
+                        <span>PBR:</span>
+                        <span>{response.pbr}</span>
+                    </div>
+                    <div className="detail-column">
+                        <span>EPS:</span>
+                        <span>{response.eps}</span>
+                    </div>
+                    <div className="detail-column">
+                        <span>BPS:</span>
+                        <span>{response.bps}</span>
+                    </div>
                 </div>
                 <div className="detail-row">
-                    <span>증거금 비율:</span>
-                    <span>{response.marg_rate}</span>
+                    <div className="detail-column">
+                        <span>HTS 시가총액:</span>
+                        <span>{response.hts_avls}</span>
+                    </div>
+                    <div className="detail-column">
+                        <span>상장 주수:</span>
+                        <span>{response.lstn_stcn}</span>
+                    </div>
                 </div>
                 <div className="detail-row">
-                    <span>대표 시장:</span>
-                    <span>{response.rprs_mrkt_kor_name}</span>
-                </div>
-                <div className="detail-row">
-                    <span>업종 명:</span>
-                    <span>{response.bstp_kor_isnm}</span>
+                    <div className="detail-column">
+                        <span>업종 명:</span>
+                        <span>{response.bstp_kor_isnm}</span>
+                    </div>
                 </div>
                 {/* 더 많은 데이터 행 추가 가능 */}
             </div>
