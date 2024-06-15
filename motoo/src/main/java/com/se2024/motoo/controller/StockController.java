@@ -1,6 +1,5 @@
 package com.se2024.motoo.controller;
 
-import com.se2024.motoo.dto.StockDTO;
 import com.se2024.motoo.dto.StockInfoResponse;
 import com.se2024.motoo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;

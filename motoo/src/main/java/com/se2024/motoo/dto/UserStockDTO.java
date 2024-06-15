@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class StockDTO {
+public class UserStockDTO {
     private String basDt;
     private String srtnCd;
     private String isinCd;

@@ -17,11 +17,15 @@ public class UserStock{
     private Member userID;
 
     @Column(length = 100)
-    private String pwd;
+    private String itemName;
 
-    @Column(length = 100)
-    private String bstp_kor_isnm;
+    @Column(length = 10)
+    private String srtnCd;
 
-    @Column(length = 100)
-    private Integer stck_prpr;
+    @Column
+    private Integer price;
+
+    @Column
+    private Integer quantity;
+
 }

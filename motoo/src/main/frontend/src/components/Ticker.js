@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import './TickerForm.css';  // 스타일 파일 추가
 
 function TickerForm() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [itmsNm, setItmsNm] = useState('');
-    const [srtnCd, setSrtnCd] = useState('');
+    const [orderType, setOrderType] = useState('buy');  // 매수/매도 구분
+    const [quantity, setQuantity] = useState(0);
+    const [price, setPrice] = useState(0);
     const location = useLocation();
 
     useEffect(() => {
@@ -14,18 +16,16 @@ function TickerForm() {
         const srtnCd = searchParams.get('srtnCd');
         const itemName = searchParams.get('itmsNm');
         if (srtnCd) {
-            setSrtnCd(srtnCd); // srtnCd 상태 업데이트
-            setItmsNm(itemName); // itmsNm 상태 업데이트
-            fetchTickerInfo(srtnCd);
+            fetchTickerInfo(srtnCd, itemName);
         }
     }, [location.search]);
 
-    const fetchTickerInfo = async (srtnCd) => {
+    const fetchTickerInfo = async (srtnCd, itemName) => {
         try {
             const result = await axios.get(`/api/price`, {
                 params: { ticker: srtnCd }
             });
-            setResponse(result.data[0]);
+            setResponse({ ...result.data[0], itmsNm: itemName });
             setError(null);
         } catch (error) {
             setError(error);
@@ -33,181 +33,109 @@ function TickerForm() {
         }
     };
 
-    // 데이터가 없을 때 초기화
+    const handleOrderSubmit = async () => {
+        try {
+            const orderData = {
+                ticker: response.srtnCd,
+                orderType,
+                quantity,
+                price
+            };
+            await axios.post(`/api/order`, orderData);
+            alert('주문이 성공적으로 접수되었습니다.');
+        } catch (error) {
+            alert('주문에 실패했습니다.');
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        if (response) {
+            // 주문가격 업데이트
+            setPrice(response.stck_prpr * quantity);
+        }
+    }, [quantity, response]);
+
     if (!response) {
         return <p>Loading...</p>;
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-                <h1 style={{ margin: '0' }}>{itmsNm}</h1>
-                <h2 style={{ margin: '0' }}>{srtnCd}</h2>
+        <div className="ticker-container">
+            <div className="ticker-header">
+                <h1>{response.itmsNm}</h1>
+                <h2>{response.srtnCd}</h2>
             </div>
-            <table style={{ width: '50%' }}>
-                <tbody>
-                <tr>
-                    <td>종목 상태 구분 코드</td>
-                    <td>{response.iscd_stat_cls_code}</td>
-                </tr>
-                <tr>
-                    <td>증거금 비율</td>
-                    <td>{response.marg_rate}</td>
-                </tr>
-                <tr>
-                    <td>대표 시장 한글 명</td>
-                    <td>{response.rprs_mrkt_kor_name}</td>
-                </tr>
-                <tr>
-                    <td>업종 한글 종목명</td>
-                    <td>{response.bstp_kor_isnm}</td>
-                </tr>
-                <tr>
-                    <td>임시 정지 여부</td>
-                    <td>{response.temp_stop_yn === 'Y' ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                    <td>시가 범위 연장 여부</td>
-                    <td>{response.oprc_rang_cont_yn === 'Y' ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                    <td>종가 범위 연장 여부</td>
-                    <td>{response.clpr_rang_cont_yn === 'Y' ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                    <td>신용 가능 여부</td>
-                    <td>{response.crdt_able_yn === 'Y' ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                    <td>ELW 발행 여부</td>
-                    <td>{response.elw_pblc_yn === 'Y' ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                    <td>주식 현재가</td>
-                    <td>{response.stck_prpr}</td>
-                </tr>
-                <tr>
-                    <td>전일 대비</td>
-                    <td>{response.prdy_vrss}</td>
-                </tr>
-                <tr>
-                    <td>전일 대비 부호</td>
-                    <td>{response.prdy_vrss_sign === '1' ? '+' : '-'}</td>
-                </tr>
-                <tr>
-                    <td>전일 대비율</td>
-                    <td>{response.prdy_ctrt}</td>
-                </tr>
-                <tr>
-                    <td>누적 거래 대금</td>
-                    <td>{response.acml_tr_pbmn}</td>
-                </tr>
-                <tr>
-                    <td>누적 거래량</td>
-                    <td>{response.acml_vol}</td>
-                </tr>
-                <tr>
-                    <td>전일 대비 거래량 비율</td>
-                    <td>{response.prdy_vrss_vol_rate}</td>
-                </tr>
-                <tr>
-                    <td>주식 시가</td>
-                    <td>{response.stck_oprc}</td>
-                </tr>
-                <tr>
-                    <td>주식 최고가</td>
-                    <td>{response.stck_hgpr}</td>
-                </tr>
-                <tr>
-                    <td>주식 최저가</td>
-                    <td>{response.stck_lwpr}</td>
-                </tr>
-                <tr>
-                    <td>주식 상한가</td>
-                    <td>{response.stck_mxpr}</td>
-                </tr>
-                <tr>
-                    <td>주식 하한가</td>
-                    <td>{response.stck_llam}</td>
-                </tr>
-                <tr>
-                    <td>가중 평균 주식 가격</td>
-                    <td>{response.wghn_avrg_stck_prc}</td>
-                </tr>
-                <tr>
-                    <td>HTS 외국인 소진율</td>
-                    <td>{response.hts_frgn_ehrt}</td>
-                </tr>
-                <tr>
-                    <td>외국인 순매수 수량</td>
-                    <td>{response.frgn_ntby_qty}</td>
-                </tr>
-                <tr>
-                    <td>프로그램매매 순매수 수량</td>
-                    <td>{response.pgtr_ntby_qty}</td>
-                </tr>
-                <tr>
-                    <td>피벗 2차 디저항 가격</td>
-                    <td>{response.pvt_scnd_dmrs_prc}</td>
-                </tr>
-                <tr>
-                    <td>피벗 1차 디저항 가격</td>
-                    <td>{response.pvt_frst_dmrs_prc}</td>
-                </tr>
-                <tr>
-                    <td>피벗 포인트 값</td>
-                    <td>{response.pvt_pont_val}</td>
-                </tr>
-                <tr>
-                    <td>피벗 1차 디지지 가격</td>
-                    <td>{response.pvt_frst_dmsp_prc}</td>
-                </tr>
-                <tr>
-                    <td>피벗 2차 디지지 가격</td>
-                    <td>{response.pvt_scnd_dmsp_prc}</td>
-                </tr>
-                <tr>
-                    <td>디저항 값</td>
-                    <td>{response.dmrs_val}</td>
-                </tr>
-                <tr>
-                    <td>디지지 값</td>
-                    <td>{response.dmsp_val}</td>
-                </tr>
-                <tr>
-                    <td>자본금</td>
-                    <td>{response.cpfn}</td>
-                </tr>
-                <tr>
-                    <td>주식 액면가</td>
-                    <td>{response.stck_fcam}</td>
-                </tr>
-                <tr>
-                    <td>주식 대용가</td>
-                    <td>{response.stck_sspr}</td>
-                </tr>
-                <tr>
-                    <td>HTS 매매 수량 단위 값</td>
-                    <td>{response.hts_deal_qty_unit_val}</td>
-                </tr>
-                <tr>
-                    <td>상장 주수</td>
-                    <td>{response.lstn_stcn}</td>
-                </tr>
-                <tr>
-                    <td>HTS 시가총액</td>
-                    <td>{response.hts_avls}</td>
-                </tr>
-                <tr>
-                    <td>PER</td>
-                    <td>{response.per}</td>
-                </tr>
-                <tr>
-                    <td>PBR</td>
-                    <td>{response.pbr}</td>
-                </tr>
-                </tbody>
-            </table>
+            <div className="ticker-price">
+                <div className="price-info">
+                    <div className="current-price">
+                        <span>{response.stck_prpr}</span>원
+                    </div>
+                    <div className={`price-change ${response.prdy_vrss_sign === '1' ? 'up' : 'down'}`}>
+                        <span>{response.prdy_vrss_sign === '1' ? '▲' : '▼'} {response.prdy_vrss}</span>
+                        <span>{response.prdy_ctrt}%</span>
+                    </div>
+                </div>
+            </div>
+            <div className="ticker-details">
+                <div className="detail-row">
+                    <span>종목 상태 코드:</span>
+                    <span>{response.iscd_stat_cls_code}</span>
+                </div>
+                <div className="detail-row">
+                    <span>증거금 비율:</span>
+                    <span>{response.marg_rate}</span>
+                </div>
+                <div className="detail-row">
+                    <span>대표 시장:</span>
+                    <span>{response.rprs_mrkt_kor_name}</span>
+                </div>
+                <div className="detail-row">
+                    <span>업종 명:</span>
+                    <span>{response.bstp_kor_isnm}</span>
+                </div>
+                {/* 더 많은 데이터 행 추가 가능 */}
+            </div>
+            <div className="order-form">
+                <h3>매도/매수 주문</h3>
+                <div className="order-type">
+                    <label>
+                        <input
+                            type="radio"
+                            name="orderType"
+                            value="buy"
+                            checked={orderType === 'buy'}
+                            onChange={() => setOrderType('buy')}
+                        />
+                        매수
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="orderType"
+                            value="sell"
+                            checked={orderType === 'sell'}
+                            onChange={() => setOrderType('sell')}
+                        />
+                        매도
+                    </label>
+                </div>
+                <div className="order-details">
+                    <label>
+                        수량:
+                        <input
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(Number(e.target.value))}
+                        />
+                    </label>
+                    <div className="order-price">
+                        <label>주문 가격:</label>
+                        <span>{price.toLocaleString()} 원</span>
+                    </div>
+                </div>
+                <button onClick={handleOrderSubmit}>주문하기</button>
+            </div>
         </div>
     );
 }
