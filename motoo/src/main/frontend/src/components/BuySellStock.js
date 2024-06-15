@@ -1,78 +1,72 @@
+import {useNavigate} from "react-router-dom";
 import React, { useState } from 'react';
 import axios from 'axios';
 
 function BuySellStock() {
-    const [ticker, setTicker] = useState('');
-    const [quantity, setQuantity] = useState(0);
-    const [price, setPrice] = useState(0);
-    const [transactionType, setTransactionType] = useState('buy');
+    const [itemName, setItemName] = useState('');
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!itemName.trim()) {
+            setError('Stock name is required.');
+            return;
+        }
         try {
-            const result = await axios.post('/api/transaction', {
-                ticker,
-                quantity,
-                price,
-                transactionType
+            const result = await axios.get(`/api/getStockInfo`, {
+                params: { item_name: itemName }
             });
-            setResponse(result.data);
+            setResponse(result.data.items);
             setError(null);
         } catch (error) {
-            setError(error.response ? error.response.data : error.message);
+            setError(error.message);
             setResponse(null);
         }
     };
 
+    const handleItemSelect = (item) => {
+        const { srtnCd, itmsNm } = item;
+        navigate({
+            pathname: `/ticker`,
+            search: `srtnCd=${srtnCd}&itmsNm=${itmsNm}`
+        });
+    };
+
     return (
-        <div>
-            <h1>{transactionType === 'buy' ? 'Buy Stock' : 'Sell Stock'}</h1>
+        <div className="stock-info-form">
             <form onSubmit={handleSubmit}>
                 <label>
-                    Ticker:
+                    종목명:
                     <input
                         type="text"
-                        value={ticker}
-                        onChange={(e) => setTicker(e.target.value)}
-                        required
+                        value={itemName}
+                        onChange={(e) => setItemName(e.target.value)}
+                        placeholder="Enter stock name"
+                        className="stock-input"
                     />
                 </label>
-                <label>
-                    Quantity:
-                    <input
-                        type="number"
-                        value={quantity}
-                        onChange={(e) => setQuantity(Number(e.target.value))}
-                        required
-                    />
-                </label>
-                <label>
-                    Price:
-                    <input
-                        type="number"
-                        value={price}
-                        onChange={(e) => setPrice(Number(e.target.value))}
-                        required
-                    />
-                </label>
-                <label>
-                    Transaction Type:
-                    <select
-                        value={transactionType}
-                        onChange={(e) => setTransactionType(e.target.value)}
-                    >
-                        <option value="buy">Buy</option>
-                        <option value="sell">Sell</option>
-                    </select>
-                </label>
-                <button type="submit">{transactionType === 'buy' ? 'Buy' : 'Sell'}</button>
+                <button type="submit" className="submit-button">Submit</button>
             </form>
-            {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-            {response && (
-                <div style={{ color: 'green' }}>
-                    {transactionType === 'buy' ? 'Purchase' : 'Sale'} successful: {response.message}
+            {error && <div className="error-message">Error: {error}</div>}
+            {response && response.length === 0 && (
+                <div className="error-message">No items found.</div>
+            )}
+            {response && response.length > 0 && (
+                <div className="stock-info-list">
+                    {response.map((item) => (
+                        <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelect(item)}>
+                            <h2 className="stock-name">{item.itmsNm}</h2>
+                            <p className="stock-details">
+                                <span className="stock-code">{item.srtnCd}</span> |
+                                <span className="stock-category">{item.mrktCtg}</span> |
+                                <span className="stock-rank">{item.data_rank}</span> |
+                                <span className="stock-corp-name">{item.corpNm}</span>
+                            </p>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>
