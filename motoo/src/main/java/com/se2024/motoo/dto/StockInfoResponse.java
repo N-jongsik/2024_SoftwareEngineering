@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class StockInfoResponse {
-    private List<StockDTO> items;
+    private List<StockInfoDTO> items;
     // Getter and Setter methods
 }

@@ -1,0 +1,74 @@
+.ticker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ticker-header {
+    text-align: center;
+}
+
+.ticker-price {
+    margin: 20px 0;
+}
+
+.price-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.current-price {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.price-change {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.price-change.up {
+    color: green;
+}
+
+.price-change.down {
+    color: red;
+}
+
+.ticker-details {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.order-form {
+    width: 50%;
+    margin-top: 20px;
+}
+
+.order-type {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.order-type label {
+    margin-right: 10px;
+}
+
+.order-type input[type="number"] {
+    width: 60px;
+    margin-left: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
