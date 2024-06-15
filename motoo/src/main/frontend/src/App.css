@@ -11,17 +11,19 @@ body {
 }
 
 header {
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #0073e6;
   padding: 10px 20px;
-  color: white;
 }
 
 header .logo {
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 10px;
+
 }
 
 nav ul {
@@ -44,17 +46,39 @@ nav ul li a:hover {
   color: #ffcc00;
 }
 
-.search-bar input {
-  padding: 5px 10px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  outline: none;
-  transition: box-shadow 0.3s;
+.search-results {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 300px;
+  max-height: 350px;
+  overflow-y: auto;
+  z-index: 1000;
 }
 
-.search-bar input:focus {
-  box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
+.search-result-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
 }
+
+.search-result-item:hover {
+  background-color: #f1f1f1;
+}
+
+.search-result-item h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.search-result-item p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+/*까지*/
 
 .profile-icon {
   font-size: 16px;
@@ -746,11 +770,12 @@ button:hover {
 }
 
 
-/* discuusionform 수정 */
+/* discussionform 수정 */
 
-.stock-info-form,
-.stock-info-list {
+.stock-info-form, .stock-info-list {
   margin-top: 20px;
+  overflow: scroll;
+  max-height: 500px;
 }
 
 .stock-type {
@@ -782,6 +807,7 @@ button:hover {
 }
 
 .stock-info-list {
+  overflow: auto;
   margin-top: 20px;
 }
 
