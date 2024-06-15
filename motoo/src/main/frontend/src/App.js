@@ -22,6 +22,8 @@ import Ticker from './components/Ticker';
 import StockInfo from './components/StockInfo'
 import Trade from './components/BuySellStock'
 import Market from "./components/Market";
+import Logout from "./components/Logout";
+import Profile from "./components/Profile";
 
 import './App.css';
 import axios from 'axios';
@@ -84,6 +86,8 @@ function RoutesWrapper({ homeData }) {
           <Route path="/ticker" element={<Ticker />} />
           <Route path="/stockinfo" element={<StockInfo />} />
           <Route path="/market" element={<Market />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
 
 

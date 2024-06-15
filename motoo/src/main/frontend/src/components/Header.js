@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation} from 'react-router-dom';
 import axios from 'axios';
 
-function Header() {
+function Header({ isLoggedIn, onLogout }) {
     const [item_name, setItemName] = useState('');
     const [response, setResponse] = useState([]);
     const [error, setError] = useState(null);
