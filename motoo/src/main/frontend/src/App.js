@@ -39,35 +39,7 @@ function App() {
       <Router>
         <div className="App">
           <HeaderWithAdmin />
-          <Routes>
-            <Route path="/" element={<Home data={homeData} />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/ranking" element={<Ranking />} />
-            <Route path="/post" element={<Post />} />
-            <Route path="/admin/post" element={<Post />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/newsform" element={<NewsForm />} />
-            <Route path="/discussionform" element={<DiscussionBoard />} />
-            <Route path="/discussionform/:boardId" element={<DiscussionBoard />} />
-            <Route path="/boards/:boardId" element={<DiscussionView />} />
-            <Route path="/noticelist" element={<NoticeList />} />
-            <Route path="/admin/noticelist" element={<NoticeList />} />
-            <Route path="/admin/noticeform" element={<NoticeFrom />} />
-            <Route path="/noticeform/:boardId" element={<NoticeFrom />} />
-            <Route path="/notice/:boardId" element={<NoticeView />} />
-            <Route path="/admin/QnAlist" element={<QnAList />} />
-            <Route path="/QnAlist" element={<QnAList />} />
-            <Route path="/qnaform" element={<QnAFrom />} />
-            <Route path="/qnaform/:boardId" element={<QnAFrom />} />
-            <Route path="/qna/:boardId" element={<QnAView />} />
-            <Route path="/admin/memberlist" element={<MemberList />} />
-            <Route path="/ticker" element={<Ticker />} />
-            <Route path="/trading" element={<Trade />} />
-            <Route path="/stockinfo" element={<StockInfo />} />
-            <Route path="/market" element={<Market />} />
-            {/* 다른 페이지 라우트 추가 */}
-          </Routes>
+          <RoutesWrapper homeData={homeData} />
         </div>
       </Router>
   );
@@ -77,5 +49,53 @@ function HeaderWithAdmin() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
   return isAdminPath ? <AdminHeader /> : <Header />;
+}
+
+function RoutesWrapper({ homeData }) {
+  const location = useLocation();
+  const state = location.state || {};
+
+
+  return (
+      <>
+        <Routes location={state.backgroundLocation || location}>
+          <Route path="/" element={<Home data={homeData} />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/post" element={<Post />} />
+          <Route path="/admin/post" element={<Post />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/newsform" element={<NewsForm />} />
+          <Route path="/discussionform" element={<DiscussionBoard />} />
+          <Route path="/discussionform/:boardId" element={<DiscussionBoard />} />
+          <Route path="/boards/:boardId" element={<DiscussionView />} />
+          <Route path="/noticelist" element={<NoticeList />} />
+          <Route path="/admin/noticelist" element={<NoticeList />} />
+          <Route path="/admin/noticeform" element={<NoticeFrom />} />
+          <Route path="/noticeform/:boardId" element={<NoticeFrom />} />
+          <Route path="/notice/:boardId" element={<NoticeView />} />
+          <Route path="/admin/QnAlist" element={<QnAList />} />
+          <Route path="/QnAlist" element={<QnAList />} />
+          <Route path="/qnaform" element={<QnAFrom />} />
+          <Route path="/qnaform/:boardId" element={<QnAFrom />} />
+          <Route path="/qna/:boardId" element={<QnAView />} />
+          <Route path="/admin/memberlist" element={<MemberList />} />
+          <Route path="/ticker" element={<Ticker />} />
+          <Route path="/stockinfo" element={<StockInfo />} />
+          <Route path="/market" element={<Market />} />
+        </Routes>
+
+
+  {state.backgroundLocation && (
+      <Routes>
+        <Route
+            path="/trading"
+            element={<Trade isModal={true} />}
+        />
+      </Routes>
+  )}
+</>
+);
 }
 export default App;
