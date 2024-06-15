@@ -666,14 +666,28 @@ button:hover {
 
 .modal-close {
   background: none;
+  background-color: #c5def5;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  width: 30px;
+  position: absolute; /* 절대 위치 지정 */
+  top: 10px; /* 원하는 위치로 조정 */
+  right: 10px; /* 오른쪽 여백 설정 */
 }
 
 .modal-content {
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.answer-selection {
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+}
+
+.button-space {
+  margin: 0 10px; /* 원하는 여백 크기 설정 */
 }
 
 /* 검색결과 */

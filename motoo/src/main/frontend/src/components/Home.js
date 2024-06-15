@@ -3,67 +3,89 @@ import Modal from 'react-modal';
 import Chart from 'chart.js/auto';
 import { Link } from 'react-router-dom';
 
-const quizData = {
-  question: '"공모시장" 은 주식 거래가 처음 이루어지는 시장으로, 기업이 새로 발행하는 주식을 일반 투자자에게 판매하는 시장이다.',
-  options: [
-    { text: 'O', votes: 60 },
-    { text: 'X', votes: 40 },
-  ],
-  answer: 'O'
-};
-
 function Home() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [quizData, setQuizData] = useState([]);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answered, setAnswered] = useState(false); // 정답 여부를 확인하여 True/False 버튼 숨기기 위한 상태
 
-  const totalVotes = quizData.options.reduce((sum, option) => sum + option.votes, 0);
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/quiz');
+        if (response.ok) {
+          const data = await response.json();
+          setQuizData(data);
+        } else {
+          console.error('Failed to fetch quiz data');
+        }
+      } catch (error) {
+        console.error('Error fetching quiz data:', error);
+      }
+    };
 
+    fetchQuizData();
+  }, []);
 
   const handleOptionClick = (optionText) => {
-    if (selectedOption === optionText) {
-      setSelectedOption(null);
-    } else {
-      setSelectedOption(optionText);
-    }
+    setSelectedOption(optionText);
   };
+
+  const handleNextQuiz = () => {
+    setSelectedOption(null);
+    setSelectedAnswer(null);
+    setAnswered(false); // 다음 퀴즈로 넘어갈 때 정답 여부 상태 초기화
+    setCurrentQuizIndex((prevIndex) => (prevIndex + 1) % quizData.length);
+  };
+
+  const handleAnswerSelection = (answer) => {
+    setSelectedAnswer(answer);
+    setAnswered(true); // 정답 선택 시 정답 여부 상태 업데이트
+  };
+
+  const currentQuiz = quizData[currentQuizIndex];
 
   const kospiChartRef = useRef(null);
   const kosdaqChartRef = useRef(null);
 
   useEffect(() => {
-    const kospiCtx = kospiChartRef.current.getContext('2d');
-    const kosdaqCtx = kosdaqChartRef.current.getContext('2d');
+    if (kospiChartRef.current && kosdaqChartRef.current) {
+      const kospiCtx = kospiChartRef.current.getContext('2d');
+      const kosdaqCtx = kosdaqChartRef.current.getContext('2d');
 
-    let kospiChart = new Chart(kospiCtx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-        datasets: [{
-          label: 'KOSPI',
-          data: [3200, 3300, 3100, 3000, 3050],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          fill: false,
-        }]
-      }
-    });
+      let kospiChart = new Chart(kospiCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+          datasets: [{
+            label: 'KOSPI',
+            data: [3200, 3300, 3100, 3000, 3050],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false,
+          }]
+        }
+      });
 
-    let kosdaqChart = new Chart(kosdaqCtx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-        datasets: [{
-          label: 'KOSDAQ',
-          data: [1000, 1100, 1050, 1020, 1010],
-          borderColor: 'rgba(153, 102, 255, 1)',
-          fill: false,
-        }]
-      }
-    });
+      let kosdaqChart = new Chart(kosdaqCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+          datasets: [{
+            label: 'KOSDAQ',
+            data: [1000, 1100, 1050, 1020, 1010],
+            borderColor: 'rgba(153, 102, 255, 1)',
+            fill: false,
+          }]
+        }
+      });
 
-    return () => {
-      kospiChart.destroy();
-      kosdaqChart.destroy();
-    };
+      return () => {
+        kospiChart.destroy();
+        kosdaqChart.destroy();
+      };
+    }
   }, []);
 
   const stocks = [
@@ -76,53 +98,48 @@ function Home() {
 
   return (
     <main>
-      <Modal 
-        isOpen={modalIsOpen} 
+      <Modal
+        isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         className="ReactModal__Content"
         overlayClassName="ReactModal__Overlay"
       >
         <div className="modal-header">
-          {/* <h2 className="modal-title">Welcome</h2> */}
-          <button className="modal-close" onClick={() => setModalIsOpen(false)}>&times;</button>
-        </div>    
+          <button className="modal-close" onClick={() => setModalIsOpen(false)}>x</button>
+        </div>
         <section>
-        <div className="quiz-container">
-          {/* <button onClick={QuizOptionClick} className="init"><h2>오늘의 퀴즈</h2></button> */}
-          <b><h1>오늘의 퀴즈</h1></b> 
-          <div>
-            <h3><b>{quizData.question}</b></h3>
-            <div className="options-container">
-              {quizData.options.map((option, index) => (
-                <div 
-                  key={index} 
-                  className={`option 
-                    ${selectedOption === option.text && option.text === quizData.answer ? 'correct' : ''} 
-                    ${selectedOption && selectedOption === option.text && selectedOption !== quizData.answer ? 'incorrect' : ''}`}
-                  onClick={() => handleOptionClick(option.text)}
-                >
-                  {option.text}
-                  {selectedOption && (
-                    <span className="percentage">
-                      {((option.votes / totalVotes) * 100).toFixed(2)}%
-                    </span>
+          <div className="quiz-container">
+            <b><h1>오늘의 퀴즈</h1></b>
+            <div>
+              {currentQuiz && (
+                <div>
+                  <h3><b>{currentQuiz.question}</b></h3>
+                  {/* True/False 버튼 */}
+                  {!answered && (
+                    <div className="answer-selection">
+                      <button className="true-btn" onClick={() => handleAnswerSelection(true)}>O</button>
+                      <span className="button-space"></span>
+                      <button className="false-btn" onClick={() => handleAnswerSelection(false)}>X</button>
+                    </div>
+                  )}
+                  {/* 선택한 답변에 따른 피드백 */}
+                  {answered && (
+                    <div className="answer-feedback">
+                      {selectedAnswer === (currentQuiz.answer === "true") ? (
+                        <div className="correct"><br />정답입니다!<br />{currentQuiz.userID}</div>
+                      ) : (
+                        <div className="incorrect"><br />오답입니다!<br />{currentQuiz.userID}</div>
+                      )}
+                    </div>
+                  )}
+                  {/* 퀴즈 넘기기 버튼 */}
+                  {answered && (
+                    <button className="reset-button" onClick={handleNextQuiz}>다음 퀴즈</button>
                   )}
                 </div>
-              ))}
+              )}
             </div>
-            {selectedOption && (
-              <div className="feedback">
-                {selectedOption === quizData.answer ? (
-                  <div className="correct">정답입니다!</div>
-                ) : (
-                  <div className="incorrect">
-                    오답입니다.
-                  </div>
-                )}
-              </div>
-            )}
           </div>
-        </div>
         </section>
       </Modal>
 
@@ -133,6 +150,7 @@ function Home() {
           <canvas ref={kosdaqChartRef} id="kosdaqChart"></canvas>
         </div>
       </section>
+
       <section className="home-page">
         <div className="popular-stocks">
           <div className="popular-header">

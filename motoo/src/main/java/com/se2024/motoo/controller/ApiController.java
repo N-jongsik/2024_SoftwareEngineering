@@ -198,16 +198,6 @@ public class ApiController {
         return "redirect:/login?logout=true";
     }
 
-    @GetMapping("/api/profile")
-    @ResponseBody
-    public String getUserProfile(Model model, HttpSession session) {
-        String loginID = (String) session.getAttribute("loginID");
-        Optional<Member> mem = memberRepository.findByUserID(loginID);
-        if (loginID != null) {
-            model.addAttribute("user", mem);
-            return "Profile";
-        }
-        return "Login";
-    }
+
 
 }

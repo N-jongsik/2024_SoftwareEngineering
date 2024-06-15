@@ -25,6 +25,7 @@ public class BoardController { //게시판과 공지사항 controller
                 //유저 id 가져오는거 수정
                 //String userId = (String) session.getAttribute("loginID");
         Member userId = (Member) session.getAttribute("loginID");
+        //String userId = (String) "loginID";
         if (userId != null) {
             boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 0);
