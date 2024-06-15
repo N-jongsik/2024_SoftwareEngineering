@@ -1,48 +1,39 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Quiz;
+import com.se2024.motoo.repository.QuizRepository;
 import com.se2024.motoo.service.QuizService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Random;
 
-@Controller
-@RequestMapping("/quiz")
-@RequiredArgsConstructor
+@RestController
 public class QuizController {
 
-    private final QuizService quizService;
+    private final QuizRepository quizRepository;
 
-    @GetMapping
-    public String showQuiz(@RequestParam("id") Long id, Model model) {
-        Quiz quiz = quizService.getQuizById(id).orElse(null);
-        if (quiz == null) {
-            throw new RuntimeException("Quiz not found");
-        }
-        model.addAttribute("quiz", quiz);
-        return "quiz";
+    @Autowired
+    public QuizController(QuizRepository quizRepository) {
+        this.quizRepository = quizRepository;
     }
 
-    @PostMapping("/submitQuiz")
-    public String submitQuiz(@RequestParam("id") Long id, @RequestParam("userAnswer") Boolean userAnswer, Model model) {
-        Quiz quiz = quizService.getQuizById(id).orElse(null);
-        if (quiz == null) {
-            throw new RuntimeException("Quiz not found");
-        }
-        boolean isCorrect = quiz.getAnswer().equals(userAnswer);
-        model.addAttribute("quiz", quiz);
-        model.addAttribute("isCorrect", isCorrect);
-        return "result";
+    @GetMapping("/api/quiz")
+    public ResponseEntity<List<Quiz>> getQuizzes() {
+        List<Quiz> quizzes = quizRepository.findAll();
+        return ResponseEntity.ok(quizzes);
     }
 
-    private final Random random = new Random();
-
-    @GetMapping("/random")
-    public String getRandomQuiz(Model model) {
-        int randomId = random.nextInt(10)+1; // 1부터 10까지의 랜덤한 정수 생성
-        return "redirect:/quiz?id=" + randomId; // 랜덤으로 문제 보여줌
+    @GetMapping("/api/quiz/random")
+    public Quiz getRandomQuiz() {
+        long count = quizRepository.count();
+        int randomId = (int) (Math.random() * count) + 1;
+        return quizRepository.findById((long) randomId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
     }
 }

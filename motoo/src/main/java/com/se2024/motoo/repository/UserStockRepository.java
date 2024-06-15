@@ -1,7 +1,11 @@
 package com.se2024.motoo.repository;
 
-import org.springframework.stereotype.Repository;
+import com.se2024.motoo.domain.Member;
+import com.se2024.motoo.domain.UserStock;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class UserStockRepository {
+import java.util.Optional;
+
+public interface UserStockRepository extends JpaRepository<UserStock, Long> {
+    Optional<UserStock> findByUserIDAndSrtnCd(Member userID, String srtnCd);
 }

@@ -25,6 +25,7 @@ public class BoardController { //게시판과 공지사항 controller
                 //유저 id 가져오는거 수정
                 //String userId = (String) session.getAttribute("loginID");
         Member userId = (Member) session.getAttribute("loginID");
+        //String userId = (String) "loginID";
         if (userId != null) {
             boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 0);
@@ -33,6 +34,21 @@ public class BoardController { //게시판과 공지사항 controller
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
     }
+
+//    @PostMapping("/api/board") //게시물 업로드
+//    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+//        //유저 id 가져오는거 수정
+//        //String userId = (String) session.getAttribute("loginID");
+//        //Member userId = (Member) session.getAttribute("loginID");
+//        String userId = (String) "loginID";
+//        if (userId != null) {
+//            boardDTO.setUserID(null);
+//            boardService.createBoard(boardDTO, 0);
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+//        }
+//    }
 
     @PostMapping("/api/notice") //공지글 업로드
     public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO, HttpSession session) {
