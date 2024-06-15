@@ -39,7 +39,7 @@ function Header() {
 
     return (
         <header>
-            <div className="logo">StockSite</div>
+            <div className="logo">MoToo</div>
             <nav>
                 <ul>
                     <li><Link to="/">Home</Link></li>

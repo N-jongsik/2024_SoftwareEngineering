@@ -82,45 +82,50 @@ const handleCommentSubmit = async (e) => {
   }
 
   return (
-    <div>
-      {board ? (
-        <div>
-          <h2>{board.title}</h2>
-          <p>{board.content}</p>
-          <p>작성자: {board.user_id}</p>
-          <p>작성일: {new Date(board.create_at).toLocaleDateString()}</p>
-          <p>조회수: {board.viewCount}</p>
-          <p>좋아요: {board.likeCount}</p>
-          <button onClick={handleDelete}>삭제</button>
-          <button onClick={handleEdit}>수정</button>
-          <button onClick={handleLike}>공감</button>
-          <div>
-                      <h3>Comments</h3>
-                      <ul>
-                        {comments.map(comment => (
-                          <li key={comment.id}>
-                            <p>{comment.content}</p>
-                            <p>작성자: {comment.userId}</p>
-                            <p>작성일: {new Date(comment.createAt).toLocaleDateString()}</p>
-                          </li>
-                        ))}
-                      </ul>
-                      <form onSubmit={handleCommentSubmit}>
-                        <textarea
-                          value={newComment}
-                          onChange={(e) => setNewComment(e.target.value)}
-                          placeholder="Add a comment"
-                          required
-                        />
-                        <button type="submit">댓글 등록</button>
-                      </form>
-                    </div>
-        </div>
-      ) : (
-        <p>No board data</p>
-      )}
-    </div>
+      <div className="discussionview">
+        {board ? (
+            <div className="board">
+              <h2>{board.title}</h2>
+              <p>{board.user_id} | {new Date(board.create_at).toLocaleDateString()}</p>
+              <nan>
+                <p>{board.content}</p>
+              </nan>
+              <p>조회수: {board.viewCount}</p>
+              <p>좋아요: {board.likeCount}</p>
+              <div className="buttons">
+                <button onClick={handleDelete}>삭제</button>
+                <button onClick={handleEdit}>수정</button>
+                <button onClick={handleLike}>공감</button>
+              </div>
+              <div className="comments">
+                <h3>Comments</h3>
+                <ul>
+                  {comments.map(comment => (
+                      <li key={comment.id}>
+                        <p>{comment.userId} | {new Date(comment.createAt).toLocaleDateString()}</p>
+                        <nan className="head">
+                          <p>{comment.content}</p>
+                        </nan>
+                      </li>
+                  ))}
+                </ul>
+                <form onSubmit={handleCommentSubmit}>
+              <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment"
+                  required
+              />
+                  <button type="submit">댓글 등록</button>
+                </form>
+              </div>
+            </div>
+        ) : (
+            <p>No board data</p>
+        )}
+      </div>
   );
 }
+
 
 export default BoardDetail;
