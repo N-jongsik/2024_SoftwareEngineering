@@ -3,6 +3,7 @@ package com.se2024.motoo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.se2024.motoo.dto.MarketIndexDTO;
 import com.se2024.motoo.dto.ResponseOutputDTO;
 import com.se2024.motoo.dto.testDTO;
 import com.se2024.motoo.dto.tickerDTO;
@@ -34,6 +35,43 @@ public class KisService {
         this.webClient = webClientBuilder.baseUrl("https://openapi.koreainvestment.com:9443").build();
         this.objectMapper = objectMapper;
     }
+    // 시장지수 조회
+    private HttpHeaders createIndexHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(accessToken);
+        headers.set("appkey", appkey);
+        headers.set("appSecret", appSecret);
+        headers.set("tr_id", "FHPUP02100000");
+        headers.set("custtype", "P");
+        return headers;
+    }
+
+    public Mono<MarketIndexDTO> getMarketIndex(String fidInputIscd) {
+        HttpHeaders headers = createIndexHttpHeaders();
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/uapi/domestic-stock/v1/quotations/inquire-index-price")
+                        .queryParam("FID_COND_MRKT_DIV_CODE", "U")
+                        .queryParam("FID_INPUT_ISCD", fidInputIscd)
+                        .build())
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(this::parseMarketIndex);
+    }
+
+    private Mono<MarketIndexDTO> parseMarketIndex(String response) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode outputNode = rootNode.path("output");
+            MarketIndexDTO dto = objectMapper.treeToValue(outputNode, MarketIndexDTO.class);
+            return Mono.just(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Mono.error(new RuntimeException("Failed to parse response"));
+        }
+    }
+
     // 거래량순
     private HttpHeaders createVolumeRankHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();

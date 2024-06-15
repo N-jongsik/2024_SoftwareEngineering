@@ -993,3 +993,24 @@ button:hover {
   resize: both;
 }
 
+/*buysellstock modal*/
+.RecatModal__Content_bs{
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.label_bs{
+  font-size: 25px;
+}
+
+.label_bs input{
+  margin-left: 15px;
+  width: 280px;
+  height: 40px;
+  margin-bottom: 15px;
+}
