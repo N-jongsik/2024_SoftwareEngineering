@@ -1,54 +1,43 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function ProfilePage() {
+const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // 가상의 API 호출 - 실제로는 서버에서 유저 정보를 가져와야 합니다.
-    const fetchUserProfile = async () => {
+    const checkSession = async () => {
       try {
-        const response = await fetch('/api/profile'); // 실제 API 엔드포인트로 변경
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
+        const response = await axios.get('/api/me');
+        if (response.data.status === 'success') {
+          setUser(response.data.user);  // 사용자 정보를 상태에 저장
         } else {
-          console.error('Failed to fetch user profile');
+          alert('왜 여기로 가는데 ㅅㅂ');
+          navigate('/login');
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Session check error', error);
+        navigate('/login');
       }
     };
 
-    fetchUserProfile();
-  }, []);
+    checkSession();
+  }, [navigate]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>;  // 사용자 정보를 로드 중일 때 로딩 표시
   }
 
   return (
-    <main>
-      <section className="profile-page">
-        <div className="profile-info">
-          <h2>프로필 정보</h2>
-          <div className="form-group">
-            <label>아이디</label>
-            <p>{user.username}</p>
-          </div>
-          <div className="form-group">
-            <label>이메일</label>
-            <p>{user.email}</p>
-          </div>
-          <div className="form-group">
-            <label>가입일</label>
-            <p>{user.joinDate}</p>
-          </div>
-          {/* 필요한 다른 프로필 정보들을 여기에 추가 */}
-          <button onClick={() => alert('프로필 수정 기능 구현 필요')}>프로필 수정</button>
-        </div>
-      </section>
-    </main>
+    <div>
+      <h1>개인 정보 확인하기</h1>
+      <h2>사용자 이름: {user.userName}</h2>  {/* 사용자의 이름을 출력 */}
+      <h2>사용자 ID: {user.userID}</h2>  {/* 사용자의 ID를 출력 */}
+      <h2>사용자 Email: {user.userEmail}</h2>  {/* 사용자의 이메일을 출력 */}
+      {/* 필요한 다른 사용자 정보 추가 */}
+    </div>
   );
-}
+};
 
-export default ProfilePage;
+export default Dashboard;

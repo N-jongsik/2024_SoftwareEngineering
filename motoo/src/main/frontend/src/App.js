@@ -20,6 +20,8 @@ import Ticker from './components/Ticker';
 import StockInfo from './components/StockInfo'
 import Trade from './components/BuySellStock'
 import Market from "./components/Market";
+import Logout from "./components/Logout";
+import Profile from "./components/Profile";
 
 import './App.css';
 import axios from 'axios';
@@ -60,6 +62,8 @@ function App() {
             <Route path="/trading" element={<Trade />} />
             <Route path="/stock" element={<StockInfo />} />
             <Route path="/market" element={<Market />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/profile" element={<Profile />} />
             {/* 다른 페이지 라우트 추가 */}
           </Routes>
         </div>
