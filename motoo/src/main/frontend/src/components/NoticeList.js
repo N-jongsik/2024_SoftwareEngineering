@@ -45,8 +45,7 @@ function Post() {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={() => window.location.href = '/admin/noticeform'}>등록하기</button>
-    // 버튼짧게 고치기
+      <button className="disbut" onClick={() => window.location.href = '/admin/noticeform'}>공지사항 글쓰기</button>
     </main>
   );
 }

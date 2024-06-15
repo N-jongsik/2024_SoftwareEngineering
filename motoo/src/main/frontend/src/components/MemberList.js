@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../MemberList.css';
 
 const MemberList = () => {
   const [members, setMembers] = useState([]);
@@ -28,10 +29,10 @@ const MemberList = () => {
   };
 
   return (
-    <div>
+    <div className="member-list-container">
       <h2>회원 관리</h2>
-      {error && <p>{error}</p>}
-      <table>
+      {error && <p className="error">{error}</p>}
+      <table className="member-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -49,7 +50,7 @@ const MemberList = () => {
               <td>{member.userName}</td>
               <td>{member.userEmail}</td>
               <td>
-                <button onClick={() => deleteMember(member.id)}>삭제</button>
+                <button className="delete-button" onClick={() => deleteMember(member.id)}>삭제</button>
               </td>
             </tr>
           ))}
@@ -58,5 +59,6 @@ const MemberList = () => {
     </div>
   );
 };
+
 
 export default MemberList;
