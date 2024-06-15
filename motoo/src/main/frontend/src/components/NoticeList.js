@@ -46,6 +46,7 @@ function Post() {
         )}
       </section>
       <button className="disbut" onClick={() => window.location.href = '/noticeform'}>등록하기</button>
+    // 버튼짧게 고치기
     </main>
   );
 }
