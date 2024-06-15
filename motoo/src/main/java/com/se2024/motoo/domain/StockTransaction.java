@@ -1,14 +1,15 @@
-package com.se2024.motoo.dto;
+package com.se2024.motoo.domain;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserStockDTO {
-    private String userID;
-    private String itemName;
-    private String srtnCd;
+@NoArgsConstructor
+@Embeddable
+public class StockTransaction {
     private Integer price;
     private Integer quantity;
     private String transactionType; // "buy" 또는 "sell"

@@ -4,14 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yaml.snakeyaml.events.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserStock{
+public class UserStock {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "userid")
     private Member userID;
@@ -22,10 +27,12 @@ public class UserStock{
     @Column(length = 10)
     private String srtnCd;
 
-    @Column
-    private Integer price;
+    @ElementCollection
+    private List<StockTransaction> transactions = new ArrayList<>();
 
     @Column
     private Integer quantity;
 
+    @Column
+    private Double profitLoss; // 수익률을 저장할 필드
 }

@@ -3,7 +3,7 @@ package com.se2024.motoo.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.se2024.motoo.dto.UserStockDTO;
+import com.se2024.motoo.dto.StockInfoDTO;
 import com.se2024.motoo.dto.StockInfoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,10 +61,10 @@ public class StockService {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
             JsonNode itemNode = rootNode.path("response").path("body").path("items").path("item");
-            List<UserStockDTO> stockItems = new ArrayList<>();
+            List<StockInfoDTO> stockItems = new ArrayList<>();
             if (itemNode.isArray()) {
                 for (JsonNode node : itemNode) {
-                    UserStockDTO stockItem = new UserStockDTO();
+                    StockInfoDTO stockItem = new StockInfoDTO();
                     stockItem.setBasDt(node.path("basDt").asText());
                     stockItem.setSrtnCd(node.path("srtnCd").asText());
                     stockItem.setIsinCd(node.path("isinCd").asText());

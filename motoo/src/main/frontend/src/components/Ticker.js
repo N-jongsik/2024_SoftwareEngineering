@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import './TickerForm.css';  // 스타일 파일 추가
+import './TickerForm.css';
 
 function TickerForm() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [orderType, setOrderType] = useState('buy');  // 매수/매도 구분
+    const [orderType, setOrderType] = useState('buy');
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(0);
     const location = useLocation();
@@ -36,25 +36,24 @@ function TickerForm() {
     const handleOrderSubmit = async () => {
         try {
             const orderData = {
-                ticker: response.srtnCd,
-                orderType,
+                userID: 1, // 사용자 ID를 여기에 설정
+                itemName: response.itmsNm,
+                srtnCd: response.srtnCd,
+                transactionType: orderType,
                 quantity,
-                price
+                price: response.stck_prpr // 현재 주식 가격을 사용
             };
             await axios.post(`/api/order`, orderData);
             alert('주문이 성공적으로 접수되었습니다.');
         } catch (error) {
-            alert('주문에 실패했습니다.');
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(error.response.data.message);
+            } else {
+                alert('주문에 실패했습니다.');
+            }
             console.error(error);
         }
     };
-
-    useEffect(() => {
-        if (response) {
-            // 주문가격 업데이트
-            setPrice(response.stck_prpr * quantity);
-        }
-    }, [quantity, response]);
 
     if (!response) {
         return <p>Loading...</p>;
@@ -119,8 +118,6 @@ function TickerForm() {
                         />
                         매도
                     </label>
-                </div>
-                <div className="order-details">
                     <label>
                         수량:
                         <input
@@ -129,10 +126,9 @@ function TickerForm() {
                             onChange={(e) => setQuantity(Number(e.target.value))}
                         />
                     </label>
-                    <div className="order-price">
-                        <label>주문 가격:</label>
-                        <span>{price.toLocaleString()} 원</span>
-                    </div>
+                    <label>
+                        주문가격: {response.stck_prpr * quantity} 원
+                    </label>
                 </div>
                 <button onClick={handleOrderSubmit}>주문하기</button>
             </div>
