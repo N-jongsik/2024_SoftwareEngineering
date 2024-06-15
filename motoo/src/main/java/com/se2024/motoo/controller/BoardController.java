@@ -3,15 +3,21 @@ package com.se2024.motoo.controller;
 import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.CommentDTO;
+import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.service.BoardService;
 import com.se2024.motoo.service.CommentService;
+import com.se2024.motoo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.view.RedirectView;
 @RestController
@@ -20,14 +26,15 @@ public class BoardController { //게시판과 공지사항 controller
     private final BoardService boardService;
 
     private final CommentService commentService;
+    private final MemberService memberService;
     @PostMapping("/api/board") //게시물 업로드
     public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO, HttpSession session) {
-                //유저 id 가져오는거 수정
-                //String userId = (String) session.getAttribute("loginID");
-        Member userId = (Member) session.getAttribute("loginID");
-        //String userId = (String) "loginID";
+        //Member userId = (Member) session.getAttribute("user");
+        String userId = (String) boardDTO.getUs();
+        // Optional<Member> mem = memberService.findByUserID(userId);
+        Member mem = memberService.findByUserID(userId).orElse(null);
         if (userId != null) {
-            boardDTO.setUserID(userId);
+            boardDTO.setUserID(mem);
             boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {

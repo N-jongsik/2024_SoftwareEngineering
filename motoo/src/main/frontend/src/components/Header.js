@@ -10,6 +10,7 @@ function Header({ isLoggedIn, onLogout }) {
     const searchResultsRef = useRef(null);
 
     const location = useLocation();
+    const userID = location.state?.variable;
 
     useEffect(() => {
         const fetchResponse = async () => {
@@ -53,21 +54,37 @@ function Header({ isLoggedIn, onLogout }) {
         navigate(`/stockinfo?itmsNm=${item.itmsNm}&srtnCd=${item.srtnCd}`); // Navigate to StockInfo page with parameters
     };
 
+    const handleBoardLinkClickh = () => {
+        navigate('/home', { state: { variable: userID } });
+      };
+    const handleBoardLinkClickm = () => {
+            navigate('/market', { state: { variable: userID } });
+          };
+    const handleBoardLinkClickn = () => {
+                navigate('/news', { state: { variable: userID } });
+              };
+    const handleBoardLinkClickp = () => {
+            navigate('/post', { state: { variable: userID } });
+          };
+    const handleBoardLinkClickr = () => {
+                navigate('/ranking', { state: { variable: userID } });
+              };
+
     return (
         <header>
             <div className="logo">MoToo</div>
             <nav>
                 <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/market">Market</Link></li>
-                    <li><Link to="/news">News</Link></li>
-                    <li><Link to="/post">Board</Link></li>
-                    <li><Link to="/ranking">Ranking</Link></li>
+                    <li><button onClick={handleBoardLinkClickh} >{userID && <p>User ID: {userID}</p>}Home</button></li>
+                    <li><button onClick={handleBoardLinkClickm}>Market</button></li>
+                    <li><button onClick={handleBoardLinkClickn}>News</button></li>
+                    <li><button onClick={handleBoardLinkClickp}>Board</button></li>
+                    <li><button onClick={handleBoardLinkClickr}>Ranking</button></li>
                     {/*<li><Link to="/trading">Trading</Link></li>*/}
                     <li>
                     <Link
                         to="/trading"
-                        state={{ backgroundLocation: location }}
+                        state={{ backgroundLocation: location, variable: userID }}
                     >
                         Trading
                     </Link>
@@ -98,8 +115,8 @@ function Header({ isLoggedIn, onLogout }) {
                             </div>
                         )}
                     </li>
-                    <li><Link to="/profile">Profile</Link></li>
-                    <li><Link to="/login">Login</Link></li>
+                    <li><Link to="/profile" state={{  variable: userID }}>Profile</Link></li>
+                    <li><Link to="/login" >Login</Link></li>
                 </ul>
             </nav>
         </header>

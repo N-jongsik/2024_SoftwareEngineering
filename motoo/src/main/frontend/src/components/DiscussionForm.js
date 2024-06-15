@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 
 function DiscussionForm() {
@@ -16,6 +16,8 @@ function DiscussionForm() {
   const [likeCount, setLikeCount] = useState(0);
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const location = useLocation();
+  const userID = location.state?.variable;
   useEffect(() => {
     if (boardId) {
       const fetchBoard = async () => {
@@ -49,6 +51,7 @@ function DiscussionForm() {
           title,
           board_type: boardType,
           content,
+          us : userID,
         });
       }
       navigate('/post');
