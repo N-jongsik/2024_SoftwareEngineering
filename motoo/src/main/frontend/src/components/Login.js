@@ -24,7 +24,7 @@ const Login = () => {
       if (response.data.status === 'success') {
         // 예시: 로그인 성공 시 리다이렉트 또는 다른 처리
         alert('로그인 성공');
-        window.location.href = '/stock';
+        window.location.href = '/';
       } else {
         setLoginError(response.data.message);
       }
