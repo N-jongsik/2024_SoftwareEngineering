@@ -17,7 +17,6 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-
     // 사용자 삭제
     @DeleteMapping("/api/members/{id}")
     public ResponseEntity<AdminResponseDTO> deleteUser(@PathVariable("id") Long id) {

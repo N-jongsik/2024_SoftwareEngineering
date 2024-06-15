@@ -1,5 +1,6 @@
 package com.se2024.motoo.controller;
 
+import com.se2024.motoo.domain.Member;
 import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.CommentDTO;
 import com.se2024.motoo.service.BoardService;
@@ -16,16 +17,16 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 public class BoardController { //게시판과 공지사항 controller
-
     private final BoardService boardService;
+
     private final CommentService commentService;
     @PostMapping("/api/board") //게시물 업로드
-    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO){//}, HttpSession session) {
-        //유저 id 가져오는거 수정
-        //String userId = (String) session.getAttribute("loginID");
-        String userId = boardDTO.getTitle();
+    public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO, HttpSession session) {
+                //유저 id 가져오는거 수정
+                //String userId = (String) session.getAttribute("loginID");
+        Member userId = (Member) session.getAttribute("loginID");
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {
@@ -34,12 +35,11 @@ public class BoardController { //게시판과 공지사항 controller
     }
 
     @PostMapping("/api/notice") //공지글 업로드
-    public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+    public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO, HttpSession session) {
         //유저 id 가져오는거 수정
-        //String userId = (String) session.getAttribute("loginID");
-        String userId = boardDTO.getTitle();
+        Member userId = (Member)session.getAttribute("loginID");
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 1);
             return ResponseEntity.ok().build();
         } else {
@@ -47,12 +47,13 @@ public class BoardController { //게시판과 공지사항 controller
         }
     }
     @PostMapping("/api/qna") //문의사항 업로드
-    public ResponseEntity<?> createQnA(@RequestBody BoardDTO boardDTO){//, HttpSession session) {
+    public ResponseEntity<?> createQnA(@RequestBody BoardDTO boardDTO, HttpSession session) {
         //유저 id 가져오는거 수정
-        //String userId = (String) session.getAttribute("loginID");
-        String userId = boardDTO.getTitle();
+
+        Member userId = (Member)session.getAttribute("loginID");
+
         if (userId != null) {
-            boardDTO.setUser_id(userId);
+            boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 2);
             return ResponseEntity.ok().build();
         } else {

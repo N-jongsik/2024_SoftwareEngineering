@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se2024.motoo.dto.StockDTO;
 import com.se2024.motoo.dto.StockInfoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,35 +20,45 @@ import java.util.List;
 public class StockService {
 
     private final RestTemplate restTemplate;
-
+    private final String apiUrl;
+    private final String serviceKey;
     @Autowired
-    public StockService(RestTemplate restTemplate) {
+    public StockService(RestTemplate restTemplate, @Value("${stock.api.url}") String apiUrl, @Value("${stock.api.key}") String serviceKey) {
         this.restTemplate = restTemplate;
+        this.apiUrl = apiUrl;
+        this.serviceKey = serviceKey;
     }
 
     public StockInfoResponse getStockInfo(String itemName) {
-        // 호출된 시점의 어제 날짜 구하기
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-//        String yesterdayStr = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String yesterdayStr = "20240604";
-        String apiUrl = "https://apis.data.go.kr/1160100/service/GetKrxListedInfoService/getItemInfo";
-        String serviceKey = "WkiWHxfMQMxWZ2BFbkUi62BgCOv%2BCMoPtKMQnU%2F8hViLc0Dl%2BmeP1koWyExqCDNi0JldIRpknndrATfh8%2B2mOQ%3D%3D";
-        String apiResponse = callExternalApi(apiUrl, serviceKey, yesterdayStr, itemName);
-
+        String apiResponse = callExternalApi(itemName);
         return parseJsonResponse(apiResponse);
     }
 
-    private String callExternalApi(String apiUrl, String serviceKey, String date, String itemName) {
-        return restTemplate.getForObject(
-                apiUrl + "?serviceKey=" + serviceKey + "&resultType=json&beginBasDt=" + date + "&likeItmsNm=" + itemName,
-                String.class
-        );
+    private String callExternalApi(String itemName) {
+        try {
+            String encodedItemName = URLEncoder.encode(itemName, StandardCharsets.UTF_8.toString());
+            String encodedServiceKey = URLEncoder.encode(serviceKey, StandardCharsets.UTF_8.toString());
+
+            String url = String.format("%s?serviceKey=%s&resultType=json&basDt=20240613&likeItmsNm=%s",
+                    apiUrl, encodedServiceKey, encodedItemName);
+            URI uri = new URI(url);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + url);
+
+            return restTemplate.getForObject(uri, String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("API 호출 중 오류 발생: " + e.getMessage(), e);
+        }
     }
 
     private StockInfoResponse parseJsonResponse(String json) {
+        if (json == null || json.startsWith("<")) {
+            System.err.println("API 응답이 예상한 JSON 형식이 아닙니다: " + json);
+            throw new IllegalArgumentException("API 응답이 예상한 JSON 형식이 아닙니다.");
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            // JSON 문자열을 StockInfoResponse 객체로 변환
             JsonNode rootNode = objectMapper.readTree(json);
             JsonNode itemNode = rootNode.path("response").path("body").path("items").path("item");
             List<StockDTO> stockItems = new ArrayList<>();
@@ -68,7 +80,7 @@ public class StockService {
             return response;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("JSON 응답 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
 }

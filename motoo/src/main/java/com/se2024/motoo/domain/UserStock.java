@@ -13,7 +13,7 @@ import org.yaml.snakeyaml.events.Event;
 public class UserStock{
     @Id
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     private Member userID;
 
     @Column(length = 100)

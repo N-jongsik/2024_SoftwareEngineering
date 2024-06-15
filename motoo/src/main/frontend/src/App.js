@@ -19,6 +19,10 @@ import QnAView from './components/QnAView';
 import QnAList from './components/QnAList';
 import MemberList from './components/MemberList';
 import Ticker from './components/Ticker';
+import StockInfo from './components/StockInfo'
+import Trade from './components/BuySellStock'
+import Market from "./components/Market";
+
 import './App.css';
 import axios from 'axios';
 
@@ -59,6 +63,9 @@ function App() {
             <Route path="/qna/:boardId" element={<QnAView />} />
             <Route path="/admin/memberlist" element={<MemberList />} />
             <Route path="/ticker" element={<Ticker />} />
+            <Route path="/trading" element={<Trade />} />
+            <Route path="/stock" element={<StockInfo />} />
+            <Route path="/market" element={<Market />} />
             {/* 다른 페이지 라우트 추가 */}
           </Routes>
         </div>

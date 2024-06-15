@@ -9,30 +9,34 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Table(name = "user")
 public class Member {
     @Id // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) //자동으로 값 1씩 증가
-    @Column(name = "_id", unique = true, nullable = false)
+    @Column(name = "_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 100, name="user_id")
-    @NotNull(message = "아이디를 입력해주세요")
+    @Column(name="userid")
     private String userID;
 
-    @Column(length = 100, nullable = false)
-    @NotNull(message = "비밀번호를 입력해주세요")
+    @Column(length = 100)
     private String pwd;
 
-    @Column(length = 100, nullable = false)
-    @NotNull(message = "이름을 입력해주세요")
+    @Column
     private String userName;
 
-    @Column(length = 100, unique = true, nullable = false)
-    @NotNull(message = "이메일을 입력해주세요")
+    @Column
     private String userEmail;
 
-
+    public static Member from(SignupDTO signupDTO) {
+        Member member = new Member();
+        member.setUserID(signupDTO.getUserID());
+        member.setPwd(signupDTO.getPwd());
+        member.setUserName(signupDTO.getUserName());
+        member.setUserEmail(signupDTO.getUserEmail());
+        return member;
+    }
 
     @Builder
     public static Member tomember(SignupDTO signupDTO){
