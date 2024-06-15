@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation} from 'react-router-dom';
 import axios from 'axios';
 
 function Header() {
@@ -7,6 +7,9 @@ function Header() {
     const [response, setResponse] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate(); // Initialize useNavigate
+    const searchResultsRef = useRef(null);
+
+    const location = useLocation();
 
     useEffect(() => {
         const fetchResponse = async () => {
@@ -33,6 +36,19 @@ function Header() {
         return () => clearTimeout(timeoutId);
     }, [item_name]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
+                setResponse([]);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleItemClick = (item) => {
         navigate(`/stockinfo?itmsNm=${item.itmsNm}&srtnCd=${item.srtnCd}`); // Navigate to StockInfo page with parameters
     };
@@ -47,7 +63,15 @@ function Header() {
                     <li><Link to="/news">News</Link></li>
                     <li><Link to="/post">Board</Link></li>
                     <li><Link to="/ranking">Ranking</Link></li>
-                    <li><Link to="/trading">Trading</Link></li>
+                    {/*<li><Link to="/trading">Trading</Link></li>*/}
+                    <li>
+                    <Link
+                        to="/trading"
+                        state={{ backgroundLocation: location }}
+                    >
+                        Trading
+                    </Link>
+                    </li>
                     <li>
                         <form onSubmit={(e) => e.preventDefault()}>
                             <label htmlFor="stock-search">
@@ -59,13 +83,14 @@ function Header() {
                                     onChange={(e) => setItemName(e.target.value)}
                                 />
                             </label>
-                            <button type="submit">검색</button>
+                            {/*<button type="submit">검색</button>*/}
                         </form>
                         {error && <div>Error: {error.message}</div>}
                         {response.length > 0 && (
-                            <div className="search-results">
+                            <div className="search-results" ref={searchResultsRef}>
                                 {response.map((item, index) => (
-                                    <div key={index} className="search-result-item" onClick={() => handleItemClick(item)}>
+                                    <div key={index} className="search-result-item"
+                                         onClick={() => handleItemClick(item)}>
                                         <h2>{item.itmsNm}</h2>
                                         <p>{item.srtnCd} | {item.mrktCtg} | {item.data_rank} {item.corpNm}</p>
                                     </div>
