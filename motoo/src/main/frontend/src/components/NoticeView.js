@@ -33,6 +33,8 @@ function BoardDetail() {
     }
   };
 
+
+
   const handleEdit = () => {
     navigate(`/noticeform/${boardId}`); // 수정 페이지로 이동
   };

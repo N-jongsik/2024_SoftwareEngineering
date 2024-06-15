@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation  } from 'react-router-dom';
 import Header from './components/Header';
+import AdminHeader from './components/AdminHeader';
 import Home from './components/Home';
 import SignupPage from './components/SignupPage';
 import Login from './components/Login';
@@ -16,6 +17,7 @@ import NoticeList from './components/NoticeList';
 import QnAFrom from './components/QnAForm';
 import QnAView from './components/QnAView';
 import QnAList from './components/QnAList';
+import MemberList from './components/MemberList';
 import Ticker from './components/Ticker';
 import './App.css';
 import axios from 'axios';
@@ -32,7 +34,7 @@ function App() {
   return (
       <Router>
         <div className="App">
-          <Header />
+          <HeaderWithAdmin />
           <Routes>
             <Route path="/" element={<Home data={homeData} />} />
             <Route path="/signup" element={<SignupPage />} />
@@ -52,6 +54,7 @@ function App() {
             <Route path="/qnaform" element={<QnAFrom />} />
             <Route path="/qnaform/:boardId" element={<QnAFrom />} />
             <Route path="/qna/:boardId" element={<QnAView />} />
+            <Route path="/admin/memberlist" element={<MemberList />} />
             <Route path="/ticker" element={<Ticker />} />
             {/* 다른 페이지 라우트 추가 */}
           </Routes>
@@ -60,4 +63,9 @@ function App() {
   );
 }
 
+function HeaderWithAdmin() {
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
+  return isAdminPath ? <AdminHeader /> : <Header />;
+}
 export default App;

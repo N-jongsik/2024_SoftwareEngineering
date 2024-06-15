@@ -50,6 +50,7 @@ function DiscussionForm() {
     }
   };
 
+
   return (
     <main>
       <section className="discussion">
