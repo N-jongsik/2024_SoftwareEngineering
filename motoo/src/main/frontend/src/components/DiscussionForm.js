@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
 
 function DiscussionForm() {
   const { boardId } = useParams();
@@ -14,7 +15,7 @@ function DiscussionForm() {
   const [viewCount, setViewCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
-
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   useEffect(() => {
     if (boardId) {
       const fetchBoard = async () => {
@@ -75,11 +76,20 @@ function DiscussionForm() {
     }
   };
 
-  const handleItemSelect = (item) => {
+  const handleItemClick  = (item) => {
     setBoardType(item.itmsNm);
     setResponse([]);
   };
 
+  const openModalAndSearch = async (e) => {
+    handleSearch(e);
+    setModalIsOpen(true);
+  };
+
+  const handleItemSelectAndCloseModal = (item) => {
+    handleItemClick(item);
+    setModalIsOpen(false);
+  };
   return (
     <main>
       <section className="discussion">
@@ -105,23 +115,24 @@ function DiscussionForm() {
               placeholder="Enter stock name"
               required
             />
-            <button type="button" onClick={handleSearch}>검색</button>
-            {error && <div className="error-message">Error: {error}</div>}
-            {response.length > 0 && (
-              <div className="stock-info-list">
-                {response.map((item) => (
-                  <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelect(item)}>
-                    <h2 className="stock-name">{item.itmsNm}</h2>
-                    <p className="stock-details">
-                      <span className="stock-code">{item.srtnCd}</span> |
-                      <span className="stock-category">{item.mrktCtg}</span> |
-                      <span className="stock-rank">{item.data_rank}</span> |
-                      <span className="stock-corp-name">{item.corpNm}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+            <button type="button" onClick={openModalAndSearch}>검색</button>
+            {/*<button type="button" onClick={handleSearch}>검색</button>*/}
+            {/*{error && <div className="error-message">Error: {error}</div>}*/}
+            {/*{response.length > 0 && (*/}
+            {/*  <div className="stock-info-list">*/}
+            {/*    {response.map((item) => (*/}
+            {/*      <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelect(item)}>*/}
+            {/*        <h2 className="stock-name">{item.itmsNm}</h2>*/}
+            {/*        <p className="stock-details">*/}
+            {/*          <span className="stock-code">{item.srtnCd}</span> |*/}
+            {/*          <span className="stock-category">{item.mrktCtg}</span> |*/}
+            {/*          <span className="stock-rank">{item.data_rank}</span> |*/}
+            {/*          <span className="stock-corp-name">{item.corpNm}</span>*/}
+            {/*        </p>*/}
+            {/*      </div>*/}
+            {/*    ))}*/}
+            {/*  </div>*/}
+            {/*)}*/}
           </div>
             {/* <select
               name="board_type"
@@ -146,6 +157,36 @@ function DiscussionForm() {
           <button type="submit">등록하기</button>
         </form>
       </section>
+
+      <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          className="ReactModal__Content"
+          overlayClassName="ReactModal__Overlay"
+      >
+        <div className="modal-header">
+        <button className="modal-close" onClick={() => setModalIsOpen(false)}>&times;</button>
+        </div>
+        <h2>검색 결과</h2>
+        <div className="stock-info-list">
+          {error && <div className="error-message">Error: {error}</div>}
+          {response.length > 0 && (
+              <div className="stock-info-list" >
+                {response.map((item) => (
+                    <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelectAndCloseModal(item)}>
+                      <h2 className="stock-name">{item.itmsNm}</h2>
+                      <p className="stock-details">
+                        <span className="stock-code">{item.srtnCd}</span> |
+                        <span className="stock-category">{item.mrktCtg}</span> |
+                        <span className="stock-rank">{item.data_rank}</span> |
+                        <span className="stock-corp-name">{item.corpNm}</span>
+                      </p>
+                    </div>
+                ))}
+              </div>
+          )}
+        </div>
+      </Modal>
     </main>
   );
 }
