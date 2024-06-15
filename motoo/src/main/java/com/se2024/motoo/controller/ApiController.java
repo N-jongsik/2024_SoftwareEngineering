@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.view.RedirectView;
+
 @Controller
 @RequiredArgsConstructor
 public class ApiController {
@@ -30,7 +32,7 @@ public class ApiController {
     private final MemberRepository memberRepository;
 
     @GetMapping("/api/boards")
-    public ResponseEntity<List<BoardDTO>> getAllBoards(){
+    public ResponseEntity<List<BoardDTO>> getAllBoards() {
         try {
             List<BoardDTO> boardList = boardService.getAllBoards();
             return ResponseEntity.ok(boardList);
@@ -42,12 +44,13 @@ public class ApiController {
     }
 
     @GetMapping("/api/notice")
-    public ResponseEntity<List<BoardDTO>> getAllNotices(){
+    public ResponseEntity<List<BoardDTO>> getAllNotices() {
         List<BoardDTO> boardlist = boardService.getAllNotices();
         return ResponseEntity.ok(boardlist);
     }
+
     @GetMapping("/api/qna")
-    public ResponseEntity<List<BoardDTO>> getAllQnAs(){
+    public ResponseEntity<List<BoardDTO>> getAllQnAs() {
         List<BoardDTO> boardlist = boardService.getAllQnAs();
         return ResponseEntity.ok(boardlist);
     }
@@ -63,6 +66,7 @@ public class ApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @GetMapping("/api/qna/{board_id}")
     public ResponseEntity<BoardDTO> getQnAById(@PathVariable("board_id") Long board_id) {
         try {
@@ -86,52 +90,105 @@ public class ApiController {
     }
 
 
-
-
     private final MemberService memberService;
 
-    @GetMapping("/signup")
-    public String saveForm(){
-        return "signup";
-    }
+    //    @GetMapping("/signup")
+//    public String saveForm(){
+//        return "signup";
+//    }
+//    @GetMapping("/api/signup")
+//    @ResponseBody
+//    public String signupForm(Model model, HttpSession session) {
+//        return "Login";
+//    }
 
-    @PostMapping("/signup")
-    @ResponseBody
-    public String join(@ModelAttribute SignupDTO signupDTO, Model model){
-        try {
-            SignupResponseDTO response = memberService.duplicationCheck(signupDTO);
-            if (!response.isAvailable()) {
-                model.addAttribute("errorMessage", "중복된 아이디입니다.");
-                return "중복된 아이디입니다.";
-            }
-            // 중복된 아이디가 없을 경우 회원가입 진행
-            System.out.println("UserController.signup");
-            System.out.println("signupDTO = " + signupDTO);
-            memberService.save(signupDTO);
-            return "회원가입이 정상적으로 처리되었습니다.";
-        }catch (Error error){
-            return "회원가입이 비정상적으로 처리되었습니다.";
-        }
-    }
+//    @PostMapping("/signup")
+//    @ResponseBody
+//    public String join(@ModelAttribute SignupDTO signupDTO, Model model){
+//        try {
+//            SignupResponseDTO response = memberService.duplicationCheck(signupDTO);
+//            if (!response.isAvailable()) {
+//                model.addAttribute("errorMessage", "중복된 아이디입니다.");
+//                return "중복된 아이디입니다.";
+//            }
+//            // 중복된 아이디가 없을 경우 회원가입 진행
+//            System.out.println("UserController.signup");
+//            System.out.println("signupDTO = " + signupDTO);
+//            memberService.save(signupDTO);
+//            return "회원가입이 정상적으로 처리되었습니다.";
+//        }catch (Error error){
+//            return "회원가입이 비정상적으로 처리되었습니다.";
+//        }
+//    }
 
-    @GetMapping("/login")
-    public String loginForm(){
-        return "login";
-    }
+//    @PostMapping("/signup")
+//    @ResponseBody
+//    public Map<String, String> join(@ModelAttribute SignupDTO signupDTO) {
+//        Map<String, String> response = new HashMap<>();
+//        try {
+//            SignupResponseDTO responseDTO = memberService.duplicationCheck(signupDTO);
+//            if (!responseDTO.isAvailable()) {
+//                response.put("status", "error");
+//                response.put("message", "중복된 아이디입니다.");
+//                return response;
+//            }
+//            // 중복된 아이디가 없을 경우 회원가입 진행
+//            memberService.save(signupDTO);
+//            response.put("status", "success");
+//            response.put("message", "회원가입이 정상적으로 처리되었습니다.");
+//        } catch (Exception e) {
+//            response.put("status", "error");
+//            response.put("message", "회원가입이 비정상적으로 처리되었습니다.");
+//            // 스택 트레이스를 출력하여 디버깅에 도움을 줄 수 있음
+//            e.printStackTrace();
+//        }
+//        return response;
+//    }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session, Model model){
-        SignupDTO loginResult =memberService.login(signupDTO);
 
-        if(loginResult != null){
-            session.setAttribute("loginID", loginResult.getUserID());
-            return "redirect:/user/stock";
-        }else{
-            model.addAttribute("loginError", "회원 정보가 없습니다");
-            System.out.println("로그인 실패!!!!!!!!!!");
-            return "login";
-        }
-    }
+    //    @GetMapping("/login")
+//    public String loginForm(){
+//        return "login";
+//    }
+//
+//    @PostMapping("/login")
+//    public String login(@ModelAttribute SignupDTO signupDTO, HttpSession session, Model model){
+//        SignupDTO loginResult =memberService.login(signupDTO);
+//
+//        if(loginResult != null){
+//            session.setAttribute("loginID", loginResult.getUserID());
+//            return "redirect:/user/stock";
+//        }else{
+//            model.addAttribute("loginError", "회원 정보가 없습니다");
+//            System.out.println("로그인 실패!!!!!!!!!!");
+//            return "login";
+//        }
+//    }
+//    @GetMapping("/api/login")
+//    @ResponseBody
+//    public String loginForm(Model model, HttpSession session) {
+//        String loginID = (String) session.getAttribute("loginID");
+//        Optional<Member> mem = memberRepository.findByUserID(loginID);
+//        if (loginID != null) {
+//            model.addAttribute("user", mem);
+//            return "StockInfo";
+//        }
+//        return "Login";
+//    }
+
+//    @PostMapping("/api/login")
+//    public ResponseEntity<RedirectView> login(@ModelAttribute SignupDTO signupDTO, HttpSession session, Model model) {
+//        SignupDTO loginResult = memberService.login(signupDTO);
+//
+//        if (loginResult != null) {
+//            session.setAttribute("loginID", loginResult.getUserID());
+//            return ResponseEntity.ok().body(new RedirectView("/user/stock"));
+//        } else {
+//            model.addAttribute("loginError", "회원 정보가 없습니다");
+//            System.out.println("로그인 실패!!!!!!!!!!");
+//            return ResponseEntity.ok().body(new RedirectView("/api/login"));
+//        }
+//    }
 
     // 로그아웃
     @PostMapping("/logout")
@@ -139,28 +196,6 @@ public class ApiController {
         session.invalidate();
         System.out.println("사용자 로그아웃!!!!!!!!!!!");
         return "redirect:/login?logout=true";
-    }
-    
-    //아이디 중복확인
-    @PostMapping("/checkDuplicate")
-    @ResponseBody
-    public SignupResponseDTO checkDuplicate(@RequestBody SignupDTO signupDTO) {
-        return memberService.duplicationCheck(signupDTO);
-    }
-
-    @GetMapping("/user/stock")
-    public String stockPage(){
-        return "stock";
-    }
-
-    @GetMapping("/news")
-    public String newsPage() {
-        return "news";
-    }
-
-    @GetMapping("/ranking")
-    public String rankingPage() {
-        return "ranking";
     }
 
     @GetMapping("/api/profile")
