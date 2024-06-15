@@ -41,15 +41,18 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/ranking" element={<Ranking />} />
             <Route path="/post" element={<Post />} />
+            <Route path="/admin/post" element={<Post />} />
             <Route path="/news" element={<News />} />
             <Route path="/newsform" element={<NewsForm />} />
             <Route path="/discussionform" element={<DiscussionBoard />} />
             <Route path="/discussionform/:boardId" element={<DiscussionBoard />} />
             <Route path="/boards/:boardId" element={<DiscussionView />} />
             <Route path="/noticelist" element={<NoticeList />} />
-            <Route path="/noticeform" element={<NoticeFrom />} />
+            <Route path="/admin/noticelist" element={<NoticeList />} />
+            <Route path="/admin/noticeform" element={<NoticeFrom />} />
             <Route path="/noticeform/:boardId" element={<NoticeFrom />} />
             <Route path="/notice/:boardId" element={<NoticeView />} />
+            <Route path="/admin/QnAlist" element={<QnAList />} />
             <Route path="/QnAlist" element={<QnAList />} />
             <Route path="/qnaform" element={<QnAFrom />} />
             <Route path="/qnaform/:boardId" element={<QnAFrom />} />

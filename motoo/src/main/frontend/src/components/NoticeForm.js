@@ -44,7 +44,7 @@ function DiscussionForm() {
           content,
         });
       }
-      navigate('/noticelist');
+      navigate('/admin/noticelist');
     } catch (error) {
       console.error('Error submitting form', error);
     }

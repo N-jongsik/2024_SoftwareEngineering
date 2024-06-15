@@ -33,7 +33,7 @@ function Post() {
   return (
     <main>
       <section className="stock-list">
-        <h2>Board</h2>
+        <h2>공지사항</h2>
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
@@ -45,7 +45,7 @@ function Post() {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={() => window.location.href = '/noticeform'}>등록하기</button>
+      <button className="disbut" onClick={() => window.location.href = '/admin/noticeform'}>등록하기</button>
     // 버튼짧게 고치기
     </main>
   );
