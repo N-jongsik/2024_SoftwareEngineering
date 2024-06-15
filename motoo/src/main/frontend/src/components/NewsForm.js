@@ -49,25 +49,25 @@ function NewsForm() {
   };
 
   return (
-    <main>
-      <section className="news-form-section">
-        <h2>뉴스 등록</h2>
-        <form>
-          <label htmlFor="newsTitle">제목</label>
-          <input type="text" id="newsTitle" value={newsTitle} onChange={handleTitleChange} required />
+      <main>
+        <section className="news-form-section">
+          <h2>뉴스 등록</h2>
+          <form>
+            <label htmlFor="newsTitle">제목</label>
+            <input type="text" id="newsTitle" value={newsTitle} onChange={handleTitleChange} required />
 
-          <label htmlFor="newsImage">이미지 파일</label>
-          <input type="file" id="newsImage" value={newsImage} onChange={handleImageChange} accept="image/*" required />
+            <label htmlFor="newsImage">이미지 파일</label>
+            <input type="file" id="newsImage" value={newsImage} onChange={handleImageChange} accept="image/*" required />
 
-          <label htmlFor="newsContent">내용</label>
-          <textarea id="newsContent" value={newsContent} onChange={handleContentChange} rows="5" required></textarea>
+            <label htmlFor="newsContent">내용</label>
+            <textarea id="newsContent" value={newsContent} onChange={handleContentChange} rows="5" required></textarea>
 
-          <label htmlFor="newsDate">날짜</label>
-          <input type="date" id="newsDate" value={newsDate} onChange={handleDateChange} required />
-          <button type="button" onClick={submitNews}>등록</button>
-        </form>
-      </section>
-    </main>
+            <label htmlFor="newsDate">날짜</label>
+            <input type="date" id="newsDate" value={newsDate} onChange={handleDateChange} required />
+            <button type="button" onClick={submitNews}>등록</button>
+          </form>
+        </section>
+      </main>
   );
 }
 

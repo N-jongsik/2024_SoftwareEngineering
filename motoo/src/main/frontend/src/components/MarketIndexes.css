@@ -1,0 +1,47 @@
+.market-indexes {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.market-index {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 30%;
+}
+
+.market-index-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.market-index-header img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.market-index-value h2 {
+    font-size: 2rem;
+    margin: 10px 0;
+}
+
+.market-index-change {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.market-index-change .up {
+    color: red;
+}
+
+.market-index-change .down {
+    color: blue;
+}
