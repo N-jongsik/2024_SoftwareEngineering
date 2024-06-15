@@ -48,14 +48,14 @@ function Header() {
                     </form>
                     {error && <div>Error: {error.message}</div>}
                     {response && (
-                        <div>
-                            {response.map((item, index) => (
-                                <div key={index}>
-                                    <h2>{item.itmsNm}</h2>
-                                    <p>{item.srtnCd.substring(1)} | {item.mrktCtg} | {item.data_rank} {item.corpNm}</p>
-                                </div>
-                            ))}
-                        </div>
+                           <div className="search-results">
+                           {response.map((item, index) => (
+                               <div key={index} className="search-result-item">
+                                   <h2>{item.itmsNm}</h2>
+                                   <p>{item.srtnCd.substring(1)} | {item.mrktCtg} | {item.data_rank} {item.corpNm}</p>
+                               </div>
+                           ))}
+                       </div>
                     )}
                     <li><Link to="/profile">Profile</Link></li>
                     <li><Link to="/login">Login</Link></li>

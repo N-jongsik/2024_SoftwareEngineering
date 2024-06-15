@@ -1,8 +1,32 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 import Chart from 'chart.js/auto';
+import { Link } from 'react-router-dom';
 
+const quizData = {
+  question: '"공모시장" 은 주식 거래가 처음 이루어지는 시장으로, 기업이 새로 발행하는 주식을 일반 투자자에게 판매하는 시장이다.',
+  options: [
+    { text: 'O', votes: 60 },
+    { text: 'X', votes: 40 },
+  ],
+  answer: 'O'
+};
 
 function Home() {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(true);
+
+  const totalVotes = quizData.options.reduce((sum, option) => sum + option.votes, 0);
+
+
+  const handleOptionClick = (optionText) => {
+    if (selectedOption === optionText) {
+      setSelectedOption(null);
+    } else {
+      setSelectedOption(optionText);
+    }
+  };
+
   const kospiChartRef = useRef(null);
   const kosdaqChartRef = useRef(null);
 
@@ -52,6 +76,56 @@ function Home() {
 
   return (
     <main>
+      <Modal 
+        isOpen={modalIsOpen} 
+        onRequestClose={() => setModalIsOpen(false)}
+        className="ReactModal__Content"
+        overlayClassName="ReactModal__Overlay"
+      >
+        <div className="modal-header">
+          {/* <h2 className="modal-title">Welcome</h2> */}
+          <button className="modal-close" onClick={() => setModalIsOpen(false)}>&times;</button>
+        </div>    
+        <section>
+        <div className="quiz-container">
+          {/* <button onClick={QuizOptionClick} className="init"><h2>오늘의 퀴즈</h2></button> */}
+          <b><h1>오늘의 퀴즈</h1></b> 
+          <div>
+            <h3><b>{quizData.question}</b></h3>
+            <div className="options-container">
+              {quizData.options.map((option, index) => (
+                <div 
+                  key={index} 
+                  className={`option 
+                    ${selectedOption === option.text && option.text === quizData.answer ? 'correct' : ''} 
+                    ${selectedOption && selectedOption === option.text && selectedOption !== quizData.answer ? 'incorrect' : ''}`}
+                  onClick={() => handleOptionClick(option.text)}
+                >
+                  {option.text}
+                  {selectedOption && (
+                    <span className="percentage">
+                      {((option.votes / totalVotes) * 100).toFixed(2)}%
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {selectedOption && (
+              <div className="feedback">
+                {selectedOption === quizData.answer ? (
+                  <div className="correct">정답입니다!</div>
+                ) : (
+                  <div className="incorrect">
+                    오답입니다.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+        </section>
+      </Modal>
+
       <section className="market-indices">
         <h2>KOSPI & KOSDAQ</h2>
         <div className="chart-container">
@@ -63,7 +137,7 @@ function Home() {
         <div className="popular-stocks">
           <div className="popular-header">
             <h2>인기 주식 종목</h2>
-            <a href="#" title="더보기">더보기</a>
+            <a title="더보기"><Link to="/market">더보기</Link></a>
           </div>
           <table className="stock-table">
             <thead>
