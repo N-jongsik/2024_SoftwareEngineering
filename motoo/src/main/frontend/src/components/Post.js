@@ -47,11 +47,13 @@ const deleteBoard = async (id) => {
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
+            <div className="stock-content">
               <h3><Link to={`/boards/${board.id}`}>{board.title}</Link></h3>
               <p>{board.content}</p>
+              </div>
               {location.pathname.startsWith('/admin') && (
-                              <button onClick={() => deleteBoard(board.id)}>삭제</button>
-              )}
+                                            <button className="delete-button2" onClick={() => deleteBoard(board.id)}>삭제</button>
+                            )}
             </div>
           ))
         ) : (
