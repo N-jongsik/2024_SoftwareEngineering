@@ -1,11 +1,16 @@
 package com.se2024.motoo.controller;
 
 import com.se2024.motoo.domain.Member;
+import com.se2024.motoo.dto.BoardDTO;
 import com.se2024.motoo.dto.SignupDTO;
 import com.se2024.motoo.dto.SignupResponseDTO;
 import com.se2024.motoo.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+
 
 import java.util.*;
 
@@ -74,4 +79,16 @@ public class MemberController {
         System.out.println("여기 중복 제대로 작동함!!!!!!!!!!");
         return memberService.duplicationCheck(signupDTO);
     }
+
+    @GetMapping("/api/profile")
+    public ResponseEntity<SignupDTO> getProfile(HttpSession session) {
+        Member loggedInMember = (Member) session.getAttribute("loginID");
+        if (loggedInMember != null) {
+            SignupDTO memberDTO = SignupDTO.toSignupDTO(loggedInMember);
+            return ResponseEntity.ok(memberDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
 }
