@@ -5,11 +5,11 @@ import './MarketIndexes.css';
 
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const userID = location.state?.variable;
-  useEffect(() => {
+const [user, setUser] = useState(null);
+const navigate = useNavigate();
+const location = useLocation();
+const userID = location.state?.variable;
+useEffect(() => {
     const checkSession = async () => {
       try {
         const response = await axios.get('/api/me');
@@ -24,9 +24,8 @@ const Dashboard = () => {
         navigate('/login');
       }
     };
-
-    checkSession();
   }, [navigate]);
+
 
   if (!user) {
     return <div>Loading...</div>;  // 사용자 정보를 로드 중일 때 로딩 표시
