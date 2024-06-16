@@ -13,8 +13,8 @@ const Dashboard = () => {
         if (response.data.status === 'success') {
           setUser(response.data.user);  // 사용자 정보를 상태에 저장
         } else {
-            alert('로그인을 해주세요!');
-            navigate('/login');
+          alert('로그인을 해주세요!');
+          navigate('/login');
         }
       } catch (error) {
         console.error('Session check error', error);
