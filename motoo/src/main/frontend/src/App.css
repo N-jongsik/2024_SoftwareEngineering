@@ -1053,9 +1053,8 @@ button:hover {
 }
 
 .sort-buttons button:hover {
-  background-color: white;
+  background-color: #0073e6;
   color: black;
-  border: 2px solid #4CAF50;
 }
 
 /*.stock-links {*/
@@ -1084,4 +1083,52 @@ button:hover {
 
 .submit-button{
   border-style: outset;
+}
+
+
+/*profile*/
+/* Dashboard.css */
+.dashboard-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+.dashboard-container p{
+  font-size: 40px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+  border-bottom: 5px solid;
+  border-bottom-color: #bfbfbf;
+}
+
+
+.dashboard-container h1 {
+  text-align: center;
+  color: #333;
+  margin: 10px 10px;
+  margin-bottom: 20px;
+}
+
+.dashboard-container h2 {
+  color: #555;
+  margin: 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-container h2:first-of-type {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px;
+  }
 }
