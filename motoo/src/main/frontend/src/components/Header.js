@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-function Header({ isLoggedIn, onLogout }) {
+function Header({ isLoggedIn }) {
+    const [user, setUser] = useState(null);
     const [item_name, setItemName] = useState('');
     const [response, setResponse] = useState([]);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Initialize useNavigate
     const searchResultsRef = useRef(null);
-
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchResponse = async () => {
@@ -49,8 +49,37 @@ function Header({ isLoggedIn, onLogout }) {
         };
     }, []);
 
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/api/me');
+                if (response.data.status === 'success') {
+                    setUser(response.data.user); // 사용자 정보를 상태에 저장
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error('Session check error', error);
+                setUser(null);
+            }
+        };
+
+        checkSession();
+    }, []);
+
     const handleItemClick = (item) => {
         navigate(`/stockinfo?itmsNm=${item.itmsNm}&srtnCd=${item.srtnCd}`); // Navigate to StockInfo page with parameters
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.get('/api/logout');
+            setUser(null); // 로그아웃 후 사용자 상태 초기화
+            alert('로그아웃 되었습니다!');
+            navigate('/login'); // 로그인 페이지로 리디렉션
+        } catch (error) {
+            console.error('Logout error', error);
+        }
     };
 
     return (
@@ -63,14 +92,13 @@ function Header({ isLoggedIn, onLogout }) {
                     <li><Link to="/news">News</Link></li>
                     <li><Link to="/post">Board</Link></li>
                     <li><Link to="/ranking">Ranking</Link></li>
-                    {/*<li><Link to="/trading">Trading</Link></li>*/}
                     <li>
-                    <Link
-                        to="/trading"
-                        state={{ backgroundLocation: location }}
-                    >
-                        Trading
-                    </Link>
+                        <Link
+                            to="/trading"
+                            state={{ backgroundLocation: location }}
+                        >
+                            Trading
+                        </Link>
                     </li>
                     <li>
                         <form onSubmit={(e) => e.preventDefault()}>
@@ -83,7 +111,6 @@ function Header({ isLoggedIn, onLogout }) {
                                     onChange={(e) => setItemName(e.target.value)}
                                 />
                             </label>
-                            {/*<button type="submit">검색</button>*/}
                         </form>
                         {error && <div>Error: {error.message}</div>}
                         {response.length > 0 && (
@@ -99,7 +126,11 @@ function Header({ isLoggedIn, onLogout }) {
                         )}
                     </li>
                     <li><Link to="/profile">Profile</Link></li>
-                    <li><Link to="/login">Login</Link></li>
+                    {user ? (
+                        <li><button onClick={handleLogout}>Logout</button></li>
+                    ) : (
+                        <li><Link to="/login">Login</Link></li>
+                    )}
                 </ul>
             </nav>
         </header>

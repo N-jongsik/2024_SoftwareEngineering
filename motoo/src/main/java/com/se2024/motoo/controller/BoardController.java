@@ -24,13 +24,14 @@ public class BoardController { //게시판과 공지사항 controller
     public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO, HttpSession session) {
                 //유저 id 가져오는거 수정
                 //String userId = (String) session.getAttribute("loginID");
-        Member userId = (Member) session.getAttribute("loginID");
+        Member userId = (Member) session.getAttribute("user");
         //String userId = (String) "loginID";
         if (userId != null) {
             boardDTO.setUserID(userId);
             boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {
+            System.out.println("******************");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
     }

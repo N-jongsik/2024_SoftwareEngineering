@@ -40,20 +40,20 @@ function Home() {
     }
 
     return (
-        <div className="market-index">
-          <div className="market-index-header">
-            <span>{name}</span>
-          </div>
-          <div className="market-index-value">
-            <h2>{indexData.bstp_nmix_prpr}</h2>
-          </div>
-          <div className="market-index-change">
+      <div className="market-index">
+        <div className="market-index-header">
+          <span>{name}</span>
+        </div>
+        <div className="market-index-value">
+          <h2>{indexData.bstp_nmix_prpr}</h2>
+        </div>
+        <div className="market-index-change">
           <span className={indexData.prdy_vrss_sign === '2' ? 'up' : 'down'}>
             {indexData.prdy_vrss_sign === '2' ? '▲' : '▼'} {indexData.bstp_nmix_prdy_vrss}
           </span>
-            <span>({indexData.bstp_nmix_prdy_ctrt}%)</span>
-          </div>
+          <span>({indexData.bstp_nmix_prdy_ctrt}%)</span>
         </div>
+      </div>
     );
   };
 
@@ -102,88 +102,88 @@ function Home() {
   ];
 
   return (
-      <main>
-        <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={() => setModalIsOpen(false)}
-            className="ReactModal__Content"
-            overlayClassName="ReactModal__Overlay"
-        >
-          <div className="modal-header">
-            <button className="modal-close" onClick={() => setModalIsOpen(false)}>x</button>
-          </div>
-          <section>
-            <div className="quiz-container">
-              <b><h1>오늘의 퀴즈</h1></b>
-              <div>
-                {currentQuiz && (
-                    <div>
-                      <h3><b>{currentQuiz.question}</b></h3>
-                      {/* True/False 버튼 */}
-                      {!answered && (
-                          <div className="answer-selection">
-                            <button className="true-btn" onClick={() => handleAnswerSelection(true)}>O</button>
-                            <span className="button-space"></span>
-                            <button className="false-btn" onClick={() => handleAnswerSelection(false)}>X</button>
-                          </div>
-                      )}
-                      {/* 선택한 답변에 따른 피드백 */}
-                      {answered && (
-                          <div className="answer-feedback">
-                            {selectedAnswer === (currentQuiz.answer === "true") ? (
-                                <div className="correct"><br />정답입니다!<br />{currentQuiz.userID}</div>
-                            ) : (
-                                <div className="incorrect"><br />오답입니다!<br />{currentQuiz.userID}</div>
-                            )}
-                          </div>
-                      )}
-                      {/* 퀴즈 넘기기 버튼 */}
-                      {answered && (
-                          <button className="reset-button" onClick={handleNextQuiz}>다음 퀴즈</button>
+    <main>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="ReactModal__Content"
+        overlayClassName="ReactModal__Overlay"
+      >
+        <div className="modal-header">
+          <button className="modal-close" onClick={() => setModalIsOpen(false)}>x</button>
+        </div>
+        <section>
+          <div className="quiz-container">
+            <b><h1>오늘의 퀴즈</h1></b>
+            <div>
+              {currentQuiz && (
+                <div>
+                  <h3><b>{currentQuiz.question}</b></h3>
+                  {/* True/False 버튼 */}
+                  {!answered && (
+                    <div className="answer-selection">
+                      <button className="true-btn" onClick={() => handleAnswerSelection(true)}>O</button>
+                      <span className="button-space"></span>
+                      <button className="false-btn" onClick={() => handleAnswerSelection(false)}>X</button>
+                    </div>
+                  )}
+                  {/* 선택한 답변에 따른 피드백 */}
+                  {answered && (
+                    <div className="answer-feedback">
+                      {selectedAnswer === (currentQuiz.answer === "true") ? (
+                        <div className="correct"><br />정답입니다!<br />{currentQuiz.userID}</div>
+                      ) : (
+                        <div className="incorrect"><br />오답입니다!<br />{currentQuiz.userID}</div>
                       )}
                     </div>
-                )}
-              </div>
+                  )}
+                  {/* 퀴즈 넘기기 버튼 */}
+                  {answered && (
+                    <button className="reset-button" onClick={handleNextQuiz}>다음 퀴즈</button>
+                  )}
+                </div>
+              )}
             </div>
-          </section>
-        </Modal>
-
-        <section className="market-indices">
-          <h2>KOSPI, KOSDAQ & KOSPI200</h2>
-          <div className="market-indexes">
-            {renderIndex(indexes.kospi)}
-            {renderIndex(indexes.kosdaq)}
-            {renderIndex(indexes.kospi200)}
           </div>
         </section>
+      </Modal>
 
-        <section className="home-page">
-          <div className="popular-stocks">
-            <div className="popular-header">
-              <h2>인기 주식 종목</h2>
-              <a title="더보기"><Link to="/market">더보기</Link></a>
-            </div>
-            <table className="stock-table">
-              <thead>
+      <section className="market-indices">
+        <h2>KOSPI, KOSDAQ & KOSPI200</h2>
+        <div className="market-indexes">
+          {renderIndex(indexes.kospi, "KOSPI")}
+          {renderIndex(indexes.kosdaq, "KOSDAQ")}
+          {renderIndex(indexes.kospi200, "KOSPI200")}
+        </div>
+      </section>
+
+      <section className="home-page">
+        <div className="popular-stocks">
+          <div className="popular-header">
+            <h2>인기 주식 종목</h2>
+            <a title="더보기"><Link to="/market">더보기</Link></a>
+          </div>
+          <table className="stock-table">
+            <thead>
               <tr>
                 <th>종목명</th>
                 <th>가격</th>
                 <th>변동률</th>
               </tr>
-              </thead>
-              <tbody>
+            </thead>
+            <tbody>
               {stocks.map(stock => (
-                  <tr key={stock.name}>
-                    <td>{stock.name}</td>
-                    <td>{stock.price}</td>
-                    <td style={{ color: stock.color }}>{stock.change}</td>
-                  </tr>
+                <tr key={stock.name}>
+                  <td>{stock.name}</td>
+                  <td>{stock.price}</td>
+                  <td style={{ color: stock.color }}>{stock.change}</td>
+                </tr>
               ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </main>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
   );
 }
 
