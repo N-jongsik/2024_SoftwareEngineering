@@ -106,54 +106,66 @@ function Home() {
   const currentQuiz = quizData[currentQuizIndex];
 
   return (
-      <main>
-        <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={() => setModalIsOpen(false)}
-            className="ReactModal__Content"
-            overlayClassName="ReactModal__Overlay"
-        >
-          <div className="modal-header">
-            <button className="modal-close" onClick={() => setModalIsOpen(false)}>x</button>
-          </div>
-          <section>
-            <div className="quiz-container">
-              <b><h1>오늘의 퀴즈</h1></b>
-              <div>
-                {currentQuiz && (
-                    <div>
-                      <h3><b>{currentQuiz.question}</b></h3>
-                      {/* True/False 버튼 */}
-                      {!answered && (
-                          <div className="answer-selection">
-                            <button className="true-btn" onClick={() => handleAnswerSelection(true)}>O</button>
-                            <span className="button-space"></span>
-                            <button className="false-btn" onClick={() => handleAnswerSelection(false)}>X</button>
-                          </div>
-                      )}
-                      {/* 선택한 답변에 따른 피드백 */}
-                      {answered && (
-                          <div className="answer-feedback">
-                            {selectedAnswer === (currentQuiz.answer === "true") ? (
-                                <div className="correct"><br />정답입니다!<br />{currentQuiz.userID}</div>
-                            ) : (
-                                <div className="incorrect"><br />오답입니다!<br />{currentQuiz.userID}</div>
-                            )}
-                          </div>
-                      )}
-                      {/* 퀴즈 넘기기 버튼 */}
-                      {answered && (
-                          <button className="reset-button" onClick={handleNextQuiz}>다음 퀴즈</button>
+    <main>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="ReactModal__Content"
+        overlayClassName="ReactModal__Overlay"
+      >
+        <div className="modal-header">
+          <button className="modal-close" onClick={() => setModalIsOpen(false)}>x</button>
+        </div>
+        <section>
+          <div className="quiz-container">
+            <b><h1>오늘의 퀴즈</h1></b>
+            <div>
+              {currentQuiz && (
+                <div>
+                  <h3><b>{currentQuiz.question}</b></h3>
+                  {/* True/False 버튼 */}
+                  {!answered && (
+                    <div className="answer-selection">
+                      <button className="true-btn" onClick={() => handleAnswerSelection(true)}>O</button>
+                      <span className="button-space"></span>
+                      <button className="false-btn" onClick={() => handleAnswerSelection(false)}>X</button>
+                    </div>
+                  )}
+                  {/* 선택한 답변에 따른 피드백 */}
+                  {answered && (
+                    <div className="answer-feedback">
+                      {selectedAnswer === (currentQuiz.answer === "true") ? (
+                        <div className="correct"><br />정답입니다!<br />{currentQuiz.userID}</div>
+                      ) : (
+                        <div className="incorrect"><br />오답입니다!<br />{currentQuiz.userID}</div>
                       )}
                     </div>
-                )}
-              </div>
+                  )}
+                  {/* 퀴즈 넘기기 버튼 */}
+                  {answered && (
+                    <button className="reset-button" onClick={handleNextQuiz}>다음 퀴즈</button>
+                  )}
+                </div>
+              )}
             </div>
-          </section>
-        </Modal>
+          </div>
+        </section>
+      </Modal>
 
         <section className="market-indices">
-          <h2>KOSPI |  KOSDAQ  |  KOSPI200</h2>
+          <h2 className="stock-links">
+            <table>
+            <tr>
+              <td>KOSPI</td>
+              <td>KOSDAQ</td>
+              <td>KOSPI200</td>
+            </tr>
+            </table>
+          {/*  <a>　KOSPI</a>*/}
+          {/*<a>　KOSDAQ</a>*/}
+          {/*<a>KOSPI200</a>*/}
+        </h2>
+
           <div className="market-indexes">
             {renderIndex(indexes.kospi, 'KOSPI')}
             {renderIndex(indexes.kosdaq, 'KOSDAQ')}

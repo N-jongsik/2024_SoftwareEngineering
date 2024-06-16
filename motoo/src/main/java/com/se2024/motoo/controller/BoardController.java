@@ -35,6 +35,7 @@ public class BoardController { //게시판과 공지사항 controller
         Member mem = memberService.findByUserID(userId).orElse(null);
         if (userId != null) {
             boardDTO.setUserID(mem);
+            boardDTO.setUs(mem.getUserID());
             boardService.createBoard(boardDTO, 0);
             return ResponseEntity.ok().build();
         } else {

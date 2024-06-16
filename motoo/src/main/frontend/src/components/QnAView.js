@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 function BoardDetail() {
   const { boardId } = useParams();
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
-
+  const location = useLocation();
+  const userID = location.state?.variable;
   useEffect(() => {
     const fetchBoard = async () => {
       try {
@@ -20,21 +23,48 @@ function BoardDetail() {
         setLoading(false);
       }
     };
-
+    const fetchComments = async () => {
+          try {
+            const response = await axios.get(`http://localhost:8080/api/boards/${boardId}/comments`);
+            setComments(response.data);
+          } catch (error) {
+            console.error('Error fetching comments', error);
+          }
+        };
     fetchBoard();
+    fetchComments();
   }, [boardId]);
 
   const handleDelete = async () => {
     try {
       await axios.post(`http://localhost:8080/api/qna/${boardId}/delete`);
-      navigate('/QnAlist'); // 삭제 후 목록 페이지로 이동
+      navigate('/QnAlist', { state: { variable: userID } }); // 삭제 후 목록 페이지로 이동
     } catch (error) {
       console.error('Error deleting board', error);
     }
   };
 
+const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, { content: newComment, userId: userID }); // using 'guest' as a placeholder
+    setNewComment('');
+    const response = await axios.get(`http://localhost:8080/api/boards/${boardId}/comments`);
+    setComments(response.data);
+  } catch (error) {
+    console.error('Error adding comment', error);
+  }
+};
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`);
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
   const handleEdit = () => {
-    navigate(`/qnaform/${boardId}`); // 수정 페이지로 이동
+    navigate(`/qnaform/${boardId}`, { state: { variable: userID } }); // 수정 페이지로 이동
   };
 
   if (loading) {
@@ -56,6 +86,7 @@ function BoardDetail() {
           <button onClick={handleDelete}>삭제</button>
           <button onClick={handleEdit}>수정</button>
         </div>
+
       ) : (
         <p>No board data</p>
       )}

@@ -59,7 +59,6 @@ function Market() {
 
     return (
         <div className="ticker-container">
-            <h2>주식 종목 목록</h2>
             <div className="sort-buttons">
                 <button onClick={() => setSortType('volume-rank')}>최다 거래량 순</button>
                 <button onClick={() => setSortType('increase-rank')}>상승률 순</button>

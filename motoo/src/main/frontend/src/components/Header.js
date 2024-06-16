@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-function Header({ isLoggedIn, onLogout }) {
+function Header({ isLoggedIn }) {
+    const [user, setUser] = useState(null);
     const [item_name, setItemName] = useState('');
     const [response, setResponse] = useState([]);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Initialize useNavigate
     const searchResultsRef = useRef(null);
-
     const location = useLocation();
+    const navigate = useNavigate();
     const userID = location.state?.variable;
+
 
     useEffect(() => {
         const fetchResponse = async () => {
@@ -50,8 +51,37 @@ function Header({ isLoggedIn, onLogout }) {
         };
     }, []);
 
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/api/me');
+                if (response.data.status === 'success') {
+                    setUser(response.data.user); // 사용자 정보를 상태에 저장
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error('Session check error', error);
+                setUser(null);
+            }
+        };
+
+        checkSession();
+    }, []);
+
     const handleItemClick = (item) => {
         navigate(`/stockinfo?itmsNm=${item.itmsNm}&srtnCd=${item.srtnCd}`); // Navigate to StockInfo page with parameters
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.get('/api/logout');
+            setUser(null); // 로그아웃 후 사용자 상태 초기화
+            alert('로그아웃 되었습니다!');
+            navigate('/login'); // 로그인 페이지로 리디렉션
+        } catch (error) {
+            console.error('Logout error', error);
+        }
     };
 
     const handleBoardLinkClickh = () => {
@@ -70,12 +100,21 @@ function Header({ isLoggedIn, onLogout }) {
                 navigate('/ranking', { state: { variable: userID } });
               };
 
+
     return (
         <header>
             <div className="logo">MoToo</div>
             <nav>
                 <ul>
-                    <li><button onClick={handleBoardLinkClickh} >{userID && <p>User ID: {userID}</p>}Home</button></li>
+                    <li>{userID && <p>User ID: {userID}</p>}</li>
+                                        {userID === 'Admin' && (
+                                            <li>
+                                                <Link to="/admin/memberlist" state={{ variable: userID }}>
+                                                    관리자 페이지
+                                                </Link>
+                                            </li>
+                                        )}
+                    <li><button onClick={handleBoardLinkClickh} >Home</button></li>
                     <li><button onClick={handleBoardLinkClickm}>Market</button></li>
                     <li><button onClick={handleBoardLinkClickn}>News</button></li>
                     <li><button onClick={handleBoardLinkClickp}>Board</button></li>
@@ -83,8 +122,8 @@ function Header({ isLoggedIn, onLogout }) {
                     {/*<li><Link to="/trading">Trading</Link></li>*/}
                     <li>
                     <Link
-                        to="/trading"
-                        state={{ backgroundLocation: location, variable: userID }}
+                        to={userID ? "/trading" : "/login"}
+                        state={userID ? { backgroundLocation: location, variable: userID } : null}
                     >
                         Trading
                     </Link>
@@ -100,7 +139,6 @@ function Header({ isLoggedIn, onLogout }) {
                                     onChange={(e) => setItemName(e.target.value)}
                                 />
                             </label>
-                            {/*<button type="submit">검색</button>*/}
                         </form>
                         {error && <div>Error: {error.message}</div>}
                         {response.length > 0 && (
@@ -115,8 +153,12 @@ function Header({ isLoggedIn, onLogout }) {
                             </div>
                         )}
                     </li>
-                    <li><Link to="/profile" state={{  variable: userID }}>Profile</Link></li>
-                    <li><Link to="/login" >Login</Link></li>
+                    <li><Link to="/profile">Profile</Link></li>
+                    {user ? (
+                        <li><button onClick={handleLogout}>Logout</button></li>
+                    ) : (
+                        <li><Link to="/login">Login</Link></li>
+                    )}
                 </ul>
             </nav>
         </header>

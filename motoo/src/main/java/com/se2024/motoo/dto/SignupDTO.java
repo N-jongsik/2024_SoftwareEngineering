@@ -14,12 +14,6 @@ public class SignupDTO {
     private String userName;
     private String userEmail;
 
-    public SignupDTO(String userName, String userID, String userEmail) {
-        this.userID = userID;
-        this.userName = userName;
-        this.userEmail = userEmail;
-    }
-
     public static SignupDTO toSignupDTO(Member member) {
         SignupDTO signupDTO = new SignupDTO();
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 function DiscussionForm() {
   const { boardId } = useParams();
@@ -9,7 +9,8 @@ function DiscussionForm() {
   const [content, setContent] = useState('');
   const [viewCount, setViewCount] = useState(0);
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
-
+  const location = useLocation();
+  const userID = location.state?.variable;
   useEffect(() => {
     if (boardId) {
       const fetchBoard = async () => {
@@ -44,7 +45,7 @@ function DiscussionForm() {
           content,
         });
       }
-      navigate('/admin/noticelist');
+      navigate('/admin/noticelist', { state: { variable: userID } });
     } catch (error) {
       console.error('Error submitting form', error);
     }
