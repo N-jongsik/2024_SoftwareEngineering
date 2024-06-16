@@ -47,6 +47,8 @@ function App() {
   );
 }
 
+
+
 function HeaderWithAdmin() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
@@ -91,7 +93,6 @@ function RoutesWrapper({ homeData }) {
           <Route path="/profile" element={<Profile />} />
         </Routes>
 
-
   {state.backgroundLocation && (
       <Routes>
         <Route
@@ -100,7 +101,9 @@ function RoutesWrapper({ homeData }) {
         />
       </Routes>
   )}
+
 </>
 );
 }
+
 export default App;
