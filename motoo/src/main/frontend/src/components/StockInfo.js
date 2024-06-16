@@ -1,4 +1,4 @@
-/*import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Chart } from 'chart.js';
@@ -267,5 +267,3 @@ function StockInfo() {
 }
 
 export default StockInfo;
-
-*/

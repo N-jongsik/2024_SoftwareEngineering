@@ -61,7 +61,7 @@ function RoutesWrapper({ homeData }) {
   return (
       <>
         <Routes location={state.backgroundLocation || location}>
-          <Route path="/"  />
+          <Route path="/"  element={<Home data={homeData} />}/>
           <Route path="/home" element={<Home data={homeData} />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<Login />} />
