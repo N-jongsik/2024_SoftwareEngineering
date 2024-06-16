@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 function BoardDetail() {
   const { boardId } = useParams();
@@ -8,6 +8,8 @@ function BoardDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
+  const location = useLocation();
+  const userID = location.state?.variable;
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -27,7 +29,7 @@ function BoardDetail() {
   const handleDelete = async () => {
     try {
       await axios.post(`http://localhost:8080/api/notice/${boardId}/delete`);
-      navigate('/noticelist'); // 삭제 후 목록 페이지로 이동
+      navigate('/noticelist', { state: { variable: userID } }); // 삭제 후 목록 페이지로 이동
     } catch (error) {
       console.error('Error deleting board', error);
     }
@@ -36,7 +38,7 @@ function BoardDetail() {
 
 
   const handleEdit = () => {
-    navigate(`/noticeform/${boardId}`); // 수정 페이지로 이동
+    navigate(`/noticeform/${boardId}` , { state: { variable: userID } }); // 수정 페이지로 이동
   };
 
   if (loading) {

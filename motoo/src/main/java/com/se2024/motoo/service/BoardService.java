@@ -30,6 +30,7 @@ public class BoardService {
         board.setViewCount(0);
         board.setLikeCount(0);
         board.setIsBoard(isboard);
+        board.setUs(boardDTO.getUs());
         board = boardRepository.save(board);
         return BoardDTO.fromEntity(board);
     }

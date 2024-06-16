@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function Post() {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const location = useLocation();
+  const userID = location.state?.variable;
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchBoards = async () => {
       try {
@@ -30,6 +32,10 @@ function Post() {
     return <p>Error: {error.message}</p>;
   }
 
+  const handleBoardLinkClickr = () => {
+                navigate('/admin/noticeform', { state: { variable: userID } });
+  };
+
   return (
     <main>
       <section className="stock-list">
@@ -37,7 +43,7 @@ function Post() {
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
-              <h3><Link to={`/notice/${board.id}`}>{board.title}</Link></h3>
+              <h3><Link to={`/notice/${board.id}`} state= {{ variable: userID }}>{board.title}</Link></h3>
               <p>{board.content}</p>
             </div>
           ))
@@ -45,7 +51,7 @@ function Post() {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={() => window.location.href = '/admin/noticeform'}>공지사항 글쓰기</button>
+      {userID === 'Admin' && (<button className="disbut" onClick={handleBoardLinkClickr } >공지사항 등록하기</button>)}
     </main>
   );
 }

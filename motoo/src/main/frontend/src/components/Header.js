@@ -12,6 +12,7 @@ function Header({ isLoggedIn }) {
     const navigate = useNavigate();
     const userID = location.state?.variable;
 
+
     useEffect(() => {
         const fetchResponse = async () => {
             if (item_name.trim() === '') {
@@ -99,12 +100,21 @@ function Header({ isLoggedIn }) {
                 navigate('/ranking', { state: { variable: userID } });
               };
 
+
     return (
         <header>
             <div className="logo">MoToo</div>
             <nav>
                 <ul>
-                    <li><button onClick={handleBoardLinkClickh} >{userID && <p>User ID: {userID}</p>}Home</button></li>
+                    <li>{userID && <p>User ID: {userID}</p>}</li>
+                                        {userID === 'Admin' && (
+                                            <li>
+                                                <Link to="/admin/memberlist" state={{ variable: userID }}>
+                                                    관리자 페이지
+                                                </Link>
+                                            </li>
+                                        )}
+                    <li><button onClick={handleBoardLinkClickh} >Home</button></li>
                     <li><button onClick={handleBoardLinkClickm}>Market</button></li>
                     <li><button onClick={handleBoardLinkClickn}>News</button></li>
                     <li><button onClick={handleBoardLinkClickp}>Board</button></li>
@@ -112,8 +122,8 @@ function Header({ isLoggedIn }) {
                     {/*<li><Link to="/trading">Trading</Link></li>*/}
                     <li>
                     <Link
-                        to="/trading"
-                        state={{ backgroundLocation: location, variable: userID }}
+                        to={userID ? "/trading" : "/login"}
+                        state={userID ? { backgroundLocation: location, variable: userID } : null}
                     >
                         Trading
                     </Link>
