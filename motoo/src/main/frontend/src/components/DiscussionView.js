@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate , useLocation} from 'react-router-dom';
 
 function BoardDetail() {
   const { boardId } = useParams();
@@ -10,6 +10,8 @@ function BoardDetail() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
+  const location = useLocation();
+  const userID = location.state?.variable;
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -39,7 +41,7 @@ function BoardDetail() {
   const handleDelete = async () => {
     try {
       await axios.post(`http://localhost:8080/api/boards/${boardId}/delete`);
-      navigate('/post'); // 삭제 후 목록 페이지로 이동
+      navigate('/post', { state: { variable: userID } }); // 삭제 후 목록 페이지로 이동
     } catch (error) {
       console.error('Error deleting board', error);
     }
@@ -47,7 +49,7 @@ function BoardDetail() {
 
 
   const handleEdit = () => {
-    navigate(`/discussionform/${boardId}`); // 수정 페이지로 이동
+    navigate(`/discussionform/${boardId}` , { state: { variable: userID }}); // 수정 페이지로 이동
   };
 
   const handleLike = async () => {
@@ -86,7 +88,7 @@ const handleCommentSubmit = async (e) => {
         {board ? (
             <div className="board">
               <h2>{board.title}</h2>
-              <p>{board.user_id} | {new Date(board.create_at).toLocaleDateString()}</p>
+              <p>글쓴이 : {board.us}   |   등록일 : {new Date(board.create_at).toLocaleDateString()}</p>
               <nan>
                 <p>{board.content}</p>
               </nan>

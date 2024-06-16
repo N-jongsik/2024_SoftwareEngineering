@@ -53,7 +53,7 @@ const handleBoardLinkClickr = () => {
           boards.map(board => (
             <div key={board.board_id} className="stock">
             <div className="stock-content">
-              <h3><Link to={`/boards/${board.id}`}>{board.title}</Link></h3>
+              <h3><Link to={`/boards/${board.id}`}  state= {{ variable: userID }} >{board.title}</Link></h3>
               <p>{board.content}</p>
               </div>
               {location.pathname.startsWith('/admin') && (

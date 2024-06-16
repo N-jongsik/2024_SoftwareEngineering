@@ -27,7 +27,7 @@ public class BoardDTO {
     public BoardDTO(){
         super();
     }
-    public BoardDTO(Long id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Integer isBoard, String board_type, Integer viewCount, Integer likeCount) {
+    public BoardDTO(Long id, Member userID, LocalDateTime create_at, LocalDateTime modified_at, String title, String content, Integer isBoard, String board_type, Integer viewCount, Integer likeCount, String us) {
         this.id = id;
         this.userID = userID;
         this.create_at = create_at;
@@ -53,7 +53,8 @@ public class BoardDTO {
                 board.getIsBoard(),
                 board.getBoard_type(),
                 board.getViewCount(),
-                board.getLikeCount()
+                board.getLikeCount(),
+                board.getUs()
         );
     }
 }
