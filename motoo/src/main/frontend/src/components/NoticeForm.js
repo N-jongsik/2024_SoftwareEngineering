@@ -80,8 +80,8 @@ function DiscussionForm() {
               <option value="일반 공지">일반 공지</option>
             </select>
           </div>
+          <label>내용 입력</label>
           <div className="content">
-            <label>내용 입력</label>
             <textarea
               name="content"
               value={content}

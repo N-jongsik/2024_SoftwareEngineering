@@ -37,42 +37,42 @@ const Login = () => {
   };
 
   return (
-    <main>
-      <section className="login-page">
-        <div className="login-form">
-          <h2>로그인</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="userid">아이디</label>
-              <input
-                type="text"
-                id="userid"
-                name="userID"
-                value={userID}
-                onChange={(e) => setUserID(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">비밀번호</label>
-              <input
-                type="password"
-                id="password"
-                name="pwd"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit">로그인</button>
-          </form>
+      <main>
+        <section className="login-page">
+          <div className="login-form">
+            <h2>로그인</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="userid">아이디</label>
+                <input
+                    type="text"
+                    id="userid"
+                    name="userID"
+                    value={userID}
+                    onChange={(e) => setUserID(e.target.value)}
+                    required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">비밀번호</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="pwd"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+              </div>
+              <button type="submit">로그인</button>
+            </form>
 
-          {loginError && <div style={{ color: 'red', marginTop: '10px' }}>{loginError}</div>}
+            {loginError && <div style={{ color: 'red', marginTop: '10px' }}>{loginError}</div>}
 
-          <p>계정이 없으신가요? <a href="/signup">회원가입</a></p>
-        </div>
-      </section>
-    </main>
+            <p>계정이 없으신가요? <a href="/signup">회원가입</a></p>
+          </div>
+        </section>
+      </main>
   );
 };
 

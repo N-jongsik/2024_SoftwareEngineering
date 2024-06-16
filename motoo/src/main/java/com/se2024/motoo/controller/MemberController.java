@@ -47,35 +47,7 @@ public class MemberController {
         }
         return response;
     }
-
-//    @PostMapping("/login")
-//    @ResponseBody
-//    public Map<String, String> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
-//        Map<String, String> response = new HashMap<>();
-//        try {
-//            Optional<Member> memberOpt = memberService.findByUserID(loginDTO.getUserID());
-//            if (memberOpt.isPresent()) {
-//                Member member = memberOpt.get();
-//                if (member.getPwd() != null && member.getPwd().equals(loginDTO.getPwd())) {
-//                    session.setAttribute("user", member);
-//                    response.put("status", "success");
-//                    response.put("message", "로그인 성공");
-//                } else {
-//                    response.put("status", "error");
-//                    response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
-//                }
-//            } else {
-//                response.put("status", "error");
-//                response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
-//            }
-//        } catch (Exception e) {
-//            response.put("status", "error");
-//            response.put("message", "로그인 처리 중 오류가 발생했습니다.");
-//            e.printStackTrace();
-//        }
-//        return response;
-//    }
-@PostMapping("/login")
+    @PostMapping("/login")
 public ResponseEntity<Map<String, Object>> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
     Map<String, Object> response = new HashMap<>();
     try {

@@ -2,18 +2,19 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Chart, registerables } from 'chart.js';
-import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
+import { CandlestickController, CandlestickElement, OhlcController, OhlcElement } from 'chartjs-chart-financial';
 import 'chartjs-adapter-date-fns';
 import './StockInfo.css';
 
-Chart.register(...registerables, CandlestickController, CandlestickElement);
+Chart.register(...registerables, CandlestickController, CandlestickElement, OhlcController, OhlcElement);
 
 function StockInfo() {
     const [response, setResponse] = useState(null);
     const [chartData, setChartData] = useState(null);
     const [itmsNm, setItmsNm] = useState('');
     const [srtnCd, setSrtnCd] = useState('');
-    const [timeframe, setTimeframe] = useState('day');  // 기본적으로 일간 차트
+    const [timeframe, setTimeframe] = useState('day');
+    const [chartType, setChartType] = useState('line');
     const chartRef = useRef(null);
     const chartInstanceRef = useRef(null);
 
@@ -47,7 +48,7 @@ function StockInfo() {
             const result = await axios.get(`/api/chart`, {
                 params: { ticker: srtnCd, period: period }
             });
-            setChartData(result.data.reverse());  // 최신-과거 순으로 변경
+            setChartData(result.data.reverse());
         } catch (error) {
             console.error(error);
             setChartData([]);
@@ -55,25 +56,35 @@ function StockInfo() {
     };
 
     const getChartData = useCallback(() => {
-        if (!chartData || chartData.length === 0) return { datasets: [] };  // chartData가 없거나 비어있을 때 빈 객체 반환
+        if (!chartData || chartData.length === 0) return { datasets: [] };
 
-        const datasets = [{
-            label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
-            data: chartData.map(data => ({
-                x: new Date(`${data.stck_bsop_date.slice(0, 4)}-${data.stck_bsop_date.slice(4, 6)}-${data.stck_bsop_date.slice(6, 8)}`),
-                o: data.stck_oprc,
-                h: data.stck_hgpr,
-                l: data.stck_lwpr,
-                c: data.stck_clpr,
-            })),
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        }];
-
-        return {
-            datasets
-        };
-    }, [chartData, itmsNm, timeframe]);
+        if (chartType === 'candlestick') {
+            return {
+                datasets: [{
+                    label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
+                    data: chartData.map(data => ({
+                        t: new Date(`${data.stck_bsop_date.slice(0, 4)}-${data.stck_bsop_date.slice(4, 6)}-${data.stck_bsop_date.slice(6, 8)}`),
+                        o: data.stck_oprc,
+                        h: data.stck_hgpr,
+                        l: data.stck_lwpr,
+                        c: data.stck_clpr,
+                    })),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                }]
+            };
+        } else {
+            return {
+                labels: chartData.map(data => new Date(`${data.stck_bsop_date.slice(0, 4)}-${data.stck_bsop_date.slice(4, 6)}-${data.stck_bsop_date.slice(6, 8)}`)),
+                datasets: [{
+                    label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
+                    data: chartData.map(data => data.stck_clpr),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                }]
+            };
+        }
+    }, [chartData, itmsNm, timeframe, chartType]);
 
     useEffect(() => {
         if (chartRef.current) {
@@ -82,18 +93,11 @@ function StockInfo() {
                 chartInstanceRef.current.destroy();
             }
             chartInstanceRef.current = new Chart(ctx, {
-                type: 'candlestick',
+                type: chartType === 'candlestick' ? 'candlestick' : 'line',
                 data: getChartData(),
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    elements: {
-                        candlestick: {
-                            barThickness: 1,  // 캔들스틱 너비를 작게 설정
-                            categoryPercentage: 0.8,
-                            barPercentage: 0.8,
-                        }
-                    },
                     scales: {
                         x: {
                             type: 'time',
@@ -106,7 +110,7 @@ function StockInfo() {
                                 maxRotation: 45,
                                 minRotation: 45,
                                 autoSkip: true,
-                                maxTicksLimit: 10  // 최대 표시할 라벨 수 제한
+                                maxTicksLimit: 10
                             },
                             grid: {
                                 display: false,
@@ -116,7 +120,7 @@ function StockInfo() {
                             beginAtZero: false,
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString();  // 숫자 형식을 천단위 콤마로 표시
+                                    return value.toLocaleString();
                                 }
                             }
                         }
@@ -125,11 +129,15 @@ function StockInfo() {
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const o = context.raw.o.toLocaleString();
-                                    const h = context.raw.h.toLocaleString();
-                                    const l = context.raw.l.toLocaleString();
-                                    const c = context.raw.c.toLocaleString();
-                                    return `Open: ${o}, High: ${h}, Low: ${l}, Close: ${c}`;
+                                    if (chartType === 'candlestick') {
+                                        const o = context.raw.o.toLocaleString();
+                                        const h = context.raw.h.toLocaleString();
+                                        const l = context.raw.l.toLocaleString();
+                                        const c = context.raw.c.toLocaleString();
+                                        return `Open: ${o}, High: ${h}, Low: ${l}, Close: ${c}`;
+                                    } else {
+                                        return context.raw.toLocaleString();
+                                    }
                                 }
                             }
                         }
@@ -145,8 +153,7 @@ function StockInfo() {
                 }
             });
         }
-    }, [chartData, timeframe, getChartData]);
-
+    }, [chartData, timeframe, getChartData, chartType]);
     if (!response) {
         return <p>Loading...</p>;
     }
@@ -237,10 +244,6 @@ function StockInfo() {
                         <td>{response.stck_lwpr}</td>
                     </tr>
                     <tr>
-                        <td>주식 상한가</td>
-                        <td>{response.stck_mxpr}</td>
-                    </tr>
-                    <tr>
                         <td>주식 하한가</td>
                         <td>{response.stck_llam}</td>
                     </tr>
@@ -299,10 +302,17 @@ function StockInfo() {
                         <button onClick={() => setTimeframe('day')}>일간</button>
                         <button onClick={() => setTimeframe('month')}>월간</button>
                         <button onClick={() => setTimeframe('year')}>연간</button>
+                        <button onClick={() => setChartType('line')}>LineChart</button>
+                        <button onClick={() => setChartType('candlestick')}>CandleChart</button>
                     </div>
                     <div className="chart">
                         <canvas ref={chartRef}></canvas>
                     </div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                 </div>
             </div>
         </div>
