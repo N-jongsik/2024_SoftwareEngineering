@@ -54,7 +54,7 @@ function DiscussionForm() {
           us : userID,
         });
       }
-      navigate('/post');
+      navigate('/post', { state: { variable: userID }});
     } catch (error) {
       console.error('Error submitting form', error);
     }

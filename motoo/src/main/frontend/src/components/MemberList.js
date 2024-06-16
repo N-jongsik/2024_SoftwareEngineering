@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../MemberList.css';
+import { useLocation} from 'react-router-dom';
 
 const MemberList = () => {
   const [members, setMembers] = useState([]);
   const [error, setError] = useState('');
-
+  const location = useLocation();
+  const userID = location.state?.variable;
   useEffect(() => {
     fetchMembers();
   }, []);

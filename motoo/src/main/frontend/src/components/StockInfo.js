@@ -267,4 +267,3 @@ function StockInfo() {
 }
 
 export default StockInfo;
-

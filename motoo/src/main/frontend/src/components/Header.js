@@ -77,7 +77,15 @@ function Header({ isLoggedIn, onLogout }) {
             <div className="logo">MoToo</div>
             <nav>
                 <ul>
-                    <li><button onClick={handleBoardLinkClickh} >{userID && <p>User ID: {userID}</p>}Home</button></li>
+                    <li>{userID && <p>User ID: {userID}</p>}</li>
+                                        {userID === 'Admin' && (
+                                            <li>
+                                                <Link to="/admin/memberlist" state={{ variable: userID }}>
+                                                    관리자 페이지
+                                                </Link>
+                                            </li>
+                                        )}
+                    <li><button onClick={handleBoardLinkClickh} >Home</button></li>
                     <li><button onClick={handleBoardLinkClickm}>Market</button></li>
                     <li><button onClick={handleBoardLinkClickn}>News</button></li>
                     <li><button onClick={handleBoardLinkClickp}>Board</button></li>

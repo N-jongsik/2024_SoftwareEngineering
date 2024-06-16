@@ -52,6 +52,8 @@ public class Board {
     private Integer viewCount;
     @Column
     private Integer likeCount;
+    @Column
+    private String us;
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Comment> comments;
 }
