@@ -43,6 +43,7 @@ function DiscussionForm() {
           title,
           board_type: boardType,
           content,
+          us : userID,
         });
       }
       navigate('/admin/noticelist', { state: { variable: userID } });
