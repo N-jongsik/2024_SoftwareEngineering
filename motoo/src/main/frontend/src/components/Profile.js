@@ -25,9 +25,8 @@ const Dashboard = () => {
         navigate('/login');
       }
     };
-
-    checkSession();
   }, [navigate]);
+
 
   if (!user) {
     return <div>Loading...</div>;  // 사용자 정보를 로드 중일 때 로딩 표시

@@ -1,0 +1,55 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 15%;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.header h1, .header h2 {
+    margin: 0;
+    margin-left: 10px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.info-table {
+    width: 60%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.info-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.chart-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    margin-left: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.chart {
+    width: 200%;
+    height: 50vh;
+}
