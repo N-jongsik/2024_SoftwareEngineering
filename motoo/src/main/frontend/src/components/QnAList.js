@@ -39,7 +39,9 @@ function Post() {
       <section className="stock-list">
         <h2>QnA List</h2>
         {boards.length > 0 ? (
-          boards.map(board => (
+          boards
+          .filter(board => board.board_type !== '비공개' || board.us === userID || board.us === 'Admin')
+          .map(board => (
             <div key={board.board_id} className="stock">
               <h3><Link to={`/qna/${board.id}`} state= {{ variable: userID }}>{board.title}</Link></h3>
               <p>{board.content}</p>
