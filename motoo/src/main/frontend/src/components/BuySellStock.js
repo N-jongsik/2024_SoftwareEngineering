@@ -9,6 +9,7 @@ function BuySellStock({ isModal }) {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const userID = location.state?.variable;
 
     const [modalIsOpen, setModalIsOpen] = useState(true);
 
@@ -32,16 +33,18 @@ function BuySellStock({ isModal }) {
 
     const handleItemSelect = (item) => {
         const { srtnCd, itmsNm } = item;
-        navigate({
-            pathname: `/ticker`,
-            search: `srtnCd=${srtnCd}&itmsNm=${itmsNm}`
+        navigate(`/ticker?srtnCd=${srtnCd}&itmsNm=${itmsNm}`, {
+            state: { variable: userID }
         });
     };
+
 
     const closeModal = () => {
         setModalIsOpen(false);
         if (isModal) {
-            navigate(location.state.backgroundLocation || "/");
+            navigate(location.state.backgroundLocation || "/", {
+                state: { variable: userID }
+            });
         }
     };
 
