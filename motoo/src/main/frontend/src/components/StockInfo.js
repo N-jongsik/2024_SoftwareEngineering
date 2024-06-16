@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Chart, registerables } from 'chart.js';
 import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
 import 'chartjs-adapter-date-fns';
+import './StockInfo.css';
 
 Chart.register(...registerables, CandlestickController, CandlestickElement);
 
@@ -49,12 +50,12 @@ function StockInfo() {
             setChartData(result.data.reverse());  // 최신-과거 순으로 변경
         } catch (error) {
             console.error(error);
-            setChartData(null);
+            setChartData([]);
         }
     };
 
     const getChartData = useCallback(() => {
-        if (!chartData) return {};  // chartData가 없을 때 빈 객체 반환
+        if (!chartData || chartData.length === 0) return { datasets: [] };  // chartData가 없거나 비어있을 때 빈 객체 반환
 
         const datasets = [{
             label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
@@ -145,17 +146,19 @@ function StockInfo() {
             });
         }
     }, [chartData, timeframe, getChartData]);
+
     if (!response) {
         return <p>Loading...</p>;
     }
+
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                <div>
-                    <h1 style={{ margin: '0' }}>{itmsNm}</h1>
-                    <h2 style={{ margin: '0' }}>{srtnCd}</h2>
-                </div>
-                <table style={{ width: '50%' }}>
+        <div className="container">
+            <div className="header">
+                <h1>{itmsNm}</h1>
+                <h2>{srtnCd}</h2>
+            </div>
+            <div className="content">
+                <table className="info-table">
                     <tbody>
                     <tr>
                         <td>종목 상태 구분 코드</td>
@@ -291,13 +294,13 @@ function StockInfo() {
                     </tr>
                     </tbody>
                 </table>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                    <div>
+                <div className="chart-container">
+                    <div className="button-container">
                         <button onClick={() => setTimeframe('day')}>일간</button>
                         <button onClick={() => setTimeframe('month')}>월간</button>
                         <button onClick={() => setTimeframe('year')}>연간</button>
                     </div>
-                    <div style={{ width: '100%', height: '600px' }}>
+                    <div className="chart">
                         <canvas ref={chartRef}></canvas>
                     </div>
                 </div>
