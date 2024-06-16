@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserStockService {
 
     private final UserStockRepository userStockRepository;
-    private final MemberRepository memberRepository; // 필요하다면 추가
+    private final MemberRepository memberRepository;
 
     @Autowired
     public UserStockService(UserStockRepository userStockRepository, MemberRepository memberRepository) {
@@ -24,7 +24,7 @@ public class UserStockService {
     }
 
     public void updateUserStock(UserStockDTO userStockDTO) {
-        Member user = memberRepository.findById(userStockDTO.getUserID())
+        Member user = memberRepository.findByUserID(userStockDTO.getUserID())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Optional<UserStock> optionalUserStock = userStockRepository.findByUserIDAndSrtnCd(user, userStockDTO.getSrtnCd());
@@ -66,8 +66,6 @@ public class UserStockService {
     }
 
     private void updateProfitLoss(UserStock userStock) {
-        // 수익률 계산 로직을 여기에 구현
-        // 예: (매도 수익 - 매수 비용) / 매수 비용 * 100
         double totalBuyCost = userStock.getTransactions().stream()
                 .filter(t -> "buy".equalsIgnoreCase(t.getTransactionType()))
                 .mapToDouble(t -> t.getPrice() * t.getQuantity())

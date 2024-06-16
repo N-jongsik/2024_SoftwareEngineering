@@ -9,6 +9,7 @@ function TickerForm() {
     const [orderType, setOrderType] = useState('buy');  // 매수/매도 구분
     const [quantity, setQuantity] = useState(0);
     const location = useLocation();
+    const userID = location.state?.variable;
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -35,7 +36,7 @@ function TickerForm() {
     const handleOrderSubmit = async () => {
         try {
             const orderData = {
-                userID: 1, // 사용자 ID를 여기에 설정
+                userID: userID, // 사용자 ID를 여기에 설정
                 itemName: response.itmsNm,
                 srtnCd: response.srtnCd,
                 transactionType: orderType,
