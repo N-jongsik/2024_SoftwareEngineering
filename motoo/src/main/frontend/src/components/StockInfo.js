@@ -50,12 +50,12 @@ function StockInfo() {
             setChartData(result.data.reverse());  // 최신-과거 순으로 변경
         } catch (error) {
             console.error(error);
-            setChartData(null);
+            setChartData([]);
         }
     };
 
     const getChartData = useCallback(() => {
-        if (!chartData) return {};  // chartData가 없을 때 빈 객체 반환
+        if (!chartData || chartData.length === 0) return { datasets: [] };  // chartData가 없거나 비어있을 때 빈 객체 반환
 
         const datasets = [{
             label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
@@ -105,6 +105,8 @@ function StockInfo() {
                             ticks: {
                                 maxRotation: 45,
                                 minRotation: 45,
+                                autoSkip: true,
+                                maxTicksLimit: 10  // 최대 표시할 라벨 수 제한
                             },
                             grid: {
                                 display: false,
@@ -301,12 +303,6 @@ function StockInfo() {
                     <div className="chart">
                         <canvas ref={chartRef}></canvas>
                     </div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-
                 </div>
             </div>
         </div>
