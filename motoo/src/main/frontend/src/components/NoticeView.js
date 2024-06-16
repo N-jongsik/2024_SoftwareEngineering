@@ -50,16 +50,17 @@ function BoardDetail() {
   }
 
   return (
-    <div>
+    <div className="discussionview">
       {board ? (
-        <div>
+        <div className="board">
           <h2>{board.title}</h2>
+          <p>작성자: {board.us}  |  작성일: {new Date(board.create_at).toLocaleDateString()}</p>
+          <p>조회수: {board.viewCount}</p><br/>
           <p>{board.content}</p>
-          <p>작성자: {board.user_id}</p>
-          <p>작성일: {new Date(board.create_at).toLocaleDateString()}</p>
-          <p>조회수: {board.viewCount}</p>
+          <div className="buttons">
           <button onClick={handleDelete}>삭제</button>
           <button onClick={handleEdit}>수정</button>
+          </div>
         </div>
       ) : (
         <p>No board data</p>

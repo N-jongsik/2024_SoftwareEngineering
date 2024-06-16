@@ -30,8 +30,9 @@ public class BoardController { //게시판과 공지사항 controller
     @PostMapping("/api/board") //게시물 업로드
     public ResponseEntity<?> createBoard(@RequestBody BoardDTO boardDTO, HttpSession session) {
         //Member userId = (Member) session.getAttribute("user");
-        String userId = (String) boardDTO.getUs();
+
         // Optional<Member> mem = memberService.findByUserID(userId);
+        String userId = (String) boardDTO.getUs();
         Member mem = memberService.findByUserID(userId).orElse(null);
         if (userId != null) {
             boardDTO.setUserID(mem);
@@ -61,9 +62,11 @@ public class BoardController { //게시판과 공지사항 controller
     @PostMapping("/api/notice") //공지글 업로드
     public ResponseEntity<?> createNotice(@RequestBody BoardDTO boardDTO, HttpSession session) {
         //유저 id 가져오는거 수정
-        Member userId = (Member)session.getAttribute("loginID");
+        String userId = (String) boardDTO.getUs();
+        Member mem = memberService.findByUserID(userId).orElse(null);
         if (userId != null) {
-            boardDTO.setUserID(userId);
+            boardDTO.setUserID(mem);
+            boardDTO.setUs(mem.getUserID());
             boardService.createBoard(boardDTO, 1);
             return ResponseEntity.ok().build();
         } else {
@@ -74,10 +77,11 @@ public class BoardController { //게시판과 공지사항 controller
     public ResponseEntity<?> createQnA(@RequestBody BoardDTO boardDTO, HttpSession session) {
         //유저 id 가져오는거 수정
 
-        Member userId = (Member)session.getAttribute("loginID");
-
+        String userId = (String) boardDTO.getUs();
+        Member mem = memberService.findByUserID(userId).orElse(null);
         if (userId != null) {
-            boardDTO.setUserID(userId);
+            boardDTO.setUserID(mem);
+            boardDTO.setUs(mem.getUserID());
             boardService.createBoard(boardDTO, 2);
             return ResponseEntity.ok().build();
         } else {
