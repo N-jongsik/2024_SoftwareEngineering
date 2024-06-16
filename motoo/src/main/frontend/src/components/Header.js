@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-function Header({ isLoggedIn }) {
+function Header() {
     const [user, setUser] = useState(null);
     const [item_name, setItemName] = useState('');
     const [response, setResponse] = useState([]);
@@ -12,7 +12,31 @@ function Header({ isLoggedIn }) {
     const navigate = useNavigate();
     const userID = location.state?.variable;
 
+    // Session check and user information setting
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/api/me');
+                if (response.data.status === 'success') {
+                    setUser(response.data.user); // Save user information to state
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error('Session check error', error);
+                setUser(null);
+            }
+        };
 
+        checkSession(); // Check session on page load
+
+        // Refresh user state after login
+        if (location.pathname === '/login' && location.state?.isLoggedIn) {
+            checkSession();
+        }
+    }, [location.pathname, location.state]);
+
+    // Fetch stock information based on input item_name
     useEffect(() => {
         const fetchResponse = async () => {
             if (item_name.trim() === '') {
@@ -33,11 +57,12 @@ function Header({ isLoggedIn }) {
 
         const timeoutId = setTimeout(() => {
             fetchResponse();
-        }, 300); // Debounce
+        }, 300); // Debounce for input delay
 
         return () => clearTimeout(timeoutId);
     }, [item_name]);
 
+    // Close search results when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
@@ -51,55 +76,30 @@ function Header({ isLoggedIn }) {
         };
     }, []);
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await axios.get('/api/me');
-                if (response.data.status === 'success') {
-                    setUser(response.data.user); // 사용자 정보를 상태에 저장
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error('Session check error', error);
-                setUser(null);
-            }
-        };
-
-        checkSession();
-    }, []);
-
+    // Handle item click in search results
     const handleItemClick = (item) => {
         navigate(`/stockinfo?itmsNm=${item.itmsNm}&srtnCd=${item.srtnCd}`); // Navigate to StockInfo page with parameters
     };
 
+    // Handle logout action
     const handleLogout = async () => {
         try {
             await axios.get('/api/logout');
-            setUser(null); // 로그아웃 후 사용자 상태 초기화
+            setUser(null); // Reset user state after logout
             alert('로그아웃 되었습니다!');
-            navigate('/login'); // 로그인 페이지로 리디렉션
+            navigate('/login'); // Redirect to login page after logout
         } catch (error) {
             console.error('Logout error', error);
         }
     };
 
-    const handleBoardLinkClickh = () => {
-        navigate('/home', { state: { variable: userID } });
-      };
-    const handleBoardLinkClickm = () => {
-            navigate('/market', { state: { variable: userID } });
-          };
-    const handleBoardLinkClickn = () => {
-                navigate('/news', { state: { variable: userID } });
-              };
-    const handleBoardLinkClickp = () => {
-            navigate('/post', { state: { variable: userID } });
-          };
-    const handleBoardLinkClickr = () => {
-                navigate('/ranking', { state: { variable: userID } });
-              };
-
+    // Render different links based on user login status
+    let authLink;
+    if (user == null) {
+        authLink = <li><Link to="/login">Login</Link></li>;
+    } else {
+        authLink = <li><button onClick={handleLogout}>Logout</button></li>;
+    }
 
     return (
         <header>
@@ -107,26 +107,25 @@ function Header({ isLoggedIn }) {
             <nav>
                 <ul>
                     <li>{userID && <p>User ID: {userID}</p>}</li>
-                                        {userID === 'Admin' && (
-                                            <li>
-                                                <Link to="/admin/memberlist" state={{ variable: userID }}>
-                                                    관리자 페이지
-                                                </Link>
-                                            </li>
-                                        )}
-                    <li><button onClick={handleBoardLinkClickh} >Home</button></li>
-                    <li><button onClick={handleBoardLinkClickm}>Market</button></li>
-                    <li><button onClick={handleBoardLinkClickn}>News</button></li>
-                    <li><button onClick={handleBoardLinkClickp}>Board</button></li>
-                    <li><button onClick={handleBoardLinkClickr}>Ranking</button></li>
-                    {/*<li><Link to="/trading">Trading</Link></li>*/}
+                    {userID === 'Admin' && (
+                        <li>
+                            <Link to="/admin/memberlist" state={{ variable: userID }}>
+                                Admin Page
+                            </Link>
+                        </li>
+                    )}
+                    <li><button onClick={() => navigate('/home')}>Home</button></li>
+                    <li><button onClick={() => navigate('/market')}>Market</button></li>
+                    <li><button onClick={() => navigate('/news')}>News</button></li>
+                    <li><button onClick={() => navigate('/post')}>Board</button></li>
+                    <li><button onClick={() => navigate('/ranking')}>Ranking</button></li>
                     <li>
-                    <Link
-                        to={userID ? "/trading" : "/login"}
-                        state={userID ? { backgroundLocation: location, variable: userID } : null}
-                    >
-                        Trading
-                    </Link>
+                        <Link
+                            to={userID ? "/trading" : "/login"}
+                            state={userID ? { backgroundLocation: location, variable: userID } : null}
+                        >
+                            Trading
+                        </Link>
                     </li>
                     <li>
                         <form onSubmit={(e) => e.preventDefault()}>
@@ -134,7 +133,7 @@ function Header({ isLoggedIn }) {
                                 <input
                                     id="stock-search"
                                     type="text"
-                                    placeholder="종목검색"
+                                    placeholder="Search Stocks"
                                     value={item_name}
                                     onChange={(e) => setItemName(e.target.value)}
                                 />
@@ -144,8 +143,11 @@ function Header({ isLoggedIn }) {
                         {response.length > 0 && (
                             <div className="search-results" ref={searchResultsRef}>
                                 {response.map((item, index) => (
-                                    <div key={index} className="search-result-item"
-                                         onClick={() => handleItemClick(item)}>
+                                    <div
+                                        key={index}
+                                        className="search-result-item"
+                                        onClick={() => handleItemClick(item)} // Handle item click here
+                                    >
                                         <h2>{item.itmsNm}</h2>
                                         <p>{item.srtnCd} | {item.mrktCtg} | {item.data_rank} {item.corpNm}</p>
                                     </div>
@@ -153,12 +155,8 @@ function Header({ isLoggedIn }) {
                             </div>
                         )}
                     </li>
-                    <li><Link to="/profile">MyPage</Link></li>
-                    {user ? (
-                        <li><button onClick={handleLogout}>Logout</button></li>
-                    ) : (
-                        <li><Link to="/login">Login</Link></li>
-                    )}
+                    <li><Link to="/profile">My Page</Link></li>
+                    {authLink}
                 </ul>
             </nav>
         </header>
