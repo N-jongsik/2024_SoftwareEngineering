@@ -153,7 +153,7 @@ function Header({ isLoggedIn }) {
                             </div>
                         )}
                     </li>
-                    <li><Link to="/profile">Profile</Link></li>
+                    <li><Link to="/profile" state={{ variable: userID }}>Profile</Link></li>
                     {user ? (
                         <li><button onClick={handleLogout}>Logout</button></li>
                     ) : (

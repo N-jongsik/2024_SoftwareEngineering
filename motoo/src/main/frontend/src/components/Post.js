@@ -47,6 +47,9 @@ const handleBoardLinkClickr = () => {
 
   return (
     <main>
+    <section className="stock-list">
+    <h2><Link to={`/noticelist`} state= {{ variable: userID }}>공지사항</Link></h2>
+    </section>
       <section className="stock-list">
         <h2>토론방</h2>
         {boards.length > 0 ? (

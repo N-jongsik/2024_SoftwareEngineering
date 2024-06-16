@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const userID = location.state?.variable;
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -28,6 +29,9 @@ const Dashboard = () => {
   if (!user) {
     return <div>Loading...</div>;  // 사용자 정보를 로드 중일 때 로딩 표시
   }
+    const handleBoardLinkClick = () => {
+                  navigate('/QnAlist', { state: { variable: userID } });
+    };
 
   return (
     <div>
@@ -37,6 +41,7 @@ const Dashboard = () => {
       <h2>사용자 Email: {user.userEmail}</h2>  {/* 사용자의 이메일을 출력 */}
       <h2>Motoo의 {user.id}번째 회원입니다!</h2>
       {/* 필요한 다른 사용자 정보 추가 */}
+      <button className="disbut" onClick={handleBoardLinkClick } >문의사항 등록하기</button>)
     </div>
   );
 };
