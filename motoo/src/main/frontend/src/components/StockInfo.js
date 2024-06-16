@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { Chart } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
 import 'chartjs-adapter-date-fns';
 
-Chart.register(CandlestickController, CandlestickElement);
+Chart.register(...registerables, CandlestickController, CandlestickElement);
 
 function StockInfo() {
     const [response, setResponse] = useState(null);
     const [chartData, setChartData] = useState(null);
-    const [error, setError] = useState(null);
     const [itmsNm, setItmsNm] = useState('');
     const [srtnCd, setSrtnCd] = useState('');
     const [timeframe, setTimeframe] = useState('day');  // 기본적으로 일간 차트
@@ -37,10 +36,8 @@ function StockInfo() {
                 params: { ticker: srtnCd }
             });
             setResponse(result.data[0]);
-            setError(null);
         } catch (error) {
-            setError(error);
-            setResponse(null);
+            console.error(error);
         }
     };
 
@@ -50,21 +47,19 @@ function StockInfo() {
                 params: { ticker: srtnCd, period: period }
             });
             setChartData(result.data.reverse());  // 최신-과거 순으로 변경
-            setError(null);
         } catch (error) {
-            setError(error);
+            console.error(error);
             setChartData(null);
         }
     };
 
-    const getChartData = () => {
+    const getChartData = useCallback(() => {
         if (!chartData) return {};  // chartData가 없을 때 빈 객체 반환
 
-        const labels = chartData.map(data => data.stck_bsop_date);
         const datasets = [{
             label: `${itmsNm} ${timeframe === 'day' ? '일간' : timeframe === 'month' ? '월간' : '연간'} 차트`,
             data: chartData.map(data => ({
-                t: data.stck_bsop_date,
+                x: new Date(`${data.stck_bsop_date.slice(0, 4)}-${data.stck_bsop_date.slice(4, 6)}-${data.stck_bsop_date.slice(6, 8)}`),
                 o: data.stck_oprc,
                 h: data.stck_hgpr,
                 l: data.stck_lwpr,
@@ -75,10 +70,9 @@ function StockInfo() {
         }];
 
         return {
-            labels,
             datasets
         };
-    };
+    }, [chartData, itmsNm, timeframe]);
 
     useEffect(() => {
         if (chartRef.current) {
@@ -92,19 +86,65 @@ function StockInfo() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    elements: {
+                        candlestick: {
+                            barThickness: 1,  // 캔들스틱 너비를 작게 설정
+                            categoryPercentage: 0.8,
+                            barPercentage: 0.8,
+                        }
+                    },
                     scales: {
                         x: {
                             type: 'time',
                             time: {
-                                unit: timeframe === 'day' ? 'day' : timeframe === 'month' ? 'month' : 'year'
+                                unit: timeframe === 'day' ? 'day' : timeframe === 'month' ? 'month' : 'year',
+                                tooltipFormat: 'yyyy-MM-dd',
+                                stepSize: timeframe === 'day' ? 1 : timeframe === 'month' ? 1 : 1,
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                autoSkip: true,
+                                maxTicksLimit: 10  // 최대 표시할 라벨 수 제한
+                            },
+                            grid: {
+                                display: false,
+                            },
+                        },
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();  // 숫자 형식을 천단위 콤마로 표시
+                                }
                             }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const o = context.raw.o.toLocaleString();
+                                    const h = context.raw.h.toLocaleString();
+                                    const l = context.raw.l.toLocaleString();
+                                    const c = context.raw.c.toLocaleString();
+                                    return `Open: ${o}, High: ${h}, Low: ${l}, Close: ${c}`;
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                            bottom: 10
                         }
                     }
                 }
             });
         }
-    }, [chartData, timeframe]);
-
+    }, [chartData, timeframe, getChartData]);
     if (!response) {
         return <p>Loading...</p>;
     }
@@ -257,7 +297,7 @@ function StockInfo() {
                         <button onClick={() => setTimeframe('month')}>월간</button>
                         <button onClick={() => setTimeframe('year')}>연간</button>
                     </div>
-                    <div style={{ width: '100%', height: '400px' }}>
+                    <div style={{ width: '100%', height: '600px' }}>
                         <canvas ref={chartRef}></canvas>
                     </div>
                 </div>
