@@ -153,6 +153,7 @@ section h2 {
   text-decoration: underline;
 }
 
+
 .market-indices, .latest-news, .popular-stocks, .simple-chart,
 .search-filter, .stock-list, .stock-details, .stock-chart, .stock-news,
 .portfolio-overview, .stock-status, .performance-chart, .alerts,
@@ -164,6 +165,7 @@ section h2 {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
+
 
 .market-indices h2, .latest-news h2, .popular-stocks h2, .simple-chart h2,
 .search-filter h2, .stock-details h2, .stock-chart h2, .stock-news h2,
@@ -1013,4 +1015,59 @@ button:hover {
   width: 280px;
   height: 40px;
   margin-bottom: 15px;
+}
+
+/*market*/
+
+.sort-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.sort-buttons button {
+  background-color: #85bcea;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 20px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 12px;
+  width: 800px;
+}
+
+.sort-buttons button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #4CAF50;
+}
+
+/*.stock-links {*/
+/*  display: flex;*/
+/*  justify-content: space-around;*/
+/*  align-items: center;*/
+/*  margin: 20px 0;*/
+/*}*/
+
+/*.stock-links a {*/
+/*  text-decoration: none;*/
+/*  color: #000;*/
+/*  padding: 10px 20px;*/
+/*  transition: color 0.3s, background-color 0.3s;*/
+/*}*/
+
+.stock-links td{
+  border-right:none;
+
+  border-left:none;
+
+  border-top:none;
+  border-bottom:none;
+  padding: 0 83px 0 83px;;
 }

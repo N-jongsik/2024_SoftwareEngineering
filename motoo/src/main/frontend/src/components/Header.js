@@ -12,6 +12,7 @@ function Header({ isLoggedIn, onLogout }) {
     const location = useLocation();
     const userID = location.state?.variable;
 
+
     useEffect(() => {
         const fetchResponse = async () => {
             if (item_name.trim() === '') {
@@ -70,6 +71,7 @@ function Header({ isLoggedIn, onLogout }) {
                 navigate('/ranking', { state: { variable: userID } });
               };
 
+
     return (
         <header>
             <div className="logo">MoToo</div>
@@ -83,8 +85,8 @@ function Header({ isLoggedIn, onLogout }) {
                     {/*<li><Link to="/trading">Trading</Link></li>*/}
                     <li>
                     <Link
-                        to="/trading"
-                        state={{ backgroundLocation: location, variable: userID }}
+                        to={userID ? "/trading" : "/login"}
+                        state={userID ? { backgroundLocation: location, variable: userID } : null}
                     >
                         Trading
                     </Link>

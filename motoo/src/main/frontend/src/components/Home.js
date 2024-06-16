@@ -153,7 +153,19 @@ function Home() {
         </Modal>
 
         <section className="market-indices">
-          <h2>KOSPI |  KOSDAQ  |  KOSPI200</h2>
+          <h2 className="stock-links">
+            <table>
+            <tr>
+              <td>KOSPI</td>
+              <td>KOSDAQ</td>
+              <td>KOSPI200</td>
+            </tr>
+            </table>
+          {/*  <a>　KOSPI</a>*/}
+          {/*<a>　KOSDAQ</a>*/}
+          {/*<a>KOSPI200</a>*/}
+        </h2>
+
           <div className="market-indexes">
             {renderIndex(indexes.kospi, 'KOSPI')}
             {renderIndex(indexes.kosdaq, 'KOSDAQ')}
