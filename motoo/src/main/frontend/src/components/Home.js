@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import Chart from 'chart.js/auto';
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './MarketIndexes.css'; // 스타일 파일 추가
 
@@ -12,11 +12,14 @@ function Home() {
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answered, setAnswered] = useState(false); // 정답 여부를 확인하여 True/False 버튼 숨기기 위한 상태
-
   const [indexes, setIndexes] = useState({ kospi: null, kosdaq: null, kospi200: null });
+  const [popularStocks, setPopularStocks] = useState([]); // 인기 주식 종목 상태 추가
+  const location = useLocation();
+  const userID = location.state?.variable;
 
   useEffect(() => {
     fetchMarketIndexes();
+    fetchPopularStocks(); // 인기 주식 종목 데이터 가져오기
   }, []);
 
   const fetchMarketIndexes = async () => {
@@ -34,26 +37,35 @@ function Home() {
     }
   };
 
+  const fetchPopularStocks = async () => {
+    try {
+      const response = await axios.get('/api/volume-rank');
+      setPopularStocks(response.data.slice(0, 10)); // 상위 10개의 종목만 저장
+    } catch (error) {
+      console.error('Failed to fetch popular stocks', error);
+    }
+  };
+
   const renderIndex = (indexData, name) => {
     if (!indexData) {
       return <p>Loading...</p>;
     }
 
     return (
-      <div className="market-index">
-        <div className="market-index-header">
-          <span>{name}</span>
+        <div className="market-index">
+          <div className="market-index-header">
+            <span>{name}</span>
+          </div>
+          <div className="market-index-value">
+            <h2>{indexData.bstp_nmix_prpr}</h2>
+          </div>
+          <div className="market-index-change">
+                    <span className={indexData.prdy_vrss_sign === '2' ? 'up' : 'down'}>
+                        {indexData.prdy_vrss_sign === '2' ? '▲' : '▼'} {indexData.bstp_nmix_prdy_vrss}
+                    </span>
+            <span>({indexData.bstp_nmix_prdy_ctrt}%)</span>
+          </div>
         </div>
-        <div className="market-index-value">
-          <h2>{indexData.bstp_nmix_prpr}</h2>
-        </div>
-        <div className="market-index-change">
-          <span className={indexData.prdy_vrss_sign === '2' ? 'up' : 'down'}>
-            {indexData.prdy_vrss_sign === '2' ? '▲' : '▼'} {indexData.bstp_nmix_prdy_vrss}
-          </span>
-          <span>({indexData.bstp_nmix_prdy_ctrt}%)</span>
-        </div>
-      </div>
     );
   };
 
@@ -92,14 +104,6 @@ function Home() {
   };
 
   const currentQuiz = quizData[currentQuizIndex];
-
-  const stocks = [
-    { name: '삼성전자', price: '70,000', change: '▲1.9', color: 'red' },
-    { name: 'SK하이닉스', price: '120,000', change: '▲2.3', color: 'red' },
-    { name: '네이버', price: '350,000', change: '▲1.5', color: 'red' },
-    { name: '카카오', price: '140,000', change: '▼0.9', color: 'blue' },
-    { name: 'LG화학', price: '820,000', change: '▲3.8', color: 'red' },
-  ];
 
   return (
     <main>
@@ -148,42 +152,45 @@ function Home() {
         </section>
       </Modal>
 
-      <section className="market-indices">
-        <h2>KOSPI, KOSDAQ & KOSPI200</h2>
-        <div className="market-indexes">
-          {renderIndex(indexes.kospi, "KOSPI")}
-          {renderIndex(indexes.kosdaq, "KOSDAQ")}
-          {renderIndex(indexes.kospi200, "KOSPI200")}
-        </div>
-      </section>
-
-      <section className="home-page">
-        <div className="popular-stocks">
-          <div className="popular-header">
-            <h2>인기 주식 종목</h2>
-            <a title="더보기"><Link to="/market">더보기</Link></a>
+        <section className="market-indices">
+          <h2>KOSPI |  KOSDAQ  |  KOSPI200</h2>
+          <div className="market-indexes">
+            {renderIndex(indexes.kospi, 'KOSPI')}
+            {renderIndex(indexes.kosdaq, 'KOSDAQ')}
+            {renderIndex(indexes.kospi200, 'KOSPI200')}
           </div>
-          <table className="stock-table">
-            <thead>
+        </section>
+
+        <section className="home-page">
+          <div className="popular-stocks">
+            <div className="popular-header">
+              <h2>인기 주식 종목</h2>
+              {userID && <p>User ID: {userID}</p>}
+              <a title="더보기"><Link to="/market">더보기</Link></a>
+            </div>
+            <table className="stock-table">
+              <thead>
               <tr>
                 <th>종목명</th>
                 <th>가격</th>
                 <th>변동률</th>
               </tr>
-            </thead>
-            <tbody>
-              {stocks.map(stock => (
-                <tr key={stock.name}>
-                  <td>{stock.name}</td>
-                  <td>{stock.price}</td>
-                  <td style={{ color: stock.color }}>{stock.change}</td>
-                </tr>
+              </thead>
+              <tbody>
+              {popularStocks.map(stock => (
+                  <tr key={stock.itmsNm}>
+                    <td>{stock.hts_kor_isnm}</td>
+                    <td>{stock.stck_prpr}</td>
+                    <td style={{ color: stock.prdy_vrss > 0 ? 'red' : 'blue' }}>
+                      {stock.prdy_vrss > 0 ? `▲${stock.prdy_vrss}` : `▼${stock.prdy_vrss}`}
+                    </td>
+                  </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
   );
 }
 

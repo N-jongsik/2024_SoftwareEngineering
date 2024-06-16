@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function Post() {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const userID = location.state?.variable;
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -39,11 +41,14 @@ const deleteBoard = async (id) => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
+const handleBoardLinkClickr = () => {
+              navigate('/discussionform', { state: { variable: userID } });
+};
 
   return (
     <main>
       <section className="stock-list">
-        <h2>토론방</h2>
+        <h2>토론방{userID && <p>User ID: {userID}</p>}</h2>
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">
@@ -60,7 +65,7 @@ const deleteBoard = async (id) => {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={() => window.location.href = '/discussionform'}>등록하기</button>
+      <button className="disbut" onClick={handleBoardLinkClickr } >등록하기</button>
     </main>
   );
 }

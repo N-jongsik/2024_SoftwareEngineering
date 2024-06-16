@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +25,8 @@ const Login = () => {
       if (response.data.status === 'success') {
         alert(`Motoo에 오신 것을 환영합니다, ${userID}님!`);
         if (userID == "admin") {window.location.href = '/admin';} //관리자 아이디 admin고정
-        else {window.location.href = '/';}
+        else {navigate('/', {state: {variable: userID}});}
+
       } else {
         setLoginError(response.data.message);
       }

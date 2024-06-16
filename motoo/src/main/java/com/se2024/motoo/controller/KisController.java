@@ -1,9 +1,6 @@
 package com.se2024.motoo.controller;
 
-import com.se2024.motoo.dto.MarketIndexDTO;
-import com.se2024.motoo.dto.ResponseOutputDTO;
-import com.se2024.motoo.dto.testDTO;
-import com.se2024.motoo.dto.tickerDTO;
+import com.se2024.motoo.dto.*;
 import com.se2024.motoo.service.KisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +39,8 @@ public class KisController {
         return kisService.getPirce(ticker);
     }
 
-    @GetMapping("/kisstock")
-    public Mono<List<tickerDTO>> getS(@RequestParam String ticker) {
-        return kisService.getPirce(ticker);
+    @GetMapping("/chart")
+    public Mono<List<StockChartDTO>> getChartData(@RequestParam String ticker, @RequestParam String period) {
+        return kisService.getChartData(ticker, period);
     }
-
 }

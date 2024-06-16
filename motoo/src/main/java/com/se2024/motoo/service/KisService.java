@@ -3,10 +3,7 @@ package com.se2024.motoo.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.se2024.motoo.dto.MarketIndexDTO;
-import com.se2024.motoo.dto.ResponseOutputDTO;
-import com.se2024.motoo.dto.testDTO;
-import com.se2024.motoo.dto.tickerDTO;
+import com.se2024.motoo.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -140,8 +141,8 @@ public class KisService {
                         .queryParam("fid_cond_scr_div_code", "20170")
                         .queryParam("fid_input_iscd", "0000")
                         .queryParam("fid_rank_sort_cls_code", "0")
-                        .queryParam("fid_input_cnt_1", "0")
-                        .queryParam("fid_prc_cls_code", "0")
+                        .queryParam("fid_input_cnt_1", "1")
+                        .queryParam("fid_prc_cls_code", "1")
                         .queryParam("fid_input_price_1", "")
                         .queryParam("fid_input_price_2", "")
                         .queryParam("fid_vol_cnt", "")
@@ -165,8 +166,8 @@ public class KisService {
                         .queryParam("fid_cond_scr_div_code", "20170")
                         .queryParam("fid_input_iscd", "0000")
                         .queryParam("fid_rank_sort_cls_code", "1")
-                        .queryParam("fid_input_cnt_1", "0")
-                        .queryParam("fid_prc_cls_code", "0")
+                        .queryParam("fid_input_cnt_1", "1")
+                        .queryParam("fid_prc_cls_code", "1")
                         .queryParam("fid_input_price_1", "")
                         .queryParam("fid_input_price_2", "")
                         .queryParam("fid_vol_cnt", "")
@@ -233,5 +234,76 @@ public class KisService {
     private String getNodeText(JsonNode node, String fieldName) {
         JsonNode fieldNode = node.get(fieldName);
         return fieldNode != null ? fieldNode.asText() : "";
+    }
+
+
+    // 차트 정보 조회
+    private HttpHeaders createChartHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(accessToken);
+        headers.set("appkey", appkey);
+        headers.set("appSecret", appSecret);
+        headers.set("tr_id", "FHKST03010100");
+        headers.set("custtype", "P");
+        return headers;
+    }
+
+    public Mono<List<StockChartDTO>> getChartData(String ticker, String timeframe) {
+        HttpHeaders headers = createChartHttpHeaders();
+        String periodDivCode;
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate;
+
+        switch (timeframe) {
+            case "day":
+                periodDivCode = "D";
+                startDate = endDate.minusDays(100);
+                break;
+            case "month":
+                periodDivCode = "M";
+                startDate = endDate.minusMonths(30);
+                break;
+            case "year":
+                periodDivCode = "Y";
+                startDate = endDate.minusYears(15);
+                break;
+            default:
+                periodDivCode = "D";
+                startDate = endDate.minusDays(100);
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedEndDate = endDate.format(formatter);
+        String formattedStartDate = startDate.format(formatter);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice")
+                        .queryParam("FID_COND_MRKT_DIV_CODE", "J")
+                        .queryParam("FID_INPUT_ISCD", ticker)
+                        .queryParam("FID_INPUT_DATE_1", formattedStartDate)
+                        .queryParam("FID_INPUT_DATE_2", formattedEndDate)
+                        .queryParam("FID_PERIOD_DIV_CODE", periodDivCode)
+                        .queryParam("FID_ORG_ADJ_PRC", "0")
+                        .build())
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(this::parseChartData);
+    }
+
+    private Mono<List<StockChartDTO>> parseChartData(String response) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode outputNode = rootNode.get("output2");
+            if (outputNode != null) {
+                List<StockChartDTO> chartDataList = objectMapper.convertValue(outputNode, new TypeReference<List<StockChartDTO>>() {});
+                return Mono.just(chartDataList);
+            } else {
+                return Mono.just(List.of());
+            }
+        } catch (Exception e) {
+            return Mono.error(e);
+        }
     }
 }

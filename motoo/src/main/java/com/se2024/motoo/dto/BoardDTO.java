@@ -22,6 +22,7 @@ public class BoardDTO {
     private String board_type;
     private Integer viewCount;
     private Integer likeCount;
+    private String us;
 
     public BoardDTO(){
         super();
@@ -37,6 +38,7 @@ public class BoardDTO {
         this.board_type = board_type;
         this.viewCount= viewCount;
         this.likeCount= likeCount;
+        this.us = us;
     }
 
     // 예를 들어, 엔티티에서 DTO로 변환하는 메서드
