@@ -101,11 +101,16 @@ const handleCommentSubmit = async (e) => {
               </nan>
               <p>조회수: {board.viewCount}</p>
               <p>좋아요: {board.likeCount}</p>
+              {userID === board.us && (
               <div className="buttons">
                 <button onClick={handleDelete}>삭제</button>
                 <button onClick={handleEdit}>수정</button>
                 <button onClick={handleLike}>공감</button>
-              </div>
+              </div>)}
+              {userID !== board.us && (
+                 <div className="buttons">
+                 <button onClick={handleLike}>공감</button>
+              </div>)}
               <div className="comments">
                 <h3>Comments</h3>
                 <ul>
