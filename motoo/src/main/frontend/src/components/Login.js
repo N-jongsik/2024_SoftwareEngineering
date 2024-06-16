@@ -24,7 +24,9 @@ const Login = () => {
       console.log('Login success:', response.data);
       if (response.data.status === 'success') {
         alert(`Motoo에 오신 것을 환영합니다, ${userID}님!`);
-        navigate('/', {state: {variable: userID}});
+        if (userID == "admin") {window.location.href = '/admin/memberlist';} //관리자 아이디 admin고정
+        else {navigate('/', {state: {variable: userID}});}
+
       } else {
         setLoginError(response.data.message);
       }

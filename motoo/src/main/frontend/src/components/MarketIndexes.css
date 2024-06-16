@@ -45,3 +45,24 @@
 .market-index-change .down {
     color: blue;
 }
+
+.correct {
+  color: green;
+  font-weight: bold;
+}
+
+.incorrect {
+  color: red;
+  font-weight: bold;
+}
+
+.answer-selection {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.answer-feedback {
+  margin-top: 20px;
+}

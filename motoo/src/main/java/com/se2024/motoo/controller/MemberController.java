@@ -48,33 +48,65 @@ public class MemberController {
         return response;
     }
 
-    @PostMapping("/login")
-    @ResponseBody
-    public Map<String, String> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Optional<Member> memberOpt = memberService.findByUserID(loginDTO.getUserID());
-            if (memberOpt.isPresent()) {
-                Member member = memberOpt.get();
-                if (member.getPwd() != null && member.getPwd().equals(loginDTO.getPwd())) {
-                    session.setAttribute("user", member);
-                    response.put("status", "success");
-                    response.put("message", "로그인 성공");
-                } else {
-                    response.put("status", "error");
-                    response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
-                }
+//    @PostMapping("/login")
+//    @ResponseBody
+//    public Map<String, String> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
+//        Map<String, String> response = new HashMap<>();
+//        try {
+//            Optional<Member> memberOpt = memberService.findByUserID(loginDTO.getUserID());
+//            if (memberOpt.isPresent()) {
+//                Member member = memberOpt.get();
+//                if (member.getPwd() != null && member.getPwd().equals(loginDTO.getPwd())) {
+//                    session.setAttribute("user", member);
+//                    response.put("status", "success");
+//                    response.put("message", "로그인 성공");
+//                } else {
+//                    response.put("status", "error");
+//                    response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
+//                }
+//            } else {
+//                response.put("status", "error");
+//                response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
+//            }
+//        } catch (Exception e) {
+//            response.put("status", "error");
+//            response.put("message", "로그인 처리 중 오류가 발생했습니다.");
+//            e.printStackTrace();
+//        }
+//        return response;
+//    }
+@PostMapping("/login")
+public ResponseEntity<Map<String, Object>> login(HttpSession session, @RequestBody SignupDTO loginDTO) {
+    Map<String, Object> response = new HashMap<>();
+    try {
+        Optional<Member> memberOpt = memberService.findByUserID(loginDTO.getUserID());
+        if (memberOpt.isPresent()) {
+            Member member = memberOpt.get();
+            if (member.getPwd() != null && member.getPwd().equals(loginDTO.getPwd())) {
+                // 세션에 필요한 정보만 저장 (예: 회원 ID)
+                session.setAttribute("user", member);
+                session.setAttribute("userId", member.getUserID());
+                session.setAttribute("userName", member.getUserName());
+
+                response.put("status", "success");
+                response.put("message", "로그인 성공");
+                response.put("userId", member.getUserID());
+                response.put("userName", member.getUserName());
             } else {
                 response.put("status", "error");
                 response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
             }
-        } catch (Exception e) {
+        } else {
             response.put("status", "error");
-            response.put("message", "로그인 처리 중 오류가 발생했습니다.");
-            e.printStackTrace();
+            response.put("message", "아이디 또는 비밀번호가 맞지 않습니다.");
         }
-        return response;
+    } catch (Exception e) {
+        response.put("status", "error");
+        response.put("message", "로그인 처리 중 오류가 발생했습니다.");
+        e.printStackTrace();
     }
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+}
 
     @GetMapping("/me")
     @ResponseBody
@@ -86,7 +118,7 @@ public class MemberController {
             response.put("message", "로그인되지 않은 사용자입니다.");
         } else {
             response.put("status", "success");
-            response.put("user", new SignupDTO(user.getId(),user.getUserName(), user.getPwd(), user.getUserID(), user.getUserEmail()));
+            response.put("user", new SignupDTO(user.getId(),user.getUserID(),user.getPwd(),user.getUserName(), user.getUserEmail()));
         }
         return response;
     }
