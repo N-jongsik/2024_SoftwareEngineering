@@ -46,7 +46,7 @@ const Dashboard = () => {
         <h2>사용자 Email: {user.userEmail}</h2>  {/* 사용자의 이메일을 출력 */}
         <h2>Motoo의 {user.id}번째 회원입니다!</h2>
         {/* 필요한 다른 사용자 정보 추가 */}
-        <button className="disbut" onClick={handleBoardLinkClick } >문의사항 등록하기</button>)
+        <button className="disbut" onClick={handleBoardLinkClick } >문의사항 등록하기</button>
       </div>
       <div className="dashboard-footer">
         <p>Motoo</p>
