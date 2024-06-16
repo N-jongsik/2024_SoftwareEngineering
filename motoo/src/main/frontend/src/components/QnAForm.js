@@ -77,8 +77,8 @@ function DiscussionForm() {
               <option value="비공개">비공개</option>
             </select>
           </div>
+          <label>내용 입력</label>
           <div className="content">
-            <label>내용 입력</label>
             <textarea
               name="content"
               value={content}

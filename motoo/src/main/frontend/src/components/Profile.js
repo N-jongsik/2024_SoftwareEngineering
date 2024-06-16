@@ -18,40 +18,39 @@ const Dashboard = () => {
           setUser(response.data.user);  // 사용자 정보를 상태에 저장
         } else {
           navigate('/login');
-          alert('로그인을 해주세요!');
         }
       } catch (error) {
-        console.error('Session check error', error);
         navigate('/login');
       }
     };
-  }, [navigate]);
 
+    checkSession();
+  }, [navigate]);
 
   if (!user) {
     return <div>Loading...</div>;  // 사용자 정보를 로드 중일 때 로딩 표시
   }
-    const handleBoardLinkClick = () => {
-                  navigate('/QnAlist', { state: { variable: userID } });
-    };
+  const handleBoardLinkClick = () => {
+    navigate('/QnAlist', { state: { variable: userID } });
+  };
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>개인 정보 확인하기</h1>
+      <div className="dashboard-container">
+        <div className="dashboard-header">
+          <h1>개인 정보 확인하기</h1>
+        </div>
+        <div className="dashboard-info">
+          <h2>사용자 이름: {user.userName}</h2>  {/* 사용자의 이름을 출력 */}
+          <h2>사용자 ID: {user.userID}</h2>  {/* 사용자의 ID를 출력 */}
+          <h2>사용자 Email: {user.userEmail}</h2>  {/* 사용자의 이메일을 출력 */}
+          <h2>Motoo의 {user.id}번째 회원입니다!</h2>
+          {/* 필요한 다른 사용자 정보 추가 */}
+          <button className="disbut" onClick={handleBoardLinkClick } >문의사항 등록하기</button>
+        </div>
+        <div className="dashboard-footer">
+          <p>Motoo</p>
+        </div>
       </div>
-      <div className="dashboard-info">
-        <h2>사용자 이름: {user.userName}</h2>  {/* 사용자의 이름을 출력 */}
-        <h2>사용자 ID: {user.userID}</h2>  {/* 사용자의 ID를 출력 */}
-        <h2>사용자 Email: {user.userEmail}</h2>  {/* 사용자의 이메일을 출력 */}
-        <h2>Motoo의 {user.id}번째 회원입니다!</h2>
-        {/* 필요한 다른 사용자 정보 추가 */}
-        <button className="disbut" onClick={handleBoardLinkClick } >문의사항 등록하기</button>
-      </div>
-      <div className="dashboard-footer">
-        <p>Motoo</p>
-      </div>
-    </div>
   );
 };
 

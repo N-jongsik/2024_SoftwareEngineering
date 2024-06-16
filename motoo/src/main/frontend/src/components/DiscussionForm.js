@@ -119,37 +119,9 @@ function DiscussionForm() {
               required
             />
             <button type="button" onClick={openModalAndSearch}>검색</button>
-            {/*<button type="button" onClick={handleSearch}>검색</button>*/}
-            {/*{error && <div className="error-message">Error: {error}</div>}*/}
-            {/*{response.length > 0 && (*/}
-            {/*  <div className="stock-info-list">*/}
-            {/*    {response.map((item) => (*/}
-            {/*      <div key={item.srtnCd} className="stock-card" onClick={() => handleItemSelect(item)}>*/}
-            {/*        <h2 className="stock-name">{item.itmsNm}</h2>*/}
-            {/*        <p className="stock-details">*/}
-            {/*          <span className="stock-code">{item.srtnCd}</span> |*/}
-            {/*          <span className="stock-category">{item.mrktCtg}</span> |*/}
-            {/*          <span className="stock-rank">{item.data_rank}</span> |*/}
-            {/*          <span className="stock-corp-name">{item.corpNm}</span>*/}
-            {/*        </p>*/}
-            {/*      </div>*/}
-            {/*    ))}*/}
-            {/*  </div>*/}
-            {/*)}*/}
           </div>
-            {/* <select
-              name="board_type"
-              value={boardType}
-              onChange={(e) => setBoardType(e.target.value)}
-              required
-            >
-              <option value="종목1">종목1</option>
-              <option value="종목2">종목2</option>
-              <option value="종목3">종목3</option>
-            </select> */}
-
+          <label>내용 입력</label>
           <div className="content">
-            <label>내용 입력</label>
             <textarea
               name="content"
               value={content}

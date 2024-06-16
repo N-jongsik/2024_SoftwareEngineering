@@ -52,27 +52,27 @@ function Header() {
         };
     }, []);
     useEffect(() => {
-            const checkSession = async () => {
-                try {
-                    const response = await axios.get('/api/me');
-                    if (response.data.status === 'success') {
-                        setUser(response.data.user); // Save user information to state
-                    } else {
-                        setUser(null);
-                    }
-                } catch (error) {
-                    console.error('Session check error', error);
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/api/me');
+                if (response.data.status === 'success') {
+                    setUser(response.data.user); // Save user information to state
+                } else {
                     setUser(null);
                 }
+            } catch (error) {
+                console.error('Session check error', error);
+                setUser(null);
             }
+        }
 
-            checkSession(); // Check session on page load
+        checkSession(); // Check session on page load
 
-            // Refresh user state after login
-            if (location.pathname === '/login' && location.state?.isLoggedIn) {
-                checkSession();
-            }
-        }, [location.pathname, location.state]);
+        // Refresh user state after login
+        if (location.pathname === '/login' && location.state?.isLoggedIn) {
+            checkSession();
+        }
+    }, [location.pathname, location.state]);
 
     // Handle item click in search results
     const handleItemClick = (item) => {
@@ -99,20 +99,24 @@ function Header() {
     }
 
     const handleBoardLinkClickh = () => {
-            navigate('/home', { state: { variable: userID } });
-          };
-        const handleBoardLinkClickm = () => {
-                navigate('/market', { state: { variable: userID } });
-              };
-        const handleBoardLinkClickn = () => {
-                    navigate('/news', { state: { variable: userID } });
-                  };
-        const handleBoardLinkClickp = () => {
-                navigate('/post', { state: { variable: userID } });
-              };
-        const handleBoardLinkClickr = () => {
-                    navigate('/ranking', { state: { variable: userID } });
-                  };
+        navigate('/home', { state: { variable: userID } });
+    };
+    const handleBoardLinkClickm = () => {
+        navigate('/market', { state: { variable: userID } });
+    };
+    const handleBoardLinkClickn = () => {
+        navigate('/news', { state: { variable: userID } });
+    };
+    const handleBoardLinkClickp = () => {
+        navigate('/post', { state: { variable: userID } });
+    };
+    const handleBoardLinkClickr = () => {
+        navigate('/ranking', { state: { variable: userID } });
+    };
+
+    const handleProfileLinkClickr = () => {
+        navigate('/profile', { state: { variable: userID } });
+    };
 
     return (
         <header>
@@ -169,7 +173,8 @@ function Header() {
                             </div>
                         )}
                     </li>
-                    <li><Link to="/profile">My Page</Link></li>
+
+                    <li><button onClick={handleProfileLinkClickr}>profile</button></li>
                     {authLink}
                 </ul>
             </nav>
