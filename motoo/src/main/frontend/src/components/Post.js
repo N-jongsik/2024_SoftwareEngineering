@@ -48,7 +48,7 @@ const handleBoardLinkClickr = () => {
   return (
     <main>
       <section className="stock-list">
-        <h2>토론방{userID && <p>User ID: {userID}</p>}</h2>
+        <h2>토론방</h2>
         {boards.length > 0 ? (
           boards.map(board => (
             <div key={board.board_id} className="stock">

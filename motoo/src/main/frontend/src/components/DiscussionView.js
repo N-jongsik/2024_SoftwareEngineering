@@ -66,7 +66,7 @@ function BoardDetail() {
 const handleCommentSubmit = async (e) => {
   e.preventDefault();
   try {
-    await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, { content: newComment, userId: 'guest' }); // using 'guest' as a placeholder
+    await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, { content: newComment, userId: userID }); // using 'guest' as a placeholder
     setNewComment('');
     const response = await axios.get(`http://localhost:8080/api/boards/${boardId}/comments`);
     setComments(response.data);
@@ -74,7 +74,14 @@ const handleCommentSubmit = async (e) => {
     console.error('Error adding comment', error);
   }
 };
-
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`);
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -104,7 +111,7 @@ const handleCommentSubmit = async (e) => {
                 <ul>
                   {comments.map(comment => (
                       <li key={comment.id}>
-                        <p>{comment.userId} | {new Date(comment.createAt).toLocaleDateString()}</p>
+                        <p>{comment.userId} </p>
                         <nan className="head">
                           <p>{comment.content}</p>
                         </nan>

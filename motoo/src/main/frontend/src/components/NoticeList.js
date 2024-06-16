@@ -51,7 +51,7 @@ function Post() {
           <p>No boards available</p>
         )}
       </section>
-      <button className="disbut" onClick={handleBoardLinkClickr } >공지사항 등록하기</button>
+      {userID === 'Admin' && (<button className="disbut" onClick={handleBoardLinkClickr } >공지사항 등록하기</button>)}
     </main>
   );
 }
