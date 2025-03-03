@@ -47,7 +47,7 @@
 ## 👤 팀 소개
 
 - **남종식**: [https://github.com/N-jongsik](https://github.com/N-jongsik)
-- **조현호**: [https://github.com/yhj0619](https://github.com/178kg78cm)
+- **조현호**: [https://github.com/178kg78cm](https://github.com/178kg78cm)
 - **황세영**: [https://github.com/syoooooung](https://github.com/syoooooung)
 - **정성현**: [https://github.com/swjsh19](https://github.com/swjsh19)
 
